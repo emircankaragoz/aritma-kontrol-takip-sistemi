@@ -7,7 +7,7 @@ export default function SuPage({session}) {
     <>
     <Layout session={session}>
       <div>
-        <h3 className="fs-3 font-bold">Su Page</h3>
+        <h3 className="fs-3 font-bold">Deneme Page</h3>
       </div>
     </Layout>
   </>
