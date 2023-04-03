@@ -1,0 +1,6 @@
+.layout{
+    display:flex; flex-direction:column; justify-content:center;
+    min-height:100vh;
+    background-color: #fff;
+    padding: 0px 10px; 
+}
