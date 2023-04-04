@@ -29,9 +29,19 @@ model Role {
   userId   Int
 
   user User[]
-
-  
 }
+
+model FormGirdisiExample {
+  id  Int @id @default(autoincrement())
+  category String @db.VarChar(45)
+  dateAndTime DateTime  @default(now()) @map(name: "date_and_time")
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  createdById Int 
+  updatedById Int
+}
+
+
 //SU 
 model IsletmeSuyuKontrolu{
   id   Int   @id @default(autoincrement())
@@ -58,4 +68,5 @@ model YemekhaneVeKullanmaSuyu{
   genelTemizlik String @db.VarChar(45)
   aciklama String @db.VarChar(45)
 }
+
 
