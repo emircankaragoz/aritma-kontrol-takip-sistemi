@@ -4,7 +4,7 @@ import { Layout } from "@/components";
 import { getSession } from "next-auth/react";
 
 import data from "@/mock-data.json";
-
+import styles from "@/styles/Form.module.css";
 import ReadOnlyRow from "@/components/ReadOnlyRow.js";
 import EditableRow from "@/components/EditableRow";
 
@@ -117,9 +117,9 @@ export default function IsletmeSuyuKontrolu({ session }) {
   return (
     <>
       <Layout session={session}>
-        <div className="app-container">
+        <div className={styles.appcontainer}>
           <h2>Add a Contact</h2>
-          <form onSubmit={handleAddFormSubmit}>
+          <form onSubmit={handleAddFormSubmit} className={styles.form}>
             <input
               type="text"
               name="fullName"
@@ -151,15 +151,15 @@ export default function IsletmeSuyuKontrolu({ session }) {
             <button type="submit">Add</button>
           </form>
 
-          <form onSubmit={handleEditFormSubmit}>
-            <table>
+          <form onSubmit={handleEditFormSubmit} className={styles.form}>
+            <table className={styles.table}>
               <thead>
                 <tr>
-                  <th>Name</th>
-                  <th>Address</th>
-                  <th>Phone Number</th>
-                  <th>Email</th>
-                  <th>Actions</th>
+                  <th className={styles.th}>Name</th>
+                  <th className={styles.th}>Address</th>
+                  <th className={styles.th}>Phone Number</th>
+                  <th className={styles.th}>Email</th>
+                  <th className={styles.th}>Actions</th>
                 </tr>
               </thead>
               <tbody>
