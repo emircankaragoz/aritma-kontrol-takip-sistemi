@@ -69,4 +69,88 @@ model YemekhaneVeKullanmaSuyu{
   aciklama String @db.VarChar(45)
 }
 
+// TUZ
 
+model TuzSodaSayacToplama {
+  id  Int @id @default(autoincrement())
+  category String @db.VarChar(45)
+  dateAndTime DateTime  @default(now()) @map(name: "date_and_time")
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  createdById Int 
+  updatedById Int
+  uretilenSu String @db.VarChar(45)
+  tasviyedeKullanilanSiviTuzSayac String @db.VarChar(45)
+  tuzVeSodaTesisiKullanilanSuSayac String @db.VarChar(45)
+  isletmeyeVerilenSiviTuzSayac String @db.VarChar(45)
+  isletmeyeVerilenSiviTuzHazirlananTankSayisi String @db.VarChar(45)
+  hazirlananSiviSodaSayac String @db.VarChar(45)
+  siviSodaHattiYikamSuyuSayac String @db.VarChar(45)
+  kayiSodaKg String @db.VarChar(45)
+  siviSodaLt String @db.VarChar(45)
+  aritmaTesisineAtilanAtikSiviTuzuLt String @db.VarChar(45)
+}
+
+model TuzVeSodaTesisiGunlukTuketimMiktarlari {
+  id  Int @id @default(autoincrement())
+  category String @db.VarChar(45)
+  dateAndTime DateTime  @default(now()) @map(name: "date_and_time")
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  createdById Int 
+  updatedById Int
+  gelenKatiTuzKg String @db.VarChar(45)
+  siviTuzHazirlamadaKullanilanSulfurikAsitKg String @db.VarChar(45)
+}
+
+model TuzVeSodaTesisiGunlukTuketimMiktarlariAylikVeYillikToplam {
+  id  Int @id @default(autoincrement())
+  category String @db.VarChar(45)
+  dateAndTime DateTime  @default(now()) @map(name: "date_and_time")
+  createdAt DateTime @default(now()) @map(name: "created_at")
+}
+
+model SodyumKlorurGirdiKontrolAnalizSonuclari {
+  id  Int @id @default(autoincrement())
+  category String @db.VarChar(45)
+  dateAndTime DateTime  @default(now()) @map(name: "date_and_time")
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  createdById Int 
+  updatedById Int
+  gorunum String @db.VarChar(45)
+  sertlik String @db.VarChar(45)
+  demir String @db.VarChar(45)
+  irsaliyeNo String @db.VarChar(45)
+  miktarKg String @db.VarChar(45)
+  firma String @db.VarChar(45)
+  kabul String @db.VarChar(45)
+  iade String @db.VarChar(45)
+  aciklama String @db.VarChar(45)
+}
+
+model TuzTesisiKontrolCizelgesi {
+  id  Int @id @default(autoincrement())
+  category String @db.VarChar(45)
+  isletmeyeVerildigiTarihSaat DateTime  @default(now()) @map(name: "date_and_time")
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  createdById Int 
+  updatedById Int
+  cozeltiSertligi String @db.VarChar(45)
+  ph String @db.VarChar(45)
+  yogunluk String @db.VarChar(45)
+  bikarbonat String @db.VarChar(45)
+  kontrolEden String @db.VarChar(45)
+}
+model SodaTesisiKontrolFormu {
+  id  Int @id @default(autoincrement())
+  category String @db.VarChar(45)
+  isletmeyeVerildigiTarihSaat DateTime  @default(now()) @map(name: "date_and_time")
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  createdById Int 
+  updatedById Int
+  cozeltiYogunlugu String @db.VarChar(45)
+  kontrolEden String @db.VarChar(45)
+}
