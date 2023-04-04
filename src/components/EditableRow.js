@@ -37,6 +37,7 @@ const EditableRow = ({
           onChange={handleEditFormChange}
         ></input>
       </td>
+      
       <td>
         <input
           type="email"

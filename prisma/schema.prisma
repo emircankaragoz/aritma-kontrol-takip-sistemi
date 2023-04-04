@@ -29,5 +29,33 @@ model Role {
   userId   Int
 
   user User[]
+
+  
+}
+//SU 
+model IsletmeSuyuKontrolu{
+  id   Int   @id @default(autoincrement())
+  ph String @db.VarChar(45)
+  sertlik String @db.VarChar(45)
+  bikarbonat String @db.VarChar(45)
+}
+model IcmeSuyuTesisiKontrolFormu{
+  id   Int   @id @default(autoincrement())
+  hamsusayac String @db.VarChar(45)
+  hamsuTonGun String @db.VarChar(45)
+  uretilenSuTonGun String @db.VarChar(45)
+  klorCozHazir String @db.VarChar(45)
+  klorAnalizSonucuMgL String @db.VarChar(45)
+  genelTemizlik String @db.VarChar(45)
+  aciklama String @db.VarChar(45)
+}
+model YemekhaneVeKullanmaSuyu{
+  id   Int   @id @default(autoincrement())
+  klorCozeltisiDozaji String @db.VarChar(45)
+  klor String @db.VarChar(45)
+  ph String @db.VarChar(45)
+  iletkenlik String @db.VarChar(45)
+  genelTemizlik String @db.VarChar(45)
+  aciklama String @db.VarChar(45)
 }
 
