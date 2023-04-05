@@ -355,7 +355,7 @@ model BiyolojikCokeltimHavuzu {
   renk         String   @db.VarChar(45)
 }
 
-model desarj {
+model Desarj {
   id          Int      @id @default(autoincrement())
   category    String   @db.VarChar(45)
   dateAndTime DateTime @default(now()) @map(name: "date_and_time")
@@ -380,7 +380,7 @@ model desarj {
   cinko       String   @db.VarChar(45)
 }
 
-model camurYogunlastirma {
+model CamurYogunlastirma {
   id          Int      @id @default(autoincrement())
   category    String   @db.VarChar(45)
   dateAndTime DateTime @default(now()) @map(name: "date_and_time")
@@ -390,7 +390,7 @@ model camurYogunlastirma {
   updatedById Int
 }
 
-model filtrepres {
+model Filtrepres {
   id                   Int      @id @default(autoincrement())
   category             String   @db.VarChar(45)
   dateAndTime          DateTime @default(now()) @map(name: "date_and_time")
@@ -414,8 +414,6 @@ model AKMAnalizFormu {
   filtreEdilenHacim_ml              String   @db.VarChar(45)
   filtreKagidiAgirligi_g            String   @db.VarChar(45)
   filtreKagidiVeNumuneninAgirligi_g String   @db.VarChar(45)
-  kuruKatilarinNetAgirligi          String   @db.VarChar(45)
-  AKM_mg_l                          String   @db.VarChar(45)
 }
 
 // TUZ
