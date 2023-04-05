@@ -22,6 +22,16 @@ model User {
   roleId     Int
 
   role Role @relation(fields: [roleId], references: [id])
+
+  // forms filled by the user
+
+  // Su
+
+  createdIsletmeSuyuKontroluForms IsletmeSuyuKontrolu[] @relation("createdIsletmeSuyuKontroluForms")
+  updatedIsletmeSuyuKontroluForms IsletmeSuyuKontrolu[] @relation("updatedIsletmeSuyuKontroluForms")
+
+  createdIcmeSuyuTesisiKontrolForms IcmeSuyuTesisiKontrolFormu[] @relation("createdIcmeSuyuTesisiKontrolForms")
+  updatedIcmeSuyuTesisiKontrolForms IcmeSuyuTesisiKontrolFormu[] @relation("updatedIcmeSuyuTesisiKontrolForms")
 }
 
 model Role {
@@ -35,7 +45,7 @@ model Role {
 model FormGirdisiExample {
   id          Int      @id @default(autoincrement())
   category    String   @db.VarChar(45)
-  dateAndTime DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt   DateTime @default(now()) @map(name: "created_at")
   updatedAt   DateTime @updatedAt @map(name: "updated_at")
   createdById Int
@@ -46,46 +56,56 @@ model FormGirdisiExample {
 model IsletmeSuyuKontrolu {
   id          Int      @id @default(autoincrement())
   category    String   @db.VarChar(45)
-  dateAndTime DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
+
   createdAt   DateTime @default(now()) @map(name: "created_at")
-  updatedAt   DateTime @updatedAt @map(name: "updated_at")
   createdById Int
+  createdBy   User     @relation("createdIsletmeSuyuKontroluForms", fields: [createdById], references: [id])
+
+  updatedAt   DateTime @updatedAt @map(name: "updated_at")
   updatedById Int
-  ph          String   @db.VarChar(45)
-  sertlik     String   @db.VarChar(45)
-  bikarbonat  String   @db.VarChar(45)
+  updatedBy   User     @relation("updatedIsletmeSuyuKontroluForms", fields: [updatedById], references: [id])
+
+  ph         String @db.VarChar(45)
+  sertlik    String @db.VarChar(45)
+  bikarbonat String @db.VarChar(45)
 }
 
 model IcmeSuyuTesisiKontrolFormu {
-  id                  Int      @id @default(autoincrement())
-  category            String   @db.VarChar(45)
-  dateAndTime         DateTime @default(now()) @map(name: "date_and_time")
-  createdAt           DateTime @default(now()) @map(name: "created_at")
-  updatedAt           DateTime @updatedAt @map(name: "updated_at")
-  createdById         Int
-  updatedById         Int
-  hamsusayac          String   @db.VarChar(45)
-  hamsuTonGun         String   @db.VarChar(45)
-  uretilenSuTonGun    String   @db.VarChar(45)
-  klorCozHazir        String   @db.VarChar(45)
-  klorAnalizSonucuMgL String   @db.VarChar(45)
-  genelTemizlik       String   @db.VarChar(45)
-  aciklama            String   @db.VarChar(45)
+  id          Int      @id @default(autoincrement())
+  category    String   @db.VarChar(45)
+  dateAndTime DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
+
+  createdAt   DateTime @default(now()) @map(name: "created_at")
+  createdById Int
+  createdBy   User     @relation("createdIcmeSuyuTesisiKontrolForms", fields: [createdById], references: [id])
+
+  updatedAt   DateTime @updatedAt @map(name: "updated_at")
+  updatedById Int
+  updatedBy   User     @relation("updatedIcmeSuyuTesisiKontrolForms", fields: [updatedById], references: [id])
+
+  hamsusayac          String @map(name: "ham_su_sayac") @db.VarChar(45)
+  hamsuTonGun         String @map(name: "ham_su_ton_gun") @db.VarChar(45)
+  uretilenSuTonGun    String @map(name: "uretilen_su_ton_gun") @db.VarChar(45)
+  klorCozHazir        String @map(name: "klor_coz_hazir") @db.VarChar(45)
+  klorAnalizSonucuMgL String @map(name: "klor_analiz_sonucu_mg_l") @db.VarChar(45)
+  genelTemizlik       String @map(name: "genel_temizlik") @db.VarChar(45)
+  aciklama            String @map(name: "aciklama") @db.VarChar(45)
 }
 
 model YemekhaneVeKullanmaSuyu {
   id                  Int      @id @default(autoincrement())
   category            String   @db.VarChar(45)
-  dateAndTime         DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime         DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt           DateTime @default(now()) @map(name: "created_at")
   updatedAt           DateTime @updatedAt @map(name: "updated_at")
   createdById         Int
   updatedById         Int
-  klorCozeltisiDozaji String   @db.VarChar(45)
+  klorCozeltisiDozaji String   @map(name: "klor_cozeltisi_dozaji") @db.VarChar(45)
   klor                String   @db.VarChar(45)
   ph                  String   @db.VarChar(45)
   iletkenlik          String   @db.VarChar(45)
-  genelTemizlik       String   @db.VarChar(45)
+  genelTemizlik       String   @map(name: "genel_temizlik") @db.VarChar(45)
   aciklama            String   @db.VarChar(45)
 }
 
@@ -94,7 +114,7 @@ model YemekhaneVeKullanmaSuyu {
 model RenkGidericiTuketimiVeRenkOlcumSonuclariTakipFormu {
   id                                Int      @id @default(autoincrement())
   category                          String   @db.VarChar(45)
-  dateAndTime                       DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime                       DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt                         DateTime @default(now()) @map(name: "created_at")
   updatedAt                         DateTime @updatedAt @map(name: "updated_at")
   createdById                       Int
@@ -112,7 +132,7 @@ model RenkGidericiTuketimiVeRenkOlcumSonuclariTakipFormu {
 model SaatlikVeriEsNotrPhOksijen {
   id                    Int      @id @default(autoincrement())
   category              String   @db.VarChar(45)
-  dateAndTime           DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime           DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt             DateTime @default(now()) @map(name: "created_at")
   updatedAt             DateTime @updatedAt @map(name: "updated_at")
   createdById           Int
@@ -126,7 +146,7 @@ model SaatlikVeriEsNotrPhOksijen {
 model CikisAtiksuSayaciKayitFormu {
   id             Int      @id @default(autoincrement())
   category       String   @db.VarChar(45)
-  dateAndTime    DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime    DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt      DateTime @default(now()) @map(name: "created_at")
   updatedAt      DateTime @updatedAt @map(name: "updated_at")
   createdById    Int
@@ -138,7 +158,7 @@ model CikisAtiksuSayaciKayitFormu {
 model AtiksuAritmaTesisiGirisVeCikisAtiksuMiktari {
   id                                           Int      @id @default(autoincrement())
   category                                     String   @db.VarChar(45)
-  dateAndTime                                  DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime                                  DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt                                    DateTime @default(now()) @map(name: "created_at")
   updatedAt                                    DateTime @updatedAt @map(name: "updated_at")
   createdById                                  Int
@@ -151,7 +171,7 @@ model AtiksuAritmaTesisiGirisVeCikisAtiksuMiktari {
 model SulfurikAsitKullanimMiktarVeMaliyeti {
   id                Int      @id @default(autoincrement())
   category          String   @db.VarChar(45)
-  dateAndTime       DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime       DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt         DateTime @default(now()) @map(name: "created_at")
   updatedAt         DateTime @updatedAt @map(name: "updated_at")
   createdById       Int
@@ -165,7 +185,7 @@ model SulfurikAsitKullanimMiktarVeMaliyeti {
 model DemirUcKlorurKullanimMiktarlariVeMaliyeti {
   id               Int      @id @default(autoincrement())
   category         String   @db.VarChar(45)
-  dateAndTime      DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime      DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt        DateTime @default(now()) @map(name: "created_at")
   updatedAt        DateTime @updatedAt @map(name: "updated_at")
   createdById      Int
@@ -179,7 +199,7 @@ model DemirUcKlorurKullanimMiktarlariVeMaliyeti {
 model RenkGidericiKullanimMiktarlariVeMaliyeti {
   id               Int      @id @default(autoincrement())
   category         String   @db.VarChar(45)
-  dateAndTime      DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime      DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt        DateTime @default(now()) @map(name: "created_at")
   updatedAt        DateTime @updatedAt @map(name: "updated_at")
   createdById      Int
@@ -193,7 +213,7 @@ model RenkGidericiKullanimMiktarlariVeMaliyeti {
 model FiltrepresKimyasalVeCamurPerformans {
   id                               Int      @id @default(autoincrement())
   category                         String   @db.VarChar(45)
-  dateAndTime                      DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime                      DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt                        DateTime @default(now()) @map(name: "created_at")
   updatedAt                        DateTime @updatedAt @map(name: "updated_at")
   createdById                      Int
@@ -214,7 +234,7 @@ model FiltrepresKimyasalVeCamurPerformans {
 model IsiGeriKazanimAmperVePhKayitFormu {
   id                           Int      @id @default(autoincrement())
   category                     String   @db.VarChar(45)
-  dateAndTime                  DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime                  DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt                    DateTime @default(now()) @map(name: "created_at")
   updatedAt                    DateTime @updatedAt @map(name: "updated_at")
   createdById                  Int
@@ -234,7 +254,7 @@ model IsiGeriKazanimAmperVePhKayitFormu {
 model TduFirmasindanGelenAtiksuTakibi {
   id           Int      @id @default(autoincrement())
   category     String   @db.VarChar(45)
-  dateAndTime  DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime  DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt    DateTime @default(now()) @map(name: "created_at")
   updatedAt    DateTime @updatedAt @map(name: "updated_at")
   createdById  Int
@@ -249,7 +269,7 @@ model TduFirmasindanGelenAtiksuTakibi {
 model RenkGidericiKimyasalGirdiKontrolu {
   id              Int      @id @default(autoincrement())
   category        String   @db.VarChar(45)
-  dateAndTime     DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime     DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt       DateTime @default(now()) @map(name: "created_at")
   updatedAt       DateTime @updatedAt @map(name: "updated_at")
   createdById     Int
@@ -265,7 +285,7 @@ model RenkGidericiKimyasalGirdiKontrolu {
 model AmonyumAzotuAnalizVerileri {
   id                  Int      @id @default(autoincrement())
   category            String   @db.VarChar(45)
-  dateAndTime         DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime         DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt           DateTime @default(now()) @map(name: "created_at")
   updatedAt           DateTime @updatedAt @map(name: "updated_at")
   createdById         Int
@@ -276,7 +296,7 @@ model AmonyumAzotuAnalizVerileri {
 model DengelemeHavuzu {
   id          Int      @id @default(autoincrement())
   category    String   @db.VarChar(45)
-  dateAndTime DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt   DateTime @default(now()) @map(name: "created_at")
   updatedAt   DateTime @updatedAt @map(name: "updated_at")
   createdById Int
@@ -294,7 +314,7 @@ model DengelemeHavuzu {
 model NotralizasyonHavuzu {
   id          Int      @id @default(autoincrement())
   category    String   @db.VarChar(45)
-  dateAndTime DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt   DateTime @default(now()) @map(name: "created_at")
   updatedAt   DateTime @updatedAt @map(name: "updated_at")
   createdById Int
@@ -304,7 +324,7 @@ model NotralizasyonHavuzu {
 model AnaerobikHavuzu {
   id          Int      @id @default(autoincrement())
   category    String   @db.VarChar(45)
-  dateAndTime DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt   DateTime @default(now()) @map(name: "created_at")
   updatedAt   DateTime @updatedAt @map(name: "updated_at")
   createdById Int
@@ -317,7 +337,7 @@ model AnaerobikHavuzu {
 model AerobikHavuzu {
   id          Int      @id @default(autoincrement())
   category    String   @db.VarChar(45)
-  dateAndTime DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt   DateTime @default(now()) @map(name: "created_at")
   updatedAt   DateTime @updatedAt @map(name: "updated_at")
   createdById Int
@@ -329,7 +349,7 @@ model AerobikHavuzu {
 model GeriDevirHaznesi {
   id                           Int      @id @default(autoincrement())
   category                     String   @db.VarChar(45)
-  dateAndTime                  DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime                  DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt                    DateTime @default(now()) @map(name: "created_at")
   updatedAt                    DateTime @updatedAt @map(name: "updated_at")
   createdById                  Int
@@ -341,7 +361,7 @@ model GeriDevirHaznesi {
 model BiyolojikCokeltimHavuzu {
   id           Int      @id @default(autoincrement())
   category     String   @db.VarChar(45)
-  dateAndTime  DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime  DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt    DateTime @default(now()) @map(name: "created_at")
   updatedAt    DateTime @updatedAt @map(name: "updated_at")
   createdById  Int
@@ -358,7 +378,7 @@ model BiyolojikCokeltimHavuzu {
 model Desarj {
   id          Int      @id @default(autoincrement())
   category    String   @db.VarChar(45)
-  dateAndTime DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt   DateTime @default(now()) @map(name: "created_at")
   updatedAt   DateTime @updatedAt @map(name: "updated_at")
   createdById Int
@@ -383,7 +403,7 @@ model Desarj {
 model CamurYogunlastirma {
   id          Int      @id @default(autoincrement())
   category    String   @db.VarChar(45)
-  dateAndTime DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt   DateTime @default(now()) @map(name: "created_at")
   updatedAt   DateTime @updatedAt @map(name: "updated_at")
   createdById Int
@@ -393,7 +413,7 @@ model CamurYogunlastirma {
 model Filtrepres {
   id                   Int      @id @default(autoincrement())
   category             String   @db.VarChar(45)
-  dateAndTime          DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime          DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt            DateTime @default(now()) @map(name: "created_at")
   updatedAt            DateTime @updatedAt @map(name: "updated_at")
   createdById          Int
@@ -405,7 +425,7 @@ model Filtrepres {
 model AKMAnalizFormu {
   id                                Int      @id @default(autoincrement())
   category                          String   @db.VarChar(45)
-  dateAndTime                       DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime                       DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt                         DateTime @default(now()) @map(name: "created_at")
   updatedAt                         DateTime @updatedAt @map(name: "updated_at")
   createdById                       Int
@@ -421,7 +441,7 @@ model AKMAnalizFormu {
 model TuzSodaSayacToplama {
   id                                          Int      @id @default(autoincrement())
   category                                    String   @db.VarChar(45)
-  dateAndTime                                 DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime                                 DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt                                   DateTime @default(now()) @map(name: "created_at")
   updatedAt                                   DateTime @updatedAt @map(name: "updated_at")
   createdById                                 Int
@@ -441,7 +461,7 @@ model TuzSodaSayacToplama {
 model TuzVeSodaTesisiGunlukTuketimMiktarlari {
   id                                         Int      @id @default(autoincrement())
   category                                   String   @db.VarChar(45)
-  dateAndTime                                DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime                                DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt                                  DateTime @default(now()) @map(name: "created_at")
   updatedAt                                  DateTime @updatedAt @map(name: "updated_at")
   createdById                                Int
@@ -453,14 +473,14 @@ model TuzVeSodaTesisiGunlukTuketimMiktarlari {
 model TuzVeSodaTesisiGunlukTuketimMiktarlariAylikVeYillikToplam {
   id          Int      @id @default(autoincrement())
   category    String   @db.VarChar(45)
-  dateAndTime DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt   DateTime @default(now()) @map(name: "created_at")
 }
 
 model SodyumKlorurGirdiKontrolAnalizSonuclari {
   id          Int      @id @default(autoincrement())
   category    String   @db.VarChar(45)
-  dateAndTime DateTime @default(now()) @map(name: "date_and_time")
+  dateAndTime DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt   DateTime @default(now()) @map(name: "created_at")
   updatedAt   DateTime @updatedAt @map(name: "updated_at")
   createdById Int
@@ -479,7 +499,7 @@ model SodyumKlorurGirdiKontrolAnalizSonuclari {
 model TuzTesisiKontrolCizelgesi {
   id                          Int      @id @default(autoincrement())
   category                    String   @db.VarChar(45)
-  isletmeyeVerildigiTarihSaat DateTime @default(now()) @map(name: "date_and_time")
+  isletmeyeVerildigiTarihSaat DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt                   DateTime @default(now()) @map(name: "created_at")
   updatedAt                   DateTime @updatedAt @map(name: "updated_at")
   createdById                 Int
@@ -494,7 +514,7 @@ model TuzTesisiKontrolCizelgesi {
 model SodaTesisiKontrolFormu {
   id                          Int      @id @default(autoincrement())
   category                    String   @db.VarChar(45)
-  isletmeyeVerildigiTarihSaat DateTime @default(now()) @map(name: "date_and_time")
+  isletmeyeVerildigiTarihSaat DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt                   DateTime @default(now()) @map(name: "created_at")
   updatedAt                   DateTime @updatedAt @map(name: "updated_at")
   createdById                 Int
