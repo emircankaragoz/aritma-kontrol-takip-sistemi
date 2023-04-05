@@ -15,7 +15,7 @@
     border: 1px solid #ffffff;
     text-align: left;
     padding: 8px;
-    font-size: 22px;
+    font-size: 12px;
   }
   
   .th {
@@ -37,6 +37,6 @@
   }
   
   .form * {
-    font-size: 18px;
+    font-size: 14px;
   }
   
