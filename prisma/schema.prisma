@@ -89,21 +89,7 @@ model YemekhaneVeKullanmaSuyu {
   aciklama            String   @db.VarChar(45)
 }
 
-model AKMAnalizFormu {
-  id                                Int      @id @default(autoincrement())
-  category                          String   @db.VarChar(45)
-  dateAndTime                       DateTime @default(now()) @map(name: "date_and_time")
-  createdAt                         DateTime @default(now()) @map(name: "created_at")
-  updatedAt                         DateTime @updatedAt @map(name: "updated_at")
-  createdById                       Int
-  updatedById                       Int
-  numuneninAlindigiYer              String   @db.VarChar(45)
-  filtreEdilenHacim_ml              String   @db.VarChar(45)
-  filtreKagidiAgirligi_g            String   @db.VarChar(45)
-  filtreKagidiVeNumuneninAgirligi_g String   @db.VarChar(45)
-  kuruKatilarinNetAgirligi          String   @db.VarChar(45)
-  AKM_mg_l                          String   @db.VarChar(45)
-}
+// Arıtma
 
 model RenkGidericiTuketimiVeRenkOlcumSonuclariTakipFormu {
   id                                Int      @id @default(autoincrement())
@@ -295,14 +281,14 @@ model DengelemeHavuzu {
   updatedAt   DateTime @updatedAt @map(name: "updated_at")
   createdById Int
   updatedById Int
-  sicak       String   @db.VarChar(45)
+  sicaklik    String   @db.VarChar(45)
   ph          String   @db.VarChar(45)
-  koiMgLt     String   @db.VarChar(45)
-  akmMgLt     String   @db.VarChar(45)
-  sulfitMgLt  String   @db.VarChar(45)
-  fosforMgLt  String   @db.VarChar(45)
-  azotMgLt    String   @db.VarChar(45)
-  renkPtCo    String   @db.VarChar(45)
+  koi         String   @db.VarChar(45)
+  akm         String   @db.VarChar(45)
+  sulfit      String   @db.VarChar(45)
+  fosfor      String   @db.VarChar(45)
+  azot        String   @db.VarChar(45)
+  renk        String   @db.VarChar(45)
 }
 
 model NotralizasyonHavuzu {
@@ -316,16 +302,16 @@ model NotralizasyonHavuzu {
 }
 
 model AnaerobikHavuzu {
-  id           Int      @id @default(autoincrement())
-  category     String   @db.VarChar(45)
-  dateAndTime  DateTime @default(now()) @map(name: "date_and_time")
-  createdAt    DateTime @default(now()) @map(name: "created_at")
-  updatedAt    DateTime @updatedAt @map(name: "updated_at")
-  createdById  Int
-  updatedById  Int
-  AKM_mg_l     String   @db.VarChar(45)
-  IMHOFF_ml_l  String   @db.VarChar(45)
-  Oksijen_mg_l String   @db.VarChar(45)
+  id          Int      @id @default(autoincrement())
+  category    String   @db.VarChar(45)
+  dateAndTime DateTime @default(now()) @map(name: "date_and_time")
+  createdAt   DateTime @default(now()) @map(name: "created_at")
+  updatedAt   DateTime @updatedAt @map(name: "updated_at")
+  createdById Int
+  updatedById Int
+  akm         String   @db.VarChar(45)
+  imhoff      String   @db.VarChar(45)
+  oksijen     String   @db.VarChar(45)
 }
 
 model AerobikHavuzu {
@@ -336,65 +322,65 @@ model AerobikHavuzu {
   updatedAt   DateTime @updatedAt @map(name: "updated_at")
   createdById Int
   updatedById Int
-  AKM_mg_l    String   @db.VarChar(45)
-  IMHOFF_ml_l String   @db.VarChar(45)
+  akm         String   @db.VarChar(45)
+  imhoff      String   @db.VarChar(45)
 }
 
 model GeriDevirHaznesi {
-  id                                   Int      @id @default(autoincrement())
-  category                             String   @db.VarChar(45)
-  dateAndTime                          DateTime @default(now()) @map(name: "date_and_time")
-  createdAt                            DateTime @default(now()) @map(name: "created_at")
-  updatedAt                            DateTime @updatedAt @map(name: "updated_at")
-  createdById                          Int
-  updatedById                          Int
-  anaerobikHavuzaGeriDonenDebi_m3_saat String   @db.VarChar(45)
-  AKM_mg_l                             String   @db.VarChar(45)
+  id                           Int      @id @default(autoincrement())
+  category                     String   @db.VarChar(45)
+  dateAndTime                  DateTime @default(now()) @map(name: "date_and_time")
+  createdAt                    DateTime @default(now()) @map(name: "created_at")
+  updatedAt                    DateTime @updatedAt @map(name: "updated_at")
+  createdById                  Int
+  updatedById                  Int
+  anaerobikHavuzaGeriDonenDebi String   @db.VarChar(45)
+  akm                          String   @db.VarChar(45)
 }
 
 model BiyolojikCokeltimHavuzu {
-  id                Int      @id @default(autoincrement())
-  category          String   @db.VarChar(45)
-  dateAndTime       DateTime @default(now()) @map(name: "date_and_time")
-  createdAt         DateTime @default(now()) @map(name: "created_at")
-  updatedAt         DateTime @updatedAt @map(name: "updated_at")
-  createdById       Int
-  updatedById       Int
-  sicaklik          String   @db.VarChar(45)
-  ph                String   @db.VarChar(45)
-  KOI_mg_l          String   @db.VarChar(45)
-  AKM_mg_l          String   @db.VarChar(45)
-  sulfit_mg_l       String   @db.VarChar(45)
-  amonyumAzotu_mg_l String   @db.VarChar(45)
-  renk_pt_co        String   @db.VarChar(45)
+  id           Int      @id @default(autoincrement())
+  category     String   @db.VarChar(45)
+  dateAndTime  DateTime @default(now()) @map(name: "date_and_time")
+  createdAt    DateTime @default(now()) @map(name: "created_at")
+  updatedAt    DateTime @updatedAt @map(name: "updated_at")
+  createdById  Int
+  updatedById  Int
+  sicaklik     String   @db.VarChar(45)
+  ph           String   @db.VarChar(45)
+  koi          String   @db.VarChar(45)
+  akm          String   @db.VarChar(45)
+  sulfit       String   @db.VarChar(45)
+  amonyumAzotu String   @db.VarChar(45)
+  renk         String   @db.VarChar(45)
 }
 
-model Desarj {
-  id                Int      @id @default(autoincrement())
-  category          String   @db.VarChar(45)
-  dateAndTime       DateTime @default(now()) @map(name: "date_and_time")
-  createdAt         DateTime @default(now()) @map(name: "created_at")
-  updatedAt         DateTime @updatedAt @map(name: "updated_at")
-  createdById       Int
-  updatedById       Int
-  debi_m3_gun       String   @db.VarChar(45)
-  sicaklik          String   @db.VarChar(45)
-  ph                String   @db.VarChar(45)
-  KOI_mg_l          String   @db.VarChar(45)
-  AKM_mg_l          String   @db.VarChar(45)
-  serbestKlor_mg_lt String   @db.VarChar(45)
-  toplamKrom_mg_lt  String   @db.VarChar(45)
-  sulfur_mg_lt      String   @db.VarChar(45)
-  sulfit_mg_lt      String   @db.VarChar(45)
-  fenol_mg_lt       String   @db.VarChar(45)
-  yagVeGres_mg_lt   String   @db.VarChar(45)
-  klorur_mg_lt      String   @db.VarChar(45)
-  sulfat_mg_lt      String   @db.VarChar(45)
-  demir_mg_lt       String   @db.VarChar(45)
-  cinko_mg_lt       String   @db.VarChar(45)
+model desarj {
+  id          Int      @id @default(autoincrement())
+  category    String   @db.VarChar(45)
+  dateAndTime DateTime @default(now()) @map(name: "date_and_time")
+  createdAt   DateTime @default(now()) @map(name: "created_at")
+  updatedAt   DateTime @updatedAt @map(name: "updated_at")
+  createdById Int
+  updatedById Int
+  debi        String   @db.VarChar(45)
+  sicaklik    String   @db.VarChar(45)
+  ph          String   @db.VarChar(45)
+  koi         String   @db.VarChar(45)
+  akm         String   @db.VarChar(45)
+  serbestKlor String   @db.VarChar(45)
+  toplamKrom  String   @db.VarChar(45)
+  sulfur      String   @db.VarChar(45)
+  sulfit      String   @db.VarChar(45)
+  fenol       String   @db.VarChar(45)
+  yagVeGres   String   @db.VarChar(45)
+  klorur      String   @db.VarChar(45)
+  sulfat      String   @db.VarChar(45)
+  demir       String   @db.VarChar(45)
+  cinko       String   @db.VarChar(45)
 }
 
-model CamurYogunlastirma {
+model camurYogunlastirma {
   id          Int      @id @default(autoincrement())
   category    String   @db.VarChar(45)
   dateAndTime DateTime @default(now()) @map(name: "date_and_time")
@@ -404,16 +390,32 @@ model CamurYogunlastirma {
   updatedById Int
 }
 
-model Filtrepres {
-  id           Int      @id @default(autoincrement())
-  category     String   @db.VarChar(45)
-  dateAndTime  DateTime @default(now()) @map(name: "date_and_time")
-  createdAt    DateTime @default(now()) @map(name: "created_at")
-  updatedAt    DateTime @updatedAt @map(name: "updated_at")
-  createdById  Int
-  updatedById  Int
-  camurKekiNem String   @db.VarChar(45)
-  filtrepresSarjSayisiAdet_Gun String @db.VarChar(45)
+model filtrepres {
+  id                   Int      @id @default(autoincrement())
+  category             String   @db.VarChar(45)
+  dateAndTime          DateTime @default(now()) @map(name: "date_and_time")
+  createdAt            DateTime @default(now()) @map(name: "created_at")
+  updatedAt            DateTime @updatedAt @map(name: "updated_at")
+  createdById          Int
+  updatedById          Int
+  camurKekiNem         String   @db.VarChar(45)
+  filtrepresSarjSayisi String   @db.VarChar(45)
+}
+
+model AKMAnalizFormu {
+  id                                Int      @id @default(autoincrement())
+  category                          String   @db.VarChar(45)
+  dateAndTime                       DateTime @default(now()) @map(name: "date_and_time")
+  createdAt                         DateTime @default(now()) @map(name: "created_at")
+  updatedAt                         DateTime @updatedAt @map(name: "updated_at")
+  createdById                       Int
+  updatedById                       Int
+  numuneninAlindigiYer              String   @db.VarChar(45)
+  filtreEdilenHacim_ml              String   @db.VarChar(45)
+  filtreKagidiAgirligi_g            String   @db.VarChar(45)
+  filtreKagidiVeNumuneninAgirligi_g String   @db.VarChar(45)
+  kuruKatilarinNetAgirligi          String   @db.VarChar(45)
+  AKM_mg_l                          String   @db.VarChar(45)
 }
 
 // TUZ
