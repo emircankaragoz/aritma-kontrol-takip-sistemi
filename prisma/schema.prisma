@@ -11,6 +11,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// TODO
 model User {
   id         Int      @id @default(autoincrement())
   employeeId String   @unique
