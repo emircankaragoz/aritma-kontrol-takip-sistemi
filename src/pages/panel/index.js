@@ -2,15 +2,33 @@ import React, { useState, useEffect } from "react";
 import { Layout } from "@/components";
 import { getSession } from "next-auth/react";
 import { UserService } from "@/services";
+import { useFormik } from "formik";
+import { register_validate } from "lib/validate";
+import { toast } from "react-toastify";
+import styles from "../../styles/AuthForm.module.css";
 
 export default function Panel({ session }) {
   const [user, setUser] = useState();
+  const [allUser, setAllUser] = useState([]);
 
   // create a instance for get user datas
   const userService = new UserService();
 
-   // get session employee ID
+  // get session employee ID
   const employeeId = session.user.employeeId;
+
+  const formik = useFormik({
+    initialValues: {
+      employeeId: "",
+      roleName: "",
+    },
+    validate: register_validate,
+    onSubmit,
+  });
+
+  async function getAllUserHandler() {
+    await userService.getAllUser().then((result) => setAllUser(result.data));
+  }
 
   async function getSessionUserHandler() {
     if (session) {
@@ -22,85 +40,127 @@ export default function Panel({ session }) {
 
   useEffect(() => {
     getSessionUserHandler();
+    getAllUserHandler();
   }, []);
 
+  async function onSubmit(values) {
+    const password = {
+      password: `${values.employeeId}`,
+    };
+    values = Object.assign(values, password);
+    console.log(values);
+    const options = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(values),
+    };
+
+    await fetch("/api/auth/signup", options)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data) {
+          toast.success("Kullanıcı başarıyla oluşturuldu", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+        }
+      });
+  }
+
+  async function deleteUser(employeeId) {
+
+  }
 
   return (
     <>
       <Layout session={session}>
-        <div>
-          <section className="mt-3 mb-2">
-            <div className="container h-100">
-              <div className="row d-flex justify-content-center align-items-center h-100">
-                <div className="col-lg-12 col-xl-11">
-                  <div className="card text-black shadow p-3 mb-5 bg-white rounded">
-                    <div className="card-body">
-                      <div className="row justify-content-center">
-                        <div className="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
-                          <p className="text-center h2 fw-bold mb-5 mx-1 mx-md-4 mt-4">
-                            Panel
-                          </p>
-
-                          {/* Add User */}
-                          <hr />
-                          <div>
-                            <p className="text-muted fs-5 fw-bolder pb-3">
-                              Yeni Kullanıcı Ekle
-                            </p>
-                            <form
-                              className="mx-1 mx-md-4"
-                             /*  onSubmit={changePassword} */
-                            >
-                              <div className="d-flex flex-row align-items-center mb-5">
-                                <div className="form-outline flex-fill mb-0">
-                                  <label className="ms-1">
-                                    Çalışan ID
-                                  </label>
-                                  <input
-                                    className="form-control bg-light border-dark"
-                                    id="title"
-                                    type="password"
-
-                                  />
-
-                                  <label className="ms-1">Şifre</label>
-                                  <input
-                                    className="form-control bg-light border-dark"
-                                    id="title"
-                                    type="password"
-                                    required
-
-                                  />
-
-                                </div>
-                              </div>
-                              <div className="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                                <button
-                                  type="submit"
-                                  className="btn btn-primary btn-md"
-                                >
-                                  Ekle
-                                </button>
-                              </div>
-                            </form>
-                          </div>
-                          {/* Delete Account */}
-                          <hr />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+        <div className="container p-2">
+          <div className="d-flex  flex-column mx-auto w-50">
+            <h2 className="mt-4 mb-4 fw-bold text-center">Panel</h2>
+            <section>
+              <p className="text-muted text-center fs-5 fw-bolder pb-3">
+                Yeni Kullanıcı Ekle
+              </p>
+              <form
+                onSubmit={formik.handleSubmit}
+                className="d-flex flex-column gap-3"
+              >
+                <div className={styles.input_group}>
+                  <input
+                    type="text"
+                    name="employeeId"
+                    placeholder="Çalışan ID"
+                    className="form-control"
+                    {...formik.getFieldProps("employeeId")}
+                  />
+                  {formik.errors.employeeId && formik.touched.employeeId ? (
+                    <span className="text-danger opacity-75">
+                      {formik.errors.employeeId}
+                    </span>
+                  ) : (
+                    <></>
+                  )}
                 </div>
+
+                <div className="form-group">
+                  <select
+                    className={`${"form-select"} ${
+                      formik.errors.roleName && formik.touched.roleName
+                        ? "border-danger"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("roleName")}
+                  >
+                    <option hidden>Rol</option>
+                    <option value="admin">ADMIN</option>
+                    <option value="user">KULLANICI</option>
+                  </select>
+                </div>
+
+                <div className="input-button mx-auto">
+                  <button type="submit" className="btn btn-outline-dark mt-2">
+                    Ekle
+                  </button>
+                </div>
+              </form>
+            </section>
+          </div>
+          <hr />
+          <section>
+            <p className="text-muted text-center fs-5 fw-bolder pb-3">
+              Tüm Kullanıcılar
+            </p>
+            <div className="row">
+              <div className="col-sm-12">
+                <table className="table text-dark table-bordered mt-2">
+                  <thead>
+                    <tr className="text-center">
+                      <th scope="col">Sr. No.</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Çalışan ID</th>
+                      <th scope="col">Rol</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-center">
+                    {allUser.map((user, index) => (
+                      <tr key={index}>
+                        <th scope="row">{index + 1}</th>
+                        <td>{user.name}</td>
+                        <td>{user.employeeId}</td>
+                        <td className="text-capitalize">{user.role.roleName}</td>
+                        <td>
+                          <button
+                            className="btn btn-danger"
+                            onChange={() => deleteUser(user.employeeId)}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
-            <style jsx>{`
-              .btn-hover:hover {
-                opacity: 0.5;
-              }
-              .username-input {
-                text-transform: lowercase;
-              }
-            `}</style>
           </section>
         </div>
       </Layout>

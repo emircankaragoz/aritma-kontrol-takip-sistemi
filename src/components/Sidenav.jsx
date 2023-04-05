@@ -76,9 +76,11 @@ export default function Sidenav({ session }) {
           display: "flex",
           height: "100%",
           minHeight: "100vh",
+          overflowY: "hidden"
         }}
       >
         <Sidebar
+        className=""
           backgroundColor="#F8F9FA"
         >
           <section className="mb-4">

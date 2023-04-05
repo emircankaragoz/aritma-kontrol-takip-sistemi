@@ -17,7 +17,7 @@ function Layout({ children, session }) {
             <aside className="position-sticky">
               <Sidenav session={session} />
             </aside>
-            <span className="container">{children}</span>
+            <aside className="container">{children}</aside>
           </div>
         </div>
       </div>
