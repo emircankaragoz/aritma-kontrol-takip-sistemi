@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Layout } from "@/components";
+import { Layout, PanelModal } from "@/components";
 import { getSession } from "next-auth/react";
 import { UserService } from "@/services";
 import { useFormik } from "formik";
 import { register_validate } from "lib/validate";
 import { toast } from "react-toastify";
 import styles from "../../styles/AuthForm.module.css";
-
+import { useRouter } from "next/navigation";
+import {
+  RiRefreshLine
+ } from "react-icons/ri";
+ 
 export default function Panel({ session }) {
+  const router = useRouter();
+
   const [user, setUser] = useState();
   const [allUser, setAllUser] = useState([]);
 
@@ -48,7 +54,6 @@ export default function Panel({ session }) {
       password: `${values.employeeId}`,
     };
     values = Object.assign(values, password);
-    console.log(values);
     const options = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -66,8 +71,30 @@ export default function Panel({ session }) {
       });
   }
 
-  async function deleteUser(employeeId) {
+  function refreshPage(){
+    router.refresh()
+  }
 
+  async function deleteUser(employeeId) {
+    const empId = {
+      empId: `${employeeId}`,
+    };
+
+    const options = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(empId),
+    };
+
+    await fetch("/api/controller/post/deleteUser", options)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data) {
+          toast.success("Kullanıcı başarıyla silindi", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+        }
+      });
   }
 
   return (
@@ -129,6 +156,9 @@ export default function Panel({ session }) {
             <p className="text-muted text-center fs-5 fw-bolder pb-3">
               Tüm Kullanıcılar
             </p>
+            <div>
+              <button className="btn" onClick={refreshPage}><RiRefreshLine/></button>
+            </div>
             <div className="row">
               <div className="col-sm-12">
                 <table className="table text-dark table-bordered mt-2">
@@ -146,14 +176,21 @@ export default function Panel({ session }) {
                         <th scope="row">{index + 1}</th>
                         <td>{user.name}</td>
                         <td>{user.employeeId}</td>
-                        <td className="text-capitalize">{user.role.roleName}</td>
+                        <td className="text-capitalize">
+                          {user.role.roleName}
+                        </td>
                         <td>
-                          <button
-                            className="btn btn-danger"
-                            onChange={() => deleteUser(user.employeeId)}
-                          >
-                            Delete
-                          </button>
+                          <span className="me-2">
+                            <button
+                              className="btn btn-danger"
+                              onClick={() => deleteUser(user.employeeId)}
+                            >
+                              Delete
+                            </button>
+                          </span>
+                          <span>
+                            <PanelModal employeeIdToBeUpdated={user.employeeId}/>
+                          </span>
                         </td>
                       </tr>
                     ))}

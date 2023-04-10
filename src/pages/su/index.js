@@ -15,13 +15,13 @@ export default function SuPage({ session }) {
     },
     onSubmit,
   });
-  const employeeId = session.user.employeeId;
+  const employeeid = session.user.employeeId;
 
   async function onSubmit(values) {
-    const employeeId = {
-      employeeId: `${employeeId}`,
+    const emplooyeId = {
+        emplooyeId: `${employeeid}`,
     };
-    values = Object.assign(values, employeeId);
+    values = Object.assign(values, emplooyeId);
     console.log(values);
     const options = {
       method: "POST",
