@@ -1,51 +1,121 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Layout } from "@/components";
 import { getSession } from "next-auth/react";
-import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
-import IsletmeSuyuForm from "@/components/SuComponents/Forms/isletmesuyukontrolMain"
-import IcmeSuyuForm from "@/components/SuComponents/Forms/icmesuyukontrolform"
-import YemekhaneSuyuForm from "@/components/SuComponents/Forms/yemekhanesuyukontrolMain"
+import { useFormik } from "formik";
+import { toast } from "react-toastify";
+
 
 export default function SuPage({ session }) {
-    return (
-        <>
-            <Layout session={session}>
-                <div>
-                    <h3 className="fs-3 font-bold">Su Page</h3>
-                    <Tabs>
-                        <Tab eventKey="isletmesuyukontrol" title="İŞLETME SUYU KONTROL">
-                            <IsletmeSuyuForm/>
-                            
-                        </Tab>
-                        <Tab eventKey="icmesuyukontrol" title="İÇME SUYU TESİSİ KONTROL">
-                            <IcmeSuyuForm/>
-                        </Tab>
-                        <Tab eventKey="yemekhanekullanmasuyukontrol" title="YEMEKHANE VE KULLANMA SUYU TESİSİ KONTROL">
-                           <YemekhaneSuyuForm/>
-                        </Tab>
-                    </Tabs>
-                </div>
-            </Layout>
-        </>
-    );
+
+  const formik = useFormik({
+    initialValues: {
+      ph: "",
+      sertlik: "",
+      bikarbonat: ""
+    },
+    onSubmit,
+  });
+  const employeeId = session.user.employeeId;
+
+  async function onSubmit(values) {
+    const employeeId = {
+      employeeId: `${employeeId}`,
+    };
+    values = Object.assign(values, employeeId);
+    console.log(values);
+    const options = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(values),
+    };
+
+    await fetch("/api/controller/post/isletme", options)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data) {
+          toast.success("Kullanıcı başarıyla oluşturuldu", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+        }
+      });
+  }
+
+
+
+  return (
+    <Layout session={session}>
+
+      <div className="container p-2">
+        <div className="d-flex  flex-column mx-auto w-50">
+
+          <section>
+            <p className="text-muted text-center fs-5 fw-bolder pb-3">
+              Yeni  Ekle
+            </p>
+            <form
+              onSubmit={formik.handleSubmit}
+              className="d-flex flex-column gap-3">
+              <div>
+                <input
+
+                  type="text"
+                  name="ph"
+
+                  placeholder="pH"
+                  {...formik.getFieldProps("ph")}
+                />
+                <input
+
+                  type="text"
+                  name="sertlik"
+
+                  placeholder="Sertlik"
+                  {...formik.getFieldProps("sertlik")}
+                />
+                <input
+
+                  type="text"
+                  name="bikarbonat"
+
+                  placeholder="Bikarbonat"
+                  {...formik.getFieldProps("bikarbonat")}
+                />
+
+              </div>
+
+
+              <div className="input-button mx-auto">
+                <button type="submit" className="btn btn-outline-dark mt-2">
+                  Ekle
+                </button>
+              </div>
+            </form>
+          </section>
+        </div>
+        <hr />
+
+      </div>
+
+
+    </Layout>
+  )
 }
 
 export const getServerSideProps = async ({ req }) => {
-    const session = await getSession({ req });
+  const session = await getSession({ req });
 
-    if (!session) {
-        return {
-            redirect: {
-                destination: "/login",
-                permanent: false,
-            },
-        };
-    }
-
+  if (!session) {
     return {
-        props: {
-            session,
-        },
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
     };
+  }
+
+  return {
+    props: {
+      session,
+    },
+  };
 };
