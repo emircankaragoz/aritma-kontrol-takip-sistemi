@@ -522,3 +522,4 @@ model SodaTesisiKontrolFormu {
   cozeltiYogunlugu            String   @db.VarChar(45)
   kontrolEden                 String   @db.VarChar(45)
 }
+
