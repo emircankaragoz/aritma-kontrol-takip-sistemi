@@ -69,6 +69,7 @@ export default function Sidenav({ session }) {
     return <div></div>;
   }
 
+  console.log("git deneme")
 
   return (
     <main>
