@@ -2,9 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
 import { YemekhaneSuyuService } from "@/services"
-
-export default function YemekhaneSuyuPageComp({ session }) {
-
+import {
+  RiRefreshLine
+} from "react-icons/ri";
+import { useRouter } from "next/navigation";
+export default function YemekhaneSuyuPageComp({ session, subCategory }) {
+  const router = useRouter();
   const [allData, setAllData] = useState([]);
   const yemekhaneSuyuService = new YemekhaneSuyuService();
   async function getAllYemekhaneSuyuDataHandler() {
@@ -12,7 +15,7 @@ export default function YemekhaneSuyuPageComp({ session }) {
   }
   useEffect(() => {
     getAllYemekhaneSuyuDataHandler();
-  }, []);
+  }, [allData]);
   const formik = useFormik({
     initialValues: {
       klorCozeltisiDozaji: "",
@@ -21,7 +24,7 @@ export default function YemekhaneSuyuPageComp({ session }) {
       iletkenlik: "",
       genelTemizlik: "",
       aciklama: "",
-      subCategory: ""
+
     },
     onSubmit,
   });
@@ -32,7 +35,10 @@ export default function YemekhaneSuyuPageComp({ session }) {
     const employeeId = {
       employeeId: `${employeeid}`,
     };
-    values = Object.assign(values, employeeId);
+    const subcategory = {
+      subcategory: `${subCategory}`,
+    };
+    values = Object.assign(values, employeeId, subcategory);
 
     console.log(values);
     const options = {
@@ -46,6 +52,29 @@ export default function YemekhaneSuyuPageComp({ session }) {
       .then((data) => {
         if (data) {
           toast.success("Form başarıyla oluşturuldu", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+        }
+      });
+  }
+  function refreshPage() {
+    router.refresh()
+  }
+  async function deleteYemekhane(id) {
+    const dataId = {
+      dataId: `${id}`,
+    };
+    const options = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dataId),
+    };
+
+    await fetch("/api/controller/post/deleteYemekhane", options)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data) {
+          toast.success("Sıra başarıyla silindi", {
             position: toast.POSITION.BOTTOM_RIGHT,
           });
         }
@@ -95,61 +124,62 @@ export default function YemekhaneSuyuPageComp({ session }) {
               placeholder="Açıklama"
               {...formik.getFieldProps("aciklama")}
             />
-            <input className="form-control"
-              type="text"
-              name="subCategory"
-              placeholder="SubCategory"
-
-              {...formik.getFieldProps("subCategory")}
-            />
             <div className="input-button mx-auto">
               <button type="submit" className="btn btn-outline-dark mt-2">
                 Ekle
               </button>
             </div>
           </form>
-          
-          
+
+
         </section>
       </div>
       <hr />
       <section>
-            <p className="text-muted text-center fs-5 fw-bolder pb-3">
-              YEMEKHANE SUYU TESİSİ KONTROL FORMU
-            </p>
-            <div className="row">
-              <div className="col-sm-12">
-                <table className="table text-dark table-bordered mt-2">
-                  <thead>
-                    <tr className="text-center">
-                      <th scope="col">Sr. No.</th>
-                      <th scope="col">Klor Çöz Dozaj</th>
-                      <th scope="col">Klor</th>
-                      <th scope="col">pH</th>
-                      <th scope="col">İletkenlik</th>
-                      <th scope="col">Genel Temizlik</th>
-                      <th scope="col">Açıklama</th>
-                      <th scope="col">SubCategory</th>
-                    </tr>
-                  </thead>
-                  <tbody className="text-center">
-                    {allData.map((data, index) => (
-                      <tr key={index}>
-                        <th scope="row">{index + 1}</th>
-                        <td>{data.klorCozeltisiDozaji}</td>
-                        <td>{data.klor}</td>
-                        <td>{data.ph}</td>
-                        <td>{data.iletkenlik}</td>
-                        <td>{data.genelTemizlik}</td>
-                        <td>{data.aciklama}</td>
-                        <td>{data.subCategory}</td>
-                      </tr>
-                    ))}
-                  </tbody> 
-                </table>
-              </div>
-            </div>
-          </section>
+        <p className="text-muted text-center fs-5 fw-bolder pb-3">
+          YEMEKHANE SUYU TESİSİ KONTROL FORMU
+        </p>
+        <div>
+          <button className="btn" onClick={refreshPage}><RiRefreshLine /></button>
+        </div>
+        <div className="row">
+          <div className="col-sm-12">
+            <table className="table text-dark table-bordered mt-2">
+              <thead>
+                <tr className="text-center">
+                  <th scope="col">Sr. No.</th>
+                  <th scope="col">Klor Çöz Dozaj</th>
+                  <th scope="col">Klor</th>
+                  <th scope="col">pH</th>
+                  <th scope="col">İletkenlik</th>
+                  <th scope="col">Genel Temizlik</th>
+                  <th scope="col">Açıklama</th>
+                  <th scope="col">SubCategory</th>
+                </tr>
+              </thead>
+              <tbody className="text-center">
+                {allData.map((data, index) => (
+                  <tr key={index}>
+                    <th scope="row">{index + 1}</th>
+                    <td>{data.klorCozeltisiDozaji}</td>
+                    <td>{data.klor}</td>
+                    <td>{data.ph}</td>
+                    <td>{data.iletkenlik}</td>
+                    <td>{data.genelTemizlik}</td>
+                    <td>{data.aciklama}</td>
+                    <td>{data.subCategory}</td>
+                    <td>
+                      <span className="me-2">
+                        <button className="btn btn-danger" onClick={() => deleteYemekhane(data.id)}>DELETE</button>
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
       <hr />
 
     </div>

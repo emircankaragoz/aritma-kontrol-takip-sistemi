@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
+import { IcmeUpdateModal } from "@/components";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 import { IcmeSuyuService } from "@/services"
-
+import {
+  RiRefreshLine
+} from "react-icons/ri";
 
 export default function IcmeSuyuPageComponent({ session }) {
-
+  const router = useRouter();
   const [allData, setAllData] = useState([]);
 
   const icmeSuyuService = new IcmeSuyuService();
@@ -15,7 +19,7 @@ export default function IcmeSuyuPageComponent({ session }) {
   }
   useEffect(() => {
     getAllIcmeSuyuDataHandler();
-  }, []);
+  }, [allData]);
   const formik = useFormik({
     initialValues: {
       hamsusayac: "",
@@ -51,7 +55,33 @@ export default function IcmeSuyuPageComponent({ session }) {
           });
         }
       });
+
   }
+  function refreshPage() {
+    router.refresh()
+  }
+
+  async function deleteIcme(id) {
+    const dataId = {
+      dataId: `${id}`,
+    };
+    const options = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dataId),
+    };
+
+    await fetch("/api/controller/post/deleteIcme", options)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data) {
+          toast.success("Sıra başarıyla silindi", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+        }
+      });
+  }
+
 
   return (
 
@@ -118,8 +148,11 @@ export default function IcmeSuyuPageComponent({ session }) {
       <hr />
       <section>
         <p className="text-muted text-center fs-5 fw-bolder pb-3">
-         İÇME SUYU TESİSİ KONTROL FORMU
+          İÇME SUYU TESİSİ KONTROL FORMU
         </p>
+        <div>
+          <button className="btn" onClick={refreshPage}><RiRefreshLine /></button>
+        </div>
         <div className="row">
           <div className="col-sm-12">
             <table className="table text-dark table-bordered mt-2">
@@ -146,6 +179,15 @@ export default function IcmeSuyuPageComponent({ session }) {
                     <td>{data.klorAnalizSonucuMgL}</td>
                     <td>{data.genelTemizlik}</td>
                     <td>{data.aciklama}</td>
+                    <td>
+                      <span className="me-2">
+                        <button className="btn btn-danger" onClick={() => deleteIcme(data.id)}>Delete</button>
+                      </span>
+                      <span>
+                        <IcmeUpdateModal  dataId={data.id}               
+                        />
+                      </span>
+                    </td>
                   </tr>
                 ))}
               </tbody>
