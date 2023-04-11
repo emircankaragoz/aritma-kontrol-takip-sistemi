@@ -1,64 +1,32 @@
 import React from "react";
 import { Layout } from "@/components";
 import { getSession } from "next-auth/react";
-import { useFormik } from "formik";
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
-import IcmeSuyuKontrolFormu from "../../components/SuComponents/Forms/icmeSuyuComp"
-import IsletmeSuyuKontrolForm from "../../components/SuComponents/Forms/isletmeSuyuComp"
-import YemekhaneSuyuKontrolForm from "../../components/SuComponents/Forms/yemekhaneSuyuComp"
+import IcmeSuyuKontrolFormu from "../../components/SuComponents/Forms/IcmeSuyuComp"
+import IsletmeSuyuKontrolForm from "../../components/SuComponents/Forms/IsletmeSuyuComp"
+import YemekhaneSuyuKontrolForm from "../../components/SuComponents/Forms/YemekhaneSuyuComp"
 export default function SuPage({ session }) {
 
-  const formik = useFormik({
-    initialValues: {
-      ph: "",
-      sertlik: "",
-      bikarbonat: ""
-    },
-    onSubmit,
-  });
-  const employeeid = session.user.employeeId;
-
-  async function onSubmit(values) {
-    const emplooyeId = {
-        emplooyeId: `${employeeid}`,
-    };
-    values = Object.assign(values, emplooyeId);
-    console.log(values);
-    const options = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
-    };
-
-    await fetch("/api/controller/post/isletme", options)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data) {
-          toast.success("Kullanıcı başarıyla oluşturuldu", {
-            position: toast.POSITION.BOTTOM_RIGHT,
-          });
-        }
-      });
-  }
-
-
+  const [key, setKey] = useState('isletmeSuyuKontrolü');
 
   return (
     <Layout session={session}>
       <h2 className="mt-4 mb-4 fw-bold text-center">Su Page</h2>
       <Tabs>
         <Tab eventKey="isletmeSuyuKontrolü" title="İŞLETME SUYU KONTROL FORMU" >
-
-          <Tabs >
+          <Tabs id="controlled-tab-example"
+      activeKey={key}
+      onSelect={(k) => setKey(k)}
+      className="mb-3">
             <Tab eventKey="yumusakSu" title="YUMUŞAK SU">
-              <IsletmeSuyuKontrolForm session={session} />
+              <IsletmeSuyuKontrolForm session={session} key={key} />
             </Tab>
             <Tab eventKey="sertSu" title="SERT SU" >
-              <IsletmeSuyuKontrolForm session={session} />
+              <IsletmeSuyuKontrolForm session={session} key={key} />
             </Tab>
             <Tab eventKey="sıcakSu" title="SICAK SU" >
-              <IsletmeSuyuKontrolForm session={session} />
+              <IsletmeSuyuKontrolForm session={session} key={key} />
             </Tab>
           </Tabs>
         </Tab>
