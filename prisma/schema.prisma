@@ -74,9 +74,10 @@ model IsletmeSuyuKontrolu {
   updatedById Int
   updatedBy   User     @relation("updatedIsletmeSuyuKontroluForms", fields: [updatedById], references: [id])
 
-  ph         String @db.VarChar(45)
-  sertlik    String @db.VarChar(45)
-  bikarbonat String @db.VarChar(45)
+  ph          String @db.VarChar(45)
+  sertlik     String @db.VarChar(45)
+  bikarbonat  String @db.VarChar(45)
+  subCategory String @db.VarChar(45)
 }
 
 model IcmeSuyuTesisiKontrolFormu {
@@ -120,6 +121,7 @@ model YemekhaneVeKullanmaSuyu {
   iletkenlik          String @db.VarChar(45)
   genelTemizlik       String @map(name: "genel_temizlik") @db.VarChar(45)
   aciklama            String @db.VarChar(45)
+  subCategory         String @db.VarChar(45)
 }
 
 // TUZ

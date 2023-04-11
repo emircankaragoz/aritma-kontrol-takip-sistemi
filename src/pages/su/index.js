@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Layout } from "@/components";
 import { getSession } from "next-auth/react";
 import { useFormik } from "formik";
-import { toast } from "react-toastify";
-
-
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
+import IcmeSuyuKontrolFormu from "../../components/SuComponents/Forms/icmeSuyuComp"
+import IsletmeSuyuKontrolForm from "../../components/SuComponents/Forms/isletmeSuyuComp"
+import YemekhaneSuyuKontrolForm from "../../components/SuComponents/Forms/yemekhaneSuyuComp"
 export default function SuPage({ session }) {
 
   const formik = useFormik({
@@ -44,57 +46,41 @@ export default function SuPage({ session }) {
 
   return (
     <Layout session={session}>
+      <h2 className="mt-4 mb-4 fw-bold text-center">Su Page</h2>
+      <Tabs>
+        <Tab eventKey="isletmeSuyuKontrolü" title="İŞLETME SUYU KONTROL FORMU" >
 
-      <div className="container p-2">
-        <div className="d-flex  flex-column mx-auto w-50">
-
-          <section>
-            <p className="text-muted text-center fs-5 fw-bolder pb-3">
-              Yeni  Ekle
-            </p>
-            <form
-              onSubmit={formik.handleSubmit}
-              className="d-flex flex-column gap-3">
-              <div>
-                <input
-
-                  type="text"
-                  name="ph"
-
-                  placeholder="pH"
-                  {...formik.getFieldProps("ph")}
-                />
-                <input
-
-                  type="text"
-                  name="sertlik"
-
-                  placeholder="Sertlik"
-                  {...formik.getFieldProps("sertlik")}
-                />
-                <input
-
-                  type="text"
-                  name="bikarbonat"
-
-                  placeholder="Bikarbonat"
-                  {...formik.getFieldProps("bikarbonat")}
-                />
-
-              </div>
+          <Tabs >
+            <Tab eventKey="yumusakSu" title="YUMUŞAK SU">
+              <IsletmeSuyuKontrolForm session={session} />
+            </Tab>
+            <Tab eventKey="sertSu" title="SERT SU" >
+              <IsletmeSuyuKontrolForm session={session} />
+            </Tab>
+            <Tab eventKey="sıcakSu" title="SICAK SU" >
+              <IsletmeSuyuKontrolForm session={session} />
+            </Tab>
+          </Tabs>
+        </Tab>
+        <Tab eventKey="icmeSuyuKontrolü" title="İÇME SUYU TESİSİ KONTROL FORMU" >
+          <IcmeSuyuKontrolFormu session={session} />
+        </Tab>
+        <Tab eventKey="yemekhaneKullanmaSuyuKontrolü" title="YEMEKHANE VE KULLANMA SUYU TESİSİ KONTROL FORMU" >
+          <Tabs>
+            <Tab eventKey="1.tank" title="YEMEKHANE KULLANIM SUYU 1. TANK">
+              <YemekhaneSuyuKontrolForm session={session}/>
+            </Tab>
+            <Tab eventKey="2.tank" title="WC KULLANIM SUYU 2. TANK">
+              <YemekhaneSuyuKontrolForm session={session}/>
+            </Tab>
+          </Tabs>
 
 
-              <div className="input-button mx-auto">
-                <button type="submit" className="btn btn-outline-dark mt-2">
-                  Ekle
-                </button>
-              </div>
-            </form>
-          </section>
-        </div>
-        <hr />
+        </Tab>
 
-      </div>
+      </Tabs>
+
+
 
 
     </Layout>
@@ -118,4 +104,5 @@ export const getServerSideProps = async ({ req }) => {
       session,
     },
   };
+
 };

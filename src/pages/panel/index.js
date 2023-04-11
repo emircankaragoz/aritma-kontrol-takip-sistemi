@@ -109,8 +109,8 @@ export default function Panel({ session }) {
               </p>
               <form
                 onSubmit={formik.handleSubmit}
-                className="d-flex flex-column gap-3"
-              >
+                className="d-flex flex-column gap-3">
+              
                 <div className={styles.input_group}>
                   <input
                     type="text"
@@ -130,11 +130,10 @@ export default function Panel({ session }) {
 
                 <div className="form-group">
                   <select
-                    className={`${"form-select"} ${
-                      formik.errors.roleName && formik.touched.roleName
-                        ? "border-danger"
-                        : ""
-                    }`}
+                    className={`${"form-select"} ${formik.errors.roleName && formik.touched.roleName
+                      ? "border-danger"
+                      : ""
+                      }`}
                     {...formik.getFieldProps("roleName")}
                   >
                     <option hidden>Rol</option>
