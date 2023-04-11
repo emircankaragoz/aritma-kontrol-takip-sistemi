@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import Button from "react-bootstrap/Button";
+import { RiMore2Fill } from "react-icons/ri";
 import Modal from "react-bootstrap/Modal";
 import ModalForm from "./ModalForm";
+import { PanelCSS } from "@/styles";
 
 export default function ModalComponent({ employeeIdToBeUpdated }) {
   const [show, setShow] = useState(false);
@@ -10,9 +11,9 @@ export default function ModalComponent({ employeeIdToBeUpdated }) {
   const handleShow = () => setShow(true);
   return (
     <>
-      <Button variant="primary" onClick={handleShow}>
-        Güncelle
-      </Button>
+      <span variant="primary" onClick={handleShow} className="fs-5" style={{cursor: 'pointer'}}>
+        <RiMore2Fill className={PanelCSS.updateButton}/>
+      </span>
 
       <Modal centered show={show} onHide={handleClose}>
         <Modal.Header closeButton>
