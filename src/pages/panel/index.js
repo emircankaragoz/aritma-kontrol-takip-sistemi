@@ -5,15 +5,11 @@ import { UserService } from "@/services";
 import { useFormik } from "formik";
 import { register_validate } from "lib/validate";
 import { toast } from "react-toastify";
-import styles from "../../styles/AuthForm.module.css";
-import { useRouter } from "next/navigation";
-import {
-  RiRefreshLine
- } from "react-icons/ri";
- 
-export default function Panel({ session }) {
-  const router = useRouter();
+import { RiDeleteBin5Line } from "react-icons/ri";
 
+import { PanelCSS, AuthFormCSS } from "@/styles";
+
+export default function Panel({ session }) {
   const [user, setUser] = useState();
   const [allUser, setAllUser] = useState([]);
 
@@ -47,7 +43,7 @@ export default function Panel({ session }) {
   useEffect(() => {
     getSessionUserHandler();
     getAllUserHandler();
-  }, []);
+  }, [allUser]);
 
   async function onSubmit(values) {
     const password = {
@@ -71,9 +67,7 @@ export default function Panel({ session }) {
       });
   }
 
-  function refreshPage(){
-    router.refresh()
-  }
+  console.log(user)
 
   async function deleteUser(employeeId) {
     const empId = {
@@ -109,9 +103,9 @@ export default function Panel({ session }) {
               </p>
               <form
                 onSubmit={formik.handleSubmit}
-                className="d-flex flex-column gap-3">
-              
-                <div className={styles.input_group}>
+                className="d-flex flex-column gap-3"
+              >
+                <div className={AuthFormCSS.input_group}>
                   <input
                     type="text"
                     name="employeeId"
@@ -130,10 +124,11 @@ export default function Panel({ session }) {
 
                 <div className="form-group">
                   <select
-                    className={`${"form-select"} ${formik.errors.roleName && formik.touched.roleName
-                      ? "border-danger"
-                      : ""
-                      }`}
+                    className={`${"form-select"} ${
+                      formik.errors.roleName && formik.touched.roleName
+                        ? "border-danger"
+                        : ""
+                    }`}
                     {...formik.getFieldProps("roleName")}
                   >
                     <option hidden>Rol</option>
@@ -155,9 +150,6 @@ export default function Panel({ session }) {
             <p className="text-muted text-center fs-5 fw-bolder pb-3">
               Tüm Kullanıcılar
             </p>
-            <div>
-              <button className="btn" onClick={refreshPage}><RiRefreshLine/></button>
-            </div>
             <div className="row">
               <div className="col-sm-12">
                 <table className="table text-dark table-bordered mt-2">
@@ -180,15 +172,20 @@ export default function Panel({ session }) {
                         </td>
                         <td>
                           <span className="me-2">
-                            <button
-                              className="btn btn-danger"
+                            <span
+                              className="fs-4"
+                              style={{ cursor: "pointer" }}
                               onClick={() => deleteUser(user.employeeId)}
                             >
-                              Delete
-                            </button>
+                              <RiDeleteBin5Line
+                                className={PanelCSS.deleteButton}
+                              />
+                            </span>
                           </span>
                           <span>
-                            <PanelModal employeeIdToBeUpdated={user.employeeId}/>
+                            <PanelModal
+                              employeeIdToBeUpdated={user.employeeId}
+                            />
                           </span>
                         </td>
                       </tr>

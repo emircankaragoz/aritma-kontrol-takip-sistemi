@@ -22,7 +22,7 @@ export default function Profile({ session }) {
 
   useEffect(() => {
     getSessionUserHandler();
-  }, []);
+  }, [sessionUser]);
 
   if(useSession == null) {
     return <div></div>

@@ -69,12 +69,11 @@ export default function Sidenav({ session }) {
     return <div></div>;
   }
 
-  console.log("git deneme")
 
   return (
     <main>
       <div>
-        <Sidebar backgroundColor="#F8F9FA" customBreakPoint="900px">
+        <Sidebar backgroundColor="#F8F9FA">
           <section className="mb-4">
             <div className="logotext mt-3">
               {/* Icon change using menucollapse state */}
@@ -179,15 +178,6 @@ export default function Sidenav({ session }) {
             </MenuItem>
           </Menu>
         </Sidebar>
-        <main style={{ padding: 10 }}>
-          <div>
-            {broken && (
-              <button className="sb-button" onClick={() => toggleSidebar()}>
-                Toggle
-              </button>
-            )}
-          </div>
-        </main>
       </div>
       <style jsx>{`
         .closemenu {

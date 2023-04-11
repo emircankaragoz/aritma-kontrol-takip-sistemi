@@ -1,11 +1,9 @@
 import React from "react";
 import { useFormik } from "formik";
 import { info_validate } from "lib/validate";
-import { useRouter } from "next/navigation";
 import styles from "../../styles/AuthForm.module.css";
 
 export default function UpdateUserInfos({ session }) {
-  const router = useRouter();
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -31,7 +29,9 @@ export default function UpdateUserInfos({ session }) {
       .then((res) => res.json())
       .then((data) => {
         if (data) {
-          router.refresh();
+          toast.success("Bilgiler güncellendi", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
         }
       });
   }
