@@ -26,7 +26,7 @@ import { UserService } from "@/services";
 
 export default function Sidenav({ session }) {
   const [menuCollapse, setMenuCollapse] = useState(false);
-  const { collapseSidebar } = useProSidebar();
+  const { collapseSidebar, toggleSidebar, broken } = useProSidebar();
   const [sessionUser, setSessionUser] = useState([]);
 
   // create a instance for get user datas
@@ -69,41 +69,20 @@ export default function Sidenav({ session }) {
     return <div></div>;
   }
 
+
   return (
-    <main >
-      <div
-        style={{
-          display: "flex",
-          height: "100%",
-          minHeight: "100vh",
-          overflowY: "hidden"
-        }}
-      >
-        <Sidebar
-        className=""
-          backgroundColor="#F8F9FA"
-        >
+    <main>
+      <div>
+        <Sidebar backgroundColor="#F8F9FA" customBreakPoint="900px">
           <section className="mb-4">
             <div className="logotext mt-3">
               {/* Icon change using menucollapse state */}
               <p className="text-dark text-center">
-                {menuCollapse ? (
-                  <GiAbstract050 />
-                ) : (
-                  <Image src={LOGO} width={60} alt="Ekoten Logo" />
-                )}
+                <Image src={LOGO} width={60} alt="Ekoten Logo" />
               </p>
               <div className="text-dark fs-5 fw-semibold text-center text-muted">
-                {!menuCollapse ? (
-                  <span>Arıtma Kontrol Takip Sistemi</span>
-                ) : (
-                  <></>
-                )}
+                <span>Arıtma Kontrol Takip Sistemi</span>
               </div>
-            </div>
-            <div className="closemenu text-muted" onClick={menuIconClick}>
-              {/* changing menu collapse icon on click */}
-              {menuCollapse ? <FiArrowRightCircle /> : <FiArrowLeftCircle />}
             </div>
           </section>
           <Menu backgroundColor="#F8F9FA">
@@ -199,6 +178,15 @@ export default function Sidenav({ session }) {
             </MenuItem>
           </Menu>
         </Sidebar>
+        <main style={{ padding: 10 }}>
+          <div>
+            {broken && (
+              <button className="sb-button" onClick={() => toggleSidebar()}>
+                Toggle
+              </button>
+            )}
+          </div>
+        </main>
       </div>
       <style jsx>{`
         .closemenu {
