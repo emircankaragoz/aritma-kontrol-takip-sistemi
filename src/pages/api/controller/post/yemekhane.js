@@ -6,18 +6,17 @@ export default async function handler(req, res) {
     if (req.method === "POST") {
         if (!req.body) return res.status(404).json({ error: "Do not have data" });
         try {
-            const { klorCozeltisiDozaji, klor, ph, iletkenlik, genelTemizlik, aciklama,subCategory ,employeeId } = req.body;
+            const { klorCozeltisiDozaji, klor, ph, iletkenlik, genelTemizlik, aciklama,subcategory,employeeId } = req.body;
             console.log(req.body);
             const data = await prisma.yemekhaneVeKullanmaSuyu.create({
                 data: {
-                    klorCozeltisiDozaji: klorCozeltisiDozaji,
-                    klor: klor,
-                    ph: ph,
-                    iletkenlik: iletkenlik,
-                    genelTemizlik: genelTemizlik,
-                    aciklama: aciklama,
-                    subCategory:subCategory,
-                    category: "yemekhaneveKullanmaSuyu",  
+                    klorCozeltisiDozaji:klorCozeltisiDozaji,
+                    klor:klor,
+                    ph:ph,
+                    iletkenlik:iletkenlik,
+                    genelTemizlik:genelTemizlik,
+                    aciklama:aciklama,
+                    
                     createdBy: {                      
                         connect: {                                                  
                             employeeId: employeeId
@@ -28,6 +27,8 @@ export default async function handler(req, res) {
                             employeeId: employeeId
                         }
                     },
+                    subCategory:subcategory,
+                    category: "yemekhaneveKullanmaSuyu",  
                     
                                 
                 },

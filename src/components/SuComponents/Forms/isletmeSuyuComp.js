@@ -2,35 +2,39 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
 import { IsletmeSuyuService } from "@/services"
-
-export default function IsletmeSuyuPageComp({ session }) {
+import { useRouter } from "next/navigation";
+import {
+  RiRefreshLine
+} from "react-icons/ri";
+export default function IsletmeSuyuPageComp({ session, subCategory }) {
   const [allData, setAllData] = useState([]);
-
   const isletmeSuyuService = new IsletmeSuyuService();
-
+  const router = useRouter();
   async function getAllIsletmeSuyuDataHandler() {
     await isletmeSuyuService.getAllIsletmeSuyu().then((result) => setAllData(result.data));
   }
   useEffect(() => {
     getAllIsletmeSuyuDataHandler();
-  }, []);
+  }, [allData]);
   const formik = useFormik({
     initialValues: {
       ph: "",
       sertlik: "",
-      bikarbonat: "",
-      subCategory: ""
-
+      bikarbonat: ""
     },
     onSubmit,
   });
+  
 
   const employeeid = session.user.employeeId;
   async function onSubmit(values) {
     const employeeId = {
       employeeId: `${employeeid}`,
     };
-    values = Object.assign(values, employeeId);
+    const subcategory = {
+      subcategory: `${subCategory}`,
+    };
+    values = Object.assign(values, employeeId,subcategory);
     console.log(values);
     const options = {
       method: "POST",
@@ -43,6 +47,29 @@ export default function IsletmeSuyuPageComp({ session }) {
       .then((data) => {
         if (data) {
           toast.success("Form başarıyla oluşturuldu", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+        }
+      });
+  }
+  function refreshPage() {
+    router.refresh()
+  }
+  async function deleteIsletme(id) {
+    const dataId = {
+      dataId: `${id}`,
+    };
+    const options = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dataId),
+    };
+
+    await fetch("/api/controller/post/deleteIsletme", options)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data) {
+          toast.success("Sıra başarıyla silindi", {
             position: toast.POSITION.BOTTOM_RIGHT,
           });
         }
@@ -78,13 +105,7 @@ export default function IsletmeSuyuPageComp({ session }) {
 
               placeholder="Bikarbonat"
               {...formik.getFieldProps("bikarbonat")}
-            />
-            <input className="form-control"
-              type="text"
-              name="subcategory"
-              placeholder="Subcategory"
-              {...formik.getFieldProps("subCategory")}
-            />
+            />          
             <div className="input-button mx-auto">
               <button type="submit" className="btn btn-outline-dark mt-2">
                 Ekle
@@ -100,6 +121,9 @@ export default function IsletmeSuyuPageComp({ session }) {
         <p className="text-muted text-center fs-5 fw-bolder pb-3">
           İŞLETME SUYU TESİSİ KONTROL FORMU
         </p>
+        <div>
+          <button className="btn" onClick={refreshPage}><RiRefreshLine /></button>
+        </div>
         <div className="row">
           <div className="col-sm-12">
             <table className="table text-dark table-bordered mt-2">
@@ -120,6 +144,11 @@ export default function IsletmeSuyuPageComp({ session }) {
                     <td>{data.sertlik}</td>
                     <td>{data.bikarbonat}</td>
                     <td>{data.subCategory}</td>
+                    <td>
+                      <span className="me-2">
+                        <button className="btn btn-danger" onClick={() => deleteIsletme(data.id)}>DELETE</button>
+                      </span>
+                    </td>
 
                   </tr>
                 ))}

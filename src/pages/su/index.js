@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import { Layout } from "@/components";
 import { getSession } from "next-auth/react";
 import Tab from 'react-bootstrap/Tab';
@@ -8,7 +8,8 @@ import IsletmeSuyuKontrolForm from "../../components/SuComponents/Forms/IsletmeS
 import YemekhaneSuyuKontrolForm from "../../components/SuComponents/Forms/YemekhaneSuyuComp"
 export default function SuPage({ session }) {
 
-  const [key, setKey] = useState('isletmeSuyuKontrolü');
+  const [key, setKey] = useState("Yumuşak Su");
+  const [keySecond, setKeySecond] = useState('Yemekhane 1.Tank');
 
   return (
     <Layout session={session}>
@@ -19,14 +20,14 @@ export default function SuPage({ session }) {
       activeKey={key}
       onSelect={(k) => setKey(k)}
       className="mb-3">
-            <Tab eventKey="yumusakSu" title="YUMUŞAK SU">
-              <IsletmeSuyuKontrolForm session={session} key={key} />
+            <Tab eventKey="Yumuşak Su" title="YUMUŞAK SU">
+              <IsletmeSuyuKontrolForm session={session} subCategory={key} />
             </Tab>
-            <Tab eventKey="sertSu" title="SERT SU" >
-              <IsletmeSuyuKontrolForm session={session} key={key} />
+            <Tab eventKey="Sert Su" title="SERT SU" >
+              <IsletmeSuyuKontrolForm session={session} subCategory={key}/>
             </Tab>
-            <Tab eventKey="sıcakSu" title="SICAK SU" >
-              <IsletmeSuyuKontrolForm session={session} key={key} />
+            <Tab eventKey="Sıcak Su" title="SICAK SU" >
+              <IsletmeSuyuKontrolForm session={session} subCategory={key} />
             </Tab>
           </Tabs>
         </Tab>
@@ -34,12 +35,14 @@ export default function SuPage({ session }) {
           <IcmeSuyuKontrolFormu session={session} />
         </Tab>
         <Tab eventKey="yemekhaneKullanmaSuyuKontrolü" title="YEMEKHANE VE KULLANMA SUYU TESİSİ KONTROL FORMU" >
-          <Tabs>
-            <Tab eventKey="1.tank" title="YEMEKHANE KULLANIM SUYU 1. TANK">
-              <YemekhaneSuyuKontrolForm session={session}/>
+          <Tabs activeKey={keySecond}
+      onSelect={(k) => setKeySecond(k)}
+      className="mb-3">
+            <Tab eventKey="Yemekhane 1.Tank" title="YEMEKHANE KULLANIM SUYU 1. TANK">
+              <YemekhaneSuyuKontrolForm session={session} subCategory={keySecond}/>
             </Tab>
-            <Tab eventKey="2.tank" title="WC KULLANIM SUYU 2. TANK">
-              <YemekhaneSuyuKontrolForm session={session}/>
+            <Tab eventKey="WC 2.Tank" title="WC KULLANIM SUYU 2. TANK">
+              <YemekhaneSuyuKontrolForm session={session} subCategory={keySecond}/>
             </Tab>
           </Tabs>
 
