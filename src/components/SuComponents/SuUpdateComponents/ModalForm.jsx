@@ -18,8 +18,8 @@ export default function ModalForm({dataId}) {
       } 
     useEffect(() => {
          getAllIcmeSuyuDataHandler();
-    }, [dataId]); 
-    console.log(allDataById);      
+    }, [dataId]);
+    console.log(allDataById);
 
 
     const formik = useFormik({
