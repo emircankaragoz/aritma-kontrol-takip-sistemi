@@ -6,5 +6,18 @@ export default class YemekhaneSuyuService {
   async getAllYemekhaneSuyu() {
     return await axios.get(`${URL}/api/controller/get/yemekhaneSuyu`);
   }
+   // GET YEMEKHANE SUYU BY ID
+   async getYemekhaneSuyuById(id) {
+    let yemekhaneSuyu = [];
+    await axios.get(`${URL}/api/controller/get/yemekhaneSuyu`).then((result) => {
+      result.data.map((data) => {
+        if (data.id === id) {
+          yemekhaneSuyu.push(data);
+        }
+      });
+    });
+    console.log(yemekhaneSuyu);
+    return yemekhaneSuyu;
+  }
 
 }

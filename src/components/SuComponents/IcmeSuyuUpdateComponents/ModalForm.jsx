@@ -1,26 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
-import  {IcmeSuyuService} from "@/services"
+import { IcmeSuyuService } from "@/services"
 
-export default function ModalForm({dataId}) {
-    const[allDataById,setAllDataById] = useState([]);
+export default function ModalForm({ dataId }) {
+
+    const [allDataById, setAllDataById] = useState();
     const icmeSuyuService = new IcmeSuyuService();
-    async function getAllIcmeSuyuDataHandler() {
-        if (dataId) {    
-          await icmeSuyuService.getIcmeSuyuById(dataId)
-            .then((result) => {
-              console.log(result.data); // add this line to log the result data
-              setAllDataById(result.data);
-              console.log(allDataById); // add this line to log the updated state
-            });
-        }
-      } 
-    useEffect(() => {
-         getAllIcmeSuyuDataHandler();
-    }, [dataId]);
-    console.log(allDataById);
+    
 
+    
+
+    async function getAllIcmeSuyuDataHandler() {
+        if (dataId) {
+            await icmeSuyuService.getIcmeSuyuById(dataId)
+                .then((result) => {
+                    setAllDataById(result.data);
+                });
+        }
+    }
+
+
+    useEffect(() => {
+        getAllIcmeSuyuDataHandler();
+    }, [dataId]);
 
     const formik = useFormik({
         initialValues: {
@@ -36,16 +39,16 @@ export default function ModalForm({dataId}) {
     });
 
     async function onSubmit(values) {
-        const dataId = {
-            dataId: `${id}`,
-          };
-          values = Object.assign(values, dataId);
+        const IdData = {
+            IdData: `${dataId}`,
+        };
+        values = Object.assign(values, IdData);
+        console.log(values);
         const options = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(values),
         };
-        console.log(values);
 
         await fetch("/api/controller/post/updateIcme", options)
             .then((res) => res.json())
@@ -56,9 +59,14 @@ export default function ModalForm({dataId}) {
                     });
                 }
             });
-            
     }
-    
+
+    console.log(allDataById);
+    if(allDataById === null){
+        return <></>
+    }
+    console.log(allDataById);
+   
 
 
     return (
@@ -68,9 +76,9 @@ export default function ModalForm({dataId}) {
                     <div className="form-group py-2">
                         <input className="form-control"
                             type="text"
-                            //value={dataId.hamsusayac}
+                            
+                            //defaultValue={allDataById.hamsusayac}
                             name="hamsusayac"
-                            placeholder="Ham Su Sayac"
                             {...formik.getFieldProps("hamsusayac")}
                         />
                         <input className="form-control"

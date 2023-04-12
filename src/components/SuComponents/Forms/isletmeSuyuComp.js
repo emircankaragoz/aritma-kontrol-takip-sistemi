@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
 import { IsletmeSuyuService } from "@/services"
-import { useRouter } from "next/navigation";
-import {
-  RiRefreshLine
-} from "react-icons/ri";
+import { IsletmeUpdateModal } from "@/components";
+import { RiDeleteBin5Line } from "react-icons/ri";
+import { isletme_validate } from "lib/validate";
+import { AuthFormCSS } from "@/styles";
+
 export default function IsletmeSuyuPageComp({ session, subCategory }) {
   const [allData, setAllData] = useState([]);
   const isletmeSuyuService = new IsletmeSuyuService();
-  const router = useRouter();
   async function getAllIsletmeSuyuDataHandler() {
     await isletmeSuyuService.getAllIsletmeSuyu().then((result) => setAllData(result.data));
   }
@@ -22,9 +22,10 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
       sertlik: "",
       bikarbonat: ""
     },
+    validate: isletme_validate,
     onSubmit,
   });
-  
+
 
   const employeeid = session.user.employeeId;
   async function onSubmit(values) {
@@ -34,8 +35,8 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
     const subcategory = {
       subcategory: `${subCategory}`,
     };
-    values = Object.assign(values, employeeId,subcategory);
-    console.log(values);
+    values = Object.assign(values, employeeId, subcategory);
+
     const options = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -52,9 +53,7 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
         }
       });
   }
-  function refreshPage() {
-    router.refresh()
-  }
+
   async function deleteIsletme(id) {
     const dataId = {
       dataId: `${id}`,
@@ -85,27 +84,54 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
           <form
             onSubmit={formik.handleSubmit}
             className="d-flex flex-column gap-3 ">
-            <input className="form-control"
-              type="text"
-              name="ph"
-              placeholder="pH"
-              {...formik.getFieldProps("ph")}
-            />
-           
-            <input className="form-control"
+            <div className={AuthFormCSS.input_group}>
+              <input className="form-control"
+                type="text"
+                name="ph"
+                placeholder="pH"
+                {...formik.getFieldProps("ph")}
+              />
+              {formik.errors.ph && formik.touched.ph ? (
+                <span className="text-danger opacity-75">
+                  {formik.errors.ph}
+                </span>
+              ) : (
+                <></>
+              )}
+
+            </div>
+
+            <div className={AuthFormCSS.input_group}>  <input className="form-control"
               type="text"
               name="sertlik"
 
               placeholder="Sertlik"
               {...formik.getFieldProps("sertlik")}
             />
-            <input className="form-control"
-              type="text"
-              name="bikarbonat"
+              {formik.errors.sertlik && formik.touched.sertlik ? (
+                <span className="text-danger opacity-75">
+                  {formik.errors.sertlik}
+                </span>
+              ) : (
+                <></>
+              )}</div>
+            <div className={AuthFormCSS.input_group}>
+              <input className="form-control"
+                type="text"
+                name="bikarbonat"
 
-              placeholder="Bikarbonat"
-              {...formik.getFieldProps("bikarbonat")}
-            />          
+                placeholder="Bikarbonat"
+                {...formik.getFieldProps("bikarbonat")}
+              />
+              {formik.errors.bikarbonat && formik.touched.bikarbonat ? (
+                <span className="text-danger opacity-75">
+                  {formik.errors.bikarbonat}
+                </span>
+              ) : (
+                <></>
+              )}
+            </div>
+
             <div className="input-button mx-auto">
               <button type="submit" className="btn btn-outline-dark mt-2">
                 Ekle
@@ -121,9 +147,7 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
         <p className="text-muted text-center fs-5 fw-bolder pb-3">
           İŞLETME SUYU TESİSİ KONTROL FORMU
         </p>
-        <div>
-          <button className="btn" onClick={refreshPage}><RiRefreshLine /></button>
-        </div>
+
         <div className="row">
           <div className="col-sm-12">
             <table className="table text-dark table-bordered mt-2">
@@ -133,7 +157,8 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
                   <th scope="col">pH</th>
                   <th scope="col">Sertlik</th>
                   <th scope="col">Bikarbonat</th>
-                  <th scope="col">SubCategory</th>
+                  <th scope="col">Alt Kategori</th>
+                  <th scope="col">.</th>
                 </tr>
               </thead>
               <tbody className="text-center">
@@ -146,7 +171,21 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
                     <td>{data.subCategory}</td>
                     <td>
                       <span className="me-2">
-                        <button className="btn btn-danger" onClick={() => deleteIsletme(data.id)}>DELETE</button>
+                        {/* <button className="btn btn-danger" onClick={() => deleteIsletme(data.id)}>DELETE</button> */}
+                        <span
+                          className="fs-4"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => deleteIsletme(data.id)}
+                        >
+                          <RiDeleteBin5Line />
+                        </span>
+
+
+                      </span>
+
+
+                      <span>
+                        <IsletmeUpdateModal dataId={data.id} />
                       </span>
                     </td>
 
@@ -157,7 +196,7 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
           </div>
         </div>
       </section>
-      <hr />
+
 
     </div>
 
