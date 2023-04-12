@@ -1,4 +1,5 @@
 export { default as UserService } from './userService'
+export { default as TuzService } from './tuzService'
 export { default as IcmeSuyuService } from './icmeSuyuService'
 export { default as IsletmeSuyuService } from './isletmeSuyuService'
 export { default as YemekhaneSuyuService } from './yemekhaneSuyuService'

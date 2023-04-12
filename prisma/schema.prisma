@@ -146,7 +146,7 @@ model TuzSodaSayacToplama {
   isletmeyeVerilenSiviTuzHazirlananTankSayisi String @map(name: "isletmeye_verilen_sivi_tuz_hazirlanan_tank_sayisi") @db.VarChar(45)
   hazirlananSiviSodaSayac                     String @map(name: "hazirlanan_sivi_soda_sayac") @db.VarChar(45)
   siviSodaHattiYikamaSuyuSayac                String @map(name: "sivi_soda_hatti_yikama_suyu_sayac") @db.VarChar(45)
-  kayiSodaKg                                  String @map(name: "kayi_soda_kg") @db.VarChar(45)
+  katiSodaKg                                  String @map(name: "kati_soda_kg") @db.VarChar(45)
   siviSodaLt                                  String @map(name: "sivi_soda_lt") @db.VarChar(45)
   aritmaTesisineAtilanAtikSiviTuzuLt          String @map(name: "aritma_tesisine_atilan_atik_sivi_tuzu_lt") @db.VarChar(45)
 }

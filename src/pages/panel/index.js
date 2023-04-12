@@ -67,7 +67,6 @@ export default function Panel({ session }) {
       });
   }
 
-  console.log(user)
 
   async function deleteUser(employeeId) {
     const empId = {
