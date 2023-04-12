@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { RiMore2Fill } from "react-icons/ri";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import ModalForm from "./ModalForm";
@@ -10,10 +11,9 @@ export default function ModalComponent({dataId}) {
   const handleShow = () => setShow(true);
   return (
     <>
-      <Button variant="primary" onClick={handleShow}>
-        Güncelle
-      </Button>
-
+     <span variant="primary" onClick={handleShow} className="fs-5" style={{cursor: 'pointer'}}>
+        <RiMore2Fill />
+      </span>
       <Modal centered show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Bilgileri Güncelle</Modal.Title>

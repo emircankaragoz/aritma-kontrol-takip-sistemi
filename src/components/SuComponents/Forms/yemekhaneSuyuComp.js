@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
 import { YemekhaneSuyuService } from "@/services"
-import {
-  RiRefreshLine
-} from "react-icons/ri";
-import { useRouter } from "next/navigation";
+import { YemekhaneUpdateModal } from "@/components";
+import { RiDeleteBin5Line } from "react-icons/ri";
+import { yemekhane_validate } from "lib/validate";
+import { AuthFormCSS } from "@/styles";
+
 export default function YemekhaneSuyuPageComp({ session, subCategory }) {
-  const router = useRouter();
   const [allData, setAllData] = useState([]);
   const yemekhaneSuyuService = new YemekhaneSuyuService();
   async function getAllYemekhaneSuyuDataHandler() {
@@ -26,6 +26,7 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
       aciklama: "",
 
     },
+    validate: yemekhane_validate,
     onSubmit,
   });
 
@@ -57,9 +58,7 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
         }
       });
   }
-  function refreshPage() {
-    router.refresh()
-  }
+
   async function deleteYemekhane(id) {
     const dataId = {
       dataId: `${id}`,
@@ -88,43 +87,98 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
       <div className="d-flex  flex-column mx-auto w-50">
         <section>
           <form onSubmit={formik.handleSubmit} className="d-flex flex-column gap-3 ">
-            <input className="form-control"
-              type="text"
-              name="klor_cozeltisi_dozaji"
-              placeholder="klorCozeltisiDozaji"
-              {...formik.getFieldProps("klorCozeltisiDozaji")}
-            />
-            <input className="form-control"
-              type="text"
-              name="klor"
-              placeholder="Klor"
-              {...formik.getFieldProps("klor")}
-            />
-            <input className="form-control"
-              type="text"
-              name="ph"
-              placeholder="pH"
-              {...formik.getFieldProps("ph")}
-            />
-            <input className="form-control"
-              type="text"
-              name="iletkenlik"
-              placeholder="İletkenlik"
-              {...formik.getFieldProps("iletkenlik")}
-            />
-            <input className="form-control"
-              type="text"
-              name="genel_temizlik"
-              placeholder="Genel Temizlik"
-              {...formik.getFieldProps("genelTemizlik")}
-            />
-            <input className="form-control"
-              type="text"
-              name="aciklama"
-              placeholder="Açıklama"
-              {...formik.getFieldProps("aciklama")}
-            />
-            <div className="input-button mx-auto">
+            <div className={AuthFormCSS.input_group}>
+              <input className="form-control"
+                type="text"
+                name="klor_cozeltisi_dozaji"
+                placeholder="klorCozeltisiDozaji"
+                {...formik.getFieldProps("klorCozeltisiDozaji")}
+              />
+              {formik.errors.klorCozeltisiDozaji && formik.touched.klorCozeltisiDozaji ? (
+                <span className="text-danger opacity-75">
+                  {formik.errors.klorCozeltisiDozaji}
+                </span>
+              ) : (
+                <></>
+              )}
+            </div>
+            <div className={AuthFormCSS.input_group}>
+              <input className="form-control"
+                type="text"
+                name="klor"
+                placeholder="Klor"
+                {...formik.getFieldProps("klor")}
+              />
+              {formik.errors.klor && formik.touched.klor ? (
+                <span className="text-danger opacity-75">
+                  {formik.errors.klor}
+                </span>
+              ) : (
+                <></>
+              )}
+            </div>
+            <div className={AuthFormCSS.input_group}>
+              <input className="form-control"
+                type="text"
+                name="ph"
+                placeholder="pH"
+                {...formik.getFieldProps("ph")}
+              />
+              {formik.errors.ph && formik.touched.ph ? (
+                <span className="text-danger opacity-75">
+                  {formik.errors.ph}
+                </span>
+              ) : (
+                <></>
+              )}
+            </div>
+            <div className={AuthFormCSS.input_group}>
+
+              <input className="form-control"
+                type="text"
+                name="iletkenlik"
+                placeholder="İletkenlik"
+                {...formik.getFieldProps("iletkenlik")}
+              />
+              {formik.errors.iletkenlik && formik.touched.iletkenlik ? (
+                <span className="text-danger opacity-75">
+                  {formik.errors.iletkenlik}
+                </span>
+              ) : (
+                <></>
+              )}
+            </div>
+            <div className={AuthFormCSS.input_group}>
+              <input className="form-control"
+                type="text"
+                name="genelTemizlik"
+                placeholder="Genel Temizlik"
+                {...formik.getFieldProps("genelTemizlik")}
+              />
+              {formik.errors.genelTemizlik && formik.touched.genelTemizlik ? (
+                <span className="text-danger opacity-75">
+                  {formik.errors.genelTemizlik}
+                </span>
+              ) : (
+                <></>
+              )}
+            </div>
+            <div className={AuthFormCSS.input_group}>
+              <input className="form-control"
+                type="text"
+                name="aciklama"
+                placeholder="Açıklama"
+                {...formik.getFieldProps("aciklama")}
+              />
+              {formik.errors.aciklama && formik.touched.aciklama ? (
+                <span className="text-danger opacity-75">
+                  {formik.errors.aciklama}
+                </span>
+              ) : (
+                <></>
+              )}
+            </div>
+          <div className="input-button mx-auto">
               <button type="submit" className="btn btn-outline-dark mt-2">
                 Ekle
               </button>
@@ -139,9 +193,6 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
         <p className="text-muted text-center fs-5 fw-bolder pb-3">
           YEMEKHANE SUYU TESİSİ KONTROL FORMU
         </p>
-        <div>
-          <button className="btn" onClick={refreshPage}><RiRefreshLine /></button>
-        </div>
         <div className="row">
           <div className="col-sm-12">
             <table className="table text-dark table-bordered mt-2">
@@ -154,7 +205,8 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
                   <th scope="col">İletkenlik</th>
                   <th scope="col">Genel Temizlik</th>
                   <th scope="col">Açıklama</th>
-                  <th scope="col">SubCategory</th>
+                  <th scope="col">Alt Kategori</th>
+                  <th scope="col">.</th>
                 </tr>
               </thead>
               <tbody className="text-center">
@@ -170,7 +222,16 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
                     <td>{data.subCategory}</td>
                     <td>
                       <span className="me-2">
-                        <button className="btn btn-danger" onClick={() => deleteYemekhane(data.id)}>DELETE</button>
+                        <span
+                          className="fs-4"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => deleteYemekhane(data.id)}
+                        >
+                          <RiDeleteBin5Line />
+                        </span>
+                      </span>
+                      <span>
+                        <YemekhaneUpdateModal dataId={data.id} />
                       </span>
                     </td>
                   </tr>

@@ -5,17 +5,22 @@ export default async function handler(req, res) {
   if (req.method === "POST") {
     if (!req.body) return res.status(404).json({ error: "Do not have data" });
 
-    const { hamsusayac, hamsuTonGun, uretilenSuTonGun,klorCozHazir,klorAnalizSonucuMgL,genelTemizlik,aciklama,dataId} = req.body;
-    const id = parseInt(dataId);
-    const checkexisting = await prisma.icmeSuyuTesisiKontrolFormu.findMany({
-      where: { id: id },
+    const { hamsusayac, hamsuTonGun, uretilenSuTonGun, klorCozHazir, klorAnalizSonucuMgL, genelTemizlik, aciklama, IdData } = req.body;
+    const ID = parseInt(IdData);
+    const checkexisting = await prisma.icmeSuyuTesisiKontrolFormu.findUnique({
+      where: { id: ID },
       select: {
         id: true,
       },
     });
-    if(checkexisting !== null){
+   
+    if (checkexisting !== null) {
+      
       try {
         const data = await prisma.icmeSuyuTesisiKontrolFormu.update({
+          where: {
+            id: ID,
+          },
           data: {
             hamsusayac: hamsusayac,
             hamsuTonGun: hamsuTonGun,
@@ -24,20 +29,18 @@ export default async function handler(req, res) {
             klorAnalizSonucuMgL: klorAnalizSonucuMgL,
             genelTemizlik: genelTemizlik,
             aciklama: aciklama,
-
-            
-            
-        },
+          },
         });
 
         res.status(201).json({ status: true, icmeSuyuTesisiKontrolFormu: data });
       } catch (err) {
+
         if (err) return res.status(404).json(err);
       }
     }
-   
 
-    
-   
+
+
+
   }
 }
