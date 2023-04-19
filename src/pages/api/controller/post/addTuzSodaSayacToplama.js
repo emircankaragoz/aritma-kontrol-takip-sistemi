@@ -13,7 +13,6 @@ export default async function handler(req, res) {
         hazirlananSiviSodaSayac,
         siviSodaHattiYikamaSuyuSayac,
         katiSodaKg,
-        siviSodaLt,
         aritmaTesisineAtilanAtikSiviTuzuLt,
         employeeId,
         dateTime
@@ -37,7 +36,6 @@ export default async function handler(req, res) {
           isletmeyeVerilenSiviTuzHazirlananTankSayisi: isletmeyeVerilenSiviTuzHazirlananTankSayisi,
           isletmeyeVerilenSiviTuzSayac: isletmeyeVerilenSiviTuzSayac,
           katiSodaKg: katiSodaKg,
-          siviSodaLt: siviSodaLt,
           siviSodaHattiYikamaSuyuSayac: siviSodaHattiYikamaSuyuSayac,
           tasviyedeKullanilanSiviTuzSayac: tasviyedeKullanilanSiviTuzSayac,
           tuzVeSodaTesisiKullanilanSuSayac: tuzVeSodaTesisiKullanilanSuSayac,

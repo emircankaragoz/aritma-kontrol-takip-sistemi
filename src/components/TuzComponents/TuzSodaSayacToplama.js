@@ -81,7 +81,7 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
     await tuzService
       .getTransferDataToGunlukKullanimFromTuzSodaSayacToplama(date)
       .then((result) => {
-        sendDataHandler
+        sendDataHandler(result)
       });
   }
 
@@ -204,13 +204,6 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
               name="kayiSodaKg"
               placeholder="Katı Soda Kg"
               {...formik.getFieldProps("katiSodaKg")}
-            />
-            <input
-              className="form-control"
-              type="text"
-              name="siviSodaLt"
-              placeholder="Sıvı Soda LT"
-              {...formik.getFieldProps("siviSodaLt")}
             />
             <input
               className="form-control"
