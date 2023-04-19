@@ -8,11 +8,11 @@ export default class IsletmeSuyuService {
   }
   // GET ISLETME SUYU BY ID
   async getIsletmeSuyuById(id) {
-    let isletmeSuyu = [];
+    let isletmeSuyu;
     await axios.get(`${URL}/api/controller/get/isletmeSuyu`).then((result) => {
       result.data.map((data) => {
         if (data.id === id) {
-          isletmeSuyu.push(data);
+          isletmeSuyu = data;
         }
       });
     });

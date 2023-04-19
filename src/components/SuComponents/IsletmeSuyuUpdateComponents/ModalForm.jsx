@@ -5,7 +5,7 @@ import { IsletmeSuyuService } from "@/services"
 
 export default function ModalForm({ dataId }) {
 
-    const [allDataById, setAllDataById] = useState([]);
+    const [allDataById, setAllDataById] = useState({});
     const isletmeSuyuService = new IsletmeSuyuService();
 
     async function getAllIsletmeSuyuDataHandler() {
@@ -20,13 +20,14 @@ export default function ModalForm({ dataId }) {
 
     useEffect(() => {
         getAllIsletmeSuyuDataHandler();
-    }, [dataId]);
+    }, [allDataById]);
 
     const formik = useFormik({
+        enableReinitialize: true,
         initialValues: {
-            ph: "",
-            sertlik: "",
-            bikarbonat: ""
+            ph: `${allDataById != undefined ? allDataById.ph : ""}`,
+            sertlik: `${allDataById != undefined ? allDataById.sertlik : ""}`,
+            bikarbonat: `${allDataById != undefined ? allDataById.bikarbonat : ""}`
         },
         onSubmit,
     });
@@ -53,7 +54,9 @@ export default function ModalForm({ dataId }) {
                 }
             });
     }
-
+    if (allDataById === null) {
+        return <></>
+    }
 
 
 
@@ -66,23 +69,23 @@ export default function ModalForm({ dataId }) {
                     <input className="form-control"
                         type="text"
                         name="ph"
-                        placeholder="pH"
-                        {...formik.getFieldProps("ph")}
+                        defaultValue={allDataById.ph || ""}
+                        placeholder="pH" 
+                        {...formik.getFieldProps("ph")}                       
                     />
-
                     <input className="form-control"
                         type="text"
                         name="sertlik"
-
-                        placeholder="Sertlik"
-                        {...formik.getFieldProps("sertlik")}
+                        defaultValue={allDataById.sertlik || ""}
+                        placeholder="Sertlik"   
+                        {...formik.getFieldProps("sertlik")}                    
                     />
                     <input className="form-control"
                         type="text"
                         name="bikarbonat"
-
-                        placeholder="Bikarbonat"
-                        {...formik.getFieldProps("bikarbonat")}
+                        defaultValue={allDataById.bikarbonat || ""}
+                        placeholder="Bikarbonat" 
+                        {...formik.getFieldProps("bikarbonat")}                      
                     />
                     <div className="mt-2 d-flex justify-content-end">
                         <button type="submit" className="btn btn-outline-dark">

@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
-import { YemekhaneSuyuService } from "@/services"
+import { YemekhaneSuyuService, UserService } from "@/services"
 import { YemekhaneUpdateModal } from "@/components";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { yemekhane_validate } from "lib/validate";
 import { AuthFormCSS } from "@/styles";
+import moment from "moment/moment";
 
 export default function YemekhaneSuyuPageComp({ session, subCategory }) {
   const [allData, setAllData] = useState([]);
+  const [sessionUser, setSessionUser] = useState([]);
+
   const yemekhaneSuyuService = new YemekhaneSuyuService();
+  const userService = new UserService();
   async function getAllYemekhaneSuyuDataHandler() {
     await yemekhaneSuyuService.getAllYemekhaneSuyu().then((result) => setAllData(result.data));
   }
-  useEffect(() => {
-    getAllYemekhaneSuyuDataHandler();
-  }, [allData]);
+
   const formik = useFormik({
     initialValues: {
       klorCozeltisiDozaji: "",
@@ -30,9 +32,19 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
     onSubmit,
   });
 
+  const employee_id = session.user.employeeId;
+  async function getSessionUserHandler() {
+    if (session) {
+      await userService
+        .getSessionUser(employee_id)
+        .then((result) => setSessionUser(result));
+    }
+  }
+
+
   const employeeid = session.user.employeeId;
 
-  async function onSubmit(values) {
+  async function onSubmit(values, { resetForm }) {
     const employeeId = {
       employeeId: `${employeeid}`,
     };
@@ -41,7 +53,6 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
     };
     values = Object.assign(values, employeeId, subcategory);
 
-    console.log(values);
     const options = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -57,6 +68,7 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
           });
         }
       });
+    resetForm();
   }
 
   async function deleteYemekhane(id) {
@@ -78,6 +90,14 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
           });
         }
       });
+  }
+  useEffect(() => {
+    getSessionUserHandler();
+    getAllYemekhaneSuyuDataHandler();
+  }, [allData, sessionUser]);
+
+  if (sessionUser.length === 0) {
+    return <div></div>
   }
 
 
@@ -178,7 +198,7 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
                 <></>
               )}
             </div>
-          <div className="input-button mx-auto">
+            <div className="input-button mx-auto">
               <button type="submit" className="btn btn-outline-dark mt-2">
                 Ekle
               </button>
@@ -199,6 +219,8 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
               <thead>
                 <tr className="text-center">
                   <th scope="col">Sr. No.</th>
+                  <th scope="col">Tarih</th>
+                  <th scope="col">Çalışan ID</th>
                   <th scope="col">Klor Çöz Dozaj</th>
                   <th scope="col">Klor</th>
                   <th scope="col">pH</th>
@@ -213,6 +235,10 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
                 {allData.map((data, index) => (
                   <tr key={index}>
                     <th scope="row">{index + 1}</th>
+                    <td>
+                      {moment(data.dateAndTime).format("YYYY-MM-DD HH:mm")}
+                    </td>
+                    <td>@{data.createdBy.employeeId}</td>
                     <td>{data.klorCozeltisiDozaji}</td>
                     <td>{data.klor}</td>
                     <td>{data.ph}</td>
@@ -220,20 +246,25 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
                     <td>{data.genelTemizlik}</td>
                     <td>{data.aciklama}</td>
                     <td>{data.subCategory}</td>
-                    <td>
-                      <span className="me-2">
-                        <span
-                          className="fs-4"
-                          style={{ cursor: "pointer" }}
-                          onClick={() => deleteYemekhane(data.id)}
-                        >
-                          <RiDeleteBin5Line />
+                    {sessionUser.role.roleName === "admin" ? (
+                      <td>
+                        <span className="me-2">
+                          <span
+                            className="fs-4"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => deleteYemekhane(data.id)}
+                          >
+                            <RiDeleteBin5Line />
+                          </span>
                         </span>
-                      </span>
-                      <span>
-                        <YemekhaneUpdateModal dataId={data.id} />
-                      </span>
-                    </td>
+                        <span>
+                          <YemekhaneUpdateModal dataId={data.id} />
+                        </span>
+                      </td>
+                    ) : (
+                      <></>
+                    )}
+
                   </tr>
                 ))}
               </tbody>

@@ -5,39 +5,36 @@ import { IcmeSuyuService } from "@/services"
 
 export default function ModalForm({ dataId }) {
 
-    const [allDataById, setAllDataById] = useState();
+    const [allDataById, setAllDataById] = useState({});
     const icmeSuyuService = new IcmeSuyuService();
-    
-
-    
-
     async function getAllIcmeSuyuDataHandler() {
-        if (dataId) {
+        if (dataId !== undefined && dataId !== null) {
             await icmeSuyuService.getIcmeSuyuById(dataId)
                 .then((result) => {
-                    setAllDataById(result.data);
+                    setAllDataById(result);
                 });
         }
+
     }
-
-
     useEffect(() => {
         getAllIcmeSuyuDataHandler();
-    }, [dataId]);
-
+    }, [allDataById]);
+    
     const formik = useFormik({
+        enableReinitialize: true,
         initialValues: {
-            hamsusayac: "",
-            hamsuTonGun: "",
-            uretilenSuTonGun: "",
-            klorCozHazir: "",
-            klorAnalizSonucuMgL: "",
-            genelTemizlik: "",
-            aciklama: ""
+          hamsusayac: `${allDataById != undefined ? allDataById.hamsusayac : ""}`,
+          hamsuTonGun: `${allDataById != undefined ? allDataById.hamsuTonGun : ""}`,
+          uretilenSuTonGun: `${allDataById != undefined ? allDataById.uretilenSuTonGun : ""}`,
+          klorCozHazir: `${allDataById != undefined ? allDataById.klorCozHazir : ""}`,
+          klorAnalizSonucuMgL: `${allDataById != undefined ? allDataById.klorAnalizSonucuMgL : ""}`,
+          genelTemizlik: `${allDataById != undefined ? allDataById.genelTemizlik : ""}`,
+          aciklama: `${allDataById != undefined ? allDataById.aciklama : ""}`,
+          
         },
         onSubmit,
-    });
-
+      });
+   
     async function onSubmit(values) {
         const IdData = {
             IdData: `${dataId}`,
@@ -61,70 +58,90 @@ export default function ModalForm({ dataId }) {
             });
     }
 
-    console.log(allDataById);
-    if(allDataById === null){
+
+    if (allDataById === null) {
         return <></>
     }
-    console.log(allDataById);
-   
-
-
     return (
         <div>
             <div>
                 <form onSubmit={formik.handleSubmit}>
                     <div className="form-group py-2">
-                        <input className="form-control"
-                            type="text"
-                            
-                            //defaultValue={allDataById.hamsusayac}
-                            name="hamsusayac"
-                            {...formik.getFieldProps("hamsusayac")}
-                        />
-                        <input className="form-control"
-                            type="text"
-                            name="hamsuTonGun"
-                            placeholder="Ham Su (Ton/Gün)"
-                            {...formik.getFieldProps("hamsuTonGun")}
-                        />
-                        <input className="form-control"
-                            type="text"
-                            name="uretilenSuTonGun"
-                            placeholder="Üretilen Su (Ton/Gün)"
-                            {...formik.getFieldProps("uretilenSuTonGun")}
-                        />
                         <input
                             className="form-control"
                             type="text"
-                            name="klorCozHazir"
-                            placeholder="Klor Cözeltisi Hazirlama"
-                            {...formik.getFieldProps("klorCozHazir")}
+                            defaultValue={allDataById.hamsusayac || ""}
+                            name="hamsusayac"
+                            placeholder="hamsusayac"
+                            {...formik.getFieldProps("hamsusayac")}
+                            
+                            
+                        />
+                        <input className="form-control"
+                            type="text"
+                            defaultValue={allDataById.hamsuTonGun || ""}
+                            name="hamsuTonGun"
+                            placeholder="Ham Su (Ton/Gün)"
+                            {...formik.getFieldProps("hamsuTonGun")}
+                            
+
+                        />
+                        <input className="form-control"
+                            type="text"
+                            defaultValue={allDataById.uretilenSuTonGun || ""}
+                            name="uretilenSuTonGun"
+                            placeholder="Üretilen Su (Ton/Gün)"
+                            {...formik.getFieldProps("uretilenSuTonGun")}
+                            
+
 
                         />
                         <input
                             className="form-control"
                             type="text"
+                            defaultValue={allDataById.klorCozHazir || ""}
+                            name="klorCozHazir"
+                            placeholder="Klor Cözeltisi Hazirlama"
+                            {...formik.getFieldProps("klorCozHazir")}
+                            
+
+
+
+                        />
+                        <input
+                            className="form-control"
+                            type="text"
+                            defaultValue={allDataById.klorAnalizSonucuMgL || ""}
                             name="klorAnalizSonucuMgL"
                             placeholder="klor Analiz Sonucu (Mg/L)"
                             {...formik.getFieldProps("klorAnalizSonucuMgL")}
+                            
+
+
                         />
                         <input
                             className="form-control"
                             type="text"
+                            defaultValue={allDataById.genelTemizlik || ""}
                             name="genelTemizlik"
                             placeholder="Genel Temizlik"
                             {...formik.getFieldProps("genelTemizlik")}
+
+
                         />
                         <input
                             className="form-control"
                             type="text"
+                            defaultValue={allDataById.aciklama || ""}
                             name="aciklama"
                             placeholder="Açıklama"
                             {...formik.getFieldProps("aciklama")}
+
+
                         />
                     </div>
                     <div className="mt-2 d-flex justify-content-end">
-                        <button type="submit" className="btn btn-outline-dark">
+                        <button  type="submit" className="btn btn-outline-dark">
                             Güncelle
                         </button>
                     </div>

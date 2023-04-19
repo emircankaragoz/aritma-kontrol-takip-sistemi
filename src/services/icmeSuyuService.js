@@ -16,7 +16,7 @@ export default class IcmeSuyuService {
         }
       });     
     });
-
+    console.log(icmeSuyu);
     return icmeSuyu;
   }
 

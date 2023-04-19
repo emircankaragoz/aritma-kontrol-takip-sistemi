@@ -12,3 +12,7 @@ export { default as TuzSodaSayacToplama } from "./TuzComponents/TuzSodaSayacTopl
 export { default as TuzSodaSayacUpdateModal } from "./TuzComponents/TuzSodaSayacUpdateModal"
 export { default as TuzSodaSayacUpdateModalForm } from "./TuzComponents/TuzSodaSayacUpdateModalForm"
 export { default as TuzGunlukTuketimMiktari } from "./TuzComponents/TuzGunlukTuketimMiktari"
+export { default as RenkGidericiTuketimiUpdateModal } from "./ArıtmaComponents/SaatlikComponents/RenkGidericiUpdateComponents/Modal"
+export { default as SaatlikVeriUpdateModal } from "./ArıtmaComponents/SaatlikComponents/SaatlikVeriUpdateComponents/Modal"
+export { default as CikisAtiksuSayacUpdateModal } from "./ArıtmaComponents/SaatlikComponents/CikisAtiksuSayacUpdateComponents/Modal"
+export { default as TduFirmasıUpdateModal } from "./ArıtmaComponents/SaatlikComponents/TduAtıksuUpdateComponents/Modal"

@@ -5,7 +5,7 @@ import { YemekhaneSuyuService } from "@/services"
 
 export default function ModalForm({ dataId }) {
 
-    const [allDataById, setAllDataById] = useState([]);
+    const [allDataById, setAllDataById] = useState({});
     const yemekhaneSuyuService = new YemekhaneSuyuService();
 
     async function getAllYemekhaneSuyuDataHandler() {
@@ -20,16 +20,18 @@ export default function ModalForm({ dataId }) {
 
     useEffect(() => {
         getAllYemekhaneSuyuDataHandler();
-    }, [dataId]);
+    }, [allDataById]);
 
     const formik = useFormik({
+        enableReinitialize: true,
         initialValues: {
-            klorCozeltisiDozaji: "",
-            klor: "",
-            ph: "",
-            iletkenlik: "",
-            genelTemizlik: "",
-            aciklama: "",
+            klorCozeltisiDozaji: `${allDataById != undefined ? allDataById.klorCozeltisiDozaji : ""}`,
+            klor: `${allDataById != undefined ? allDataById.klor : ""}`,
+            ph: `${allDataById != undefined ? allDataById.ph : ""}`,
+            iletkenlik: `${allDataById != undefined ? allDataById.iletkenlik : ""}`,
+            genelTemizlik: `${allDataById != undefined ? allDataById.genelTemizlik : ""}`,
+            aciklama: `${allDataById != undefined ? allDataById.aciklama : ""}`,
+
         },
         onSubmit,
     });
@@ -55,10 +57,15 @@ export default function ModalForm({ dataId }) {
                     });
                 }
             });
+
+       
+        
     }
 
 
-
+    if (allDataById === null) {
+        return <></>
+    }
 
     return (
         <div>

@@ -2,22 +2,23 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { IcmeUpdateModal } from "@/components";
 import { toast } from "react-toastify";
-import { IcmeSuyuService } from "@/services"
+import { IcmeSuyuService, UserService  } from "@/services"
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { AuthFormCSS } from "@/styles";
 import { icme_validate } from "lib/validate";
+import moment from "moment/moment";
 export default function IcmeSuyuPageComponent({ session }) {
 
   const [allData, setAllData] = useState([]);
+  const [sessionUser, setSessionUser] = useState([]);
 
   const icmeSuyuService = new IcmeSuyuService();
+  const userService = new UserService();
 
   async function getAllIcmeSuyuDataHandler() {
     await icmeSuyuService.getAllIcmeSuyu().then((result) => setAllData(result.data));
   }
-  useEffect(() => {
-    getAllIcmeSuyuDataHandler();
-  }, [allData]);
+  
   const formik = useFormik({
     initialValues: {
       hamsusayac: "",
@@ -31,9 +32,17 @@ export default function IcmeSuyuPageComponent({ session }) {
     validate: icme_validate,
     onSubmit,
   });
+  const employee_id = session.user.employeeId;
+  async function getSessionUserHandler() {
+    if (session) {
+      await userService
+        .getSessionUser(employee_id)
+        .then((result) => setSessionUser(result));
+    }
+  }
 
   const employeeid = session.user.employeeId;
-  async function onSubmit(values) {
+  async function onSubmit(values,{resetForm}) {
     const employeeId = {
       employeeId: `${employeeid}`,
     };
@@ -54,6 +63,7 @@ export default function IcmeSuyuPageComponent({ session }) {
           });
         }
       });
+    resetForm();
 
   }
 
@@ -78,6 +88,10 @@ export default function IcmeSuyuPageComponent({ session }) {
         }
       });
   }
+  useEffect(() => {
+    getSessionUserHandler();
+    getAllIcmeSuyuDataHandler();
+  }, [allData, sessionUser]);
 
 
   return (
@@ -221,6 +235,8 @@ export default function IcmeSuyuPageComponent({ session }) {
               <thead>
                 <tr className="text-center">
                   <th scope="col">Sr. No.</th>
+                  <th scope="col">Tarih</th>
+                  <th scope="col">Çalışan ID</th>
                   <th scope="col">Hamsu <br /> Sayaç</th>
                   <th scope="col">Hamsu <br />  Ton/Gün</th>
                   <th scope="col">Üretilen Su<br />  Ton/Gün</th>
@@ -235,6 +251,10 @@ export default function IcmeSuyuPageComponent({ session }) {
                 {allData.map((data, index) => (
                   <tr key={index}>
                     <th scope="row">{index + 1}</th>
+                    <td>
+                      {moment(data.dateAndTime).format("YYYY-MM-DD HH:mm")}
+                    </td>
+                    <td>@{data.createdBy.employeeId}</td>
                     <td>{data.hamsusayac}</td>
                     <td>{data.hamsuTonGun}</td>
                     <td>{data.uretilenSuTonGun}</td>
@@ -242,20 +262,26 @@ export default function IcmeSuyuPageComponent({ session }) {
                     <td>{data.klorAnalizSonucuMgL}</td>
                     <td>{data.genelTemizlik}</td>
                     <td>{data.aciklama}</td>
-                    <td>
-                      <span className="me-2">
-                        <span
-                          className="fs-4"
-                          style={{ cursor: "pointer" }}
-                          onClick={() => deleteIcme(data.id)}
-                        >
-                          <RiDeleteBin5Line />
-                        </span>
-                      </span>
-                      <span>
-                        <IcmeUpdateModal dataId={data.id} />
-                      </span>
-                    </td>
+
+                    {sessionUser.role.roleName === "admin" ? (
+                       <td>
+                       <span className="me-2">
+                         <span
+                           className="fs-4"
+                           style={{ cursor: "pointer" }}
+                           onClick={() => deleteIcme(data.id)}
+                         >
+                           <RiDeleteBin5Line />
+                         </span>
+                       </span>
+                       <span>
+                         <IcmeUpdateModal dataId={data.id} />
+                       </span>
+                     </td>
+                    ) : (
+                      <></>
+                    )}
+                   
                   </tr>
                 ))}
               </tbody>

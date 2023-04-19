@@ -7,7 +7,7 @@ export default async function handler(req, res) {
         if (!req.body) return res.status(404).json({ error: "Do not have data" });
         try {
             const { klorCozeltisiDozaji, klor, ph, iletkenlik, genelTemizlik, aciklama,subcategory,employeeId } = req.body;
-            console.log(req.body);
+            
             const data = await prisma.yemekhaneVeKullanmaSuyu.create({
                 data: {
                     klorCozeltisiDozaji:klorCozeltisiDozaji,
@@ -33,7 +33,7 @@ export default async function handler(req, res) {
                                 
                 },
             });
-
+            console.log(data);
             res.status(201).json({ status: true, yemekhaneVeKullanmaSuyu: data });
         } catch (err) {
             if (err) return res.status(404).json(err);

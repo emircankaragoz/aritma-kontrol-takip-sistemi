@@ -1,34 +1,40 @@
 import React from 'react'
 import { Layout } from '@/components'
 import { getSession } from "next-auth/react";
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
 
-export default function GunlukPage({session}) {
+export default function GunlukPage({ session }) {
   return (
     <>
       <Layout session={session}>
-        <div>
-          <h3 className="fs-3 font-bold">Gunluk Page</h3>
-        </div>
+        <h2 className="mb-4 fw-bold text-center">Günlük Formlar</h2>
+        <Tabs defaultActiveKey="atiksuaritmatesisigirisvecikisformu">
+          <Tab eventKey="atiksuaritmatesisigirisvecikisformu" title="ATIKSU ARITMA TESİSİ GİRİŞ VE ÇIKIŞ ATIKSU MİKTARLARI FORMU">
+
+          </Tab>
+
+        </Tabs>
       </Layout>
     </>
   )
 }
 
 export const getServerSideProps = async ({ req }) => {
-    const session = await getSession({ req });
-  
-    if (!session) {
-      return {
-        redirect: {
-          destination: "/login",
-          permanent: false,
-        },
-      };
-    }
-  
+  const session = await getSession({ req });
+
+  if (!session) {
     return {
-      props: {
-        session,
+      redirect: {
+        destination: "/login",
+        permanent: false,
       },
     };
+  }
+
+  return {
+    props: {
+      session,
+    },
   };
+};

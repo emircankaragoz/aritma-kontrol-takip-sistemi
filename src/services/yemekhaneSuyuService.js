@@ -8,15 +8,15 @@ export default class YemekhaneSuyuService {
   }
    // GET YEMEKHANE SUYU BY ID
    async getYemekhaneSuyuById(id) {
-    let yemekhaneSuyu = [];
+    let yemekhaneSuyu;
     await axios.get(`${URL}/api/controller/get/yemekhaneSuyu`).then((result) => {
       result.data.map((data) => {
         if (data.id === id) {
-          yemekhaneSuyu.push(data);
+          yemekhaneSuyu = data;
         }
       });
     });
-    console.log(yemekhaneSuyu);
+    
     return yemekhaneSuyu;
   }
 

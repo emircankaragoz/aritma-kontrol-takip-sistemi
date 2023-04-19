@@ -1,21 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
-import { IsletmeSuyuService } from "@/services"
+import { IsletmeSuyuService, UserService } from "@/services"
 import { IsletmeUpdateModal } from "@/components";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { isletme_validate } from "lib/validate";
 import { AuthFormCSS } from "@/styles";
+import moment from "moment/moment";
 
 export default function IsletmeSuyuPageComp({ session, subCategory }) {
   const [allData, setAllData] = useState([]);
+  const [sessionUser, setSessionUser] = useState([]);
+
   const isletmeSuyuService = new IsletmeSuyuService();
+  const userService = new UserService();
+
   async function getAllIsletmeSuyuDataHandler() {
     await isletmeSuyuService.getAllIsletmeSuyu().then((result) => setAllData(result.data));
   }
-  useEffect(() => {
-    getAllIsletmeSuyuDataHandler();
-  }, [allData]);
+
+
   const formik = useFormik({
     initialValues: {
       ph: "",
@@ -26,9 +30,18 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
     onSubmit,
   });
 
+  const employee_id = session.user.employeeId;
+  async function getSessionUserHandler() {
+    if (session) {
+      await userService
+        .getSessionUser(employee_id)
+        .then((result) => setSessionUser(result));
+    }
+  }
+
 
   const employeeid = session.user.employeeId;
-  async function onSubmit(values) {
+  async function onSubmit(values, { resetForm }) {
     const employeeId = {
       employeeId: `${employeeid}`,
     };
@@ -52,6 +65,7 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
           });
         }
       });
+    resetForm();
   }
 
   async function deleteIsletme(id) {
@@ -73,6 +87,14 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
           });
         }
       });
+  }
+  useEffect(() => {
+    getSessionUserHandler();
+    getAllIsletmeSuyuDataHandler();
+  }, [allData, sessionUser]);
+
+  if (sessionUser.length === 0) {
+    return <div></div>
   }
 
   return (
@@ -154,6 +176,8 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
               <thead>
                 <tr className="text-center">
                   <th scope="col">Sr. No.</th>
+                  <th scope="col">Tarih</th>
+                  <th scope="col">Çalışan ID</th>
                   <th scope="col">pH</th>
                   <th scope="col">Sertlik</th>
                   <th scope="col">Bikarbonat</th>
@@ -165,29 +189,35 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
                 {allData.map((data, index) => (
                   <tr key={index}>
                     <th scope="row">{index + 1}</th>
+                    <td>
+                      {moment(data.dateAndTime).format("YYYY-MM-DD HH:mm")}
+                    </td>
+                    <td>@{data.createdBy.employeeId}</td>
                     <td>{data.ph}</td>
                     <td>{data.sertlik}</td>
                     <td>{data.bikarbonat}</td>
                     <td>{data.subCategory}</td>
-                    <td>
-                      <span className="me-2">
-                        {/* <button className="btn btn-danger" onClick={() => deleteIsletme(data.id)}>DELETE</button> */}
-                        <span
-                          className="fs-4"
-                          style={{ cursor: "pointer" }}
-                          onClick={() => deleteIsletme(data.id)}
-                        >
-                          <RiDeleteBin5Line />
+
+                    {sessionUser.role.roleName === "admin" ? (
+                      <td>
+                        <span className="me-2">
+                          <span
+                            className="fs-4"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => deleteIsletme(data.id)}
+                          >
+                            <RiDeleteBin5Line />
+                          </span>
                         </span>
+                        <span>
+                          <IsletmeUpdateModal dataId={data.id} />
+                        </span>
+                      </td>
+                    ) : (
+                      <></>
+                    )}
 
 
-                      </span>
-
-
-                      <span>
-                        <IsletmeUpdateModal dataId={data.id} />
-                      </span>
-                    </td>
 
                   </tr>
                 ))}
