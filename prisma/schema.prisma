@@ -45,8 +45,8 @@ model User {
 
 model Role {
   id       Int    @id @default(autoincrement())
-  roleName String @db.VarChar(45) @unique
-  
+  roleName String @unique @db.VarChar(45)
+
   user User[]
 }
 
@@ -147,20 +147,30 @@ model TuzSodaSayacToplama {
   hazirlananSiviSodaSayac                     String @map(name: "hazirlanan_sivi_soda_sayac") @db.VarChar(45)
   siviSodaHattiYikamaSuyuSayac                String @map(name: "sivi_soda_hatti_yikama_suyu_sayac") @db.VarChar(45)
   katiSodaKg                                  String @map(name: "kati_soda_kg") @db.VarChar(45)
-  siviSodaLt                                  String @map(name: "sivi_soda_lt") @db.VarChar(45)
   aritmaTesisineAtilanAtikSiviTuzuLt          String @map(name: "aritma_tesisine_atilan_atik_sivi_tuzu_lt") @db.VarChar(45)
 }
 
 model TuzVeSodaTesisiGunlukTuketimMiktarlari {
   id                                         Int      @id @default(autoincrement())
-  category                                   String   @db.VarChar(45)
+  category                                   String?   @db.VarChar(45)
   dateAndTime                                DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt                                  DateTime @default(now()) @map(name: "created_at")
   updatedAt                                  DateTime @updatedAt @map(name: "updated_at")
-  createdById                                Int
-  updatedById                                Int
-  gelenKatiTuzKg                             String   @db.VarChar(45)
-  siviTuzHazirlamadaKullanilanSulfurikAsitKg String   @db.VarChar(45)
+  gelenKatiTuzKg                             String?   @db.VarChar(45)
+  siviTuzHazirlamadaKullanilanSulfurikAsitKg String?   @db.VarChar(45)
+  
+  isletmeyeVerilenSiviTuzLt                   String? @db.VarChar(45)
+  tasviyedeKullanilanSiviTuzLt                String? @db.VarChar(45)
+  aritmaTesisineAtilanAtikSiviTuzLt           String? @db.VarChar(45)
+  isletmeyeVerilenSiviTuzHazirlananTankSayisi String? @db.VarChar(45)
+  siviTuzHazirlamadaKullanilanKostikLt        String? @db.VarChar(45)
+  siviTuzHazirlamadaKullanilanPoliGr          String? @db.VarChar(45)
+  siviTuzHazirlamadaKullanilanSiviSodaLt      String? @db.VarChar(45)
+  kullanilanKatiSodaKg                        String? @db.VarChar(45)
+  katiSodaMiktarinaGoreSiviSodaLt             String? @db.VarChar(45)
+  isletmeyeVerilenSiviSodaLt                  String? @db.VarChar(45)
+  tuzveSodaTesisiKullanilanSuMetreKup         String? @db.VarChar(45)
+  uretilenYumusakSuMetreKup                   String? @db.VarChar(45)
 }
 
 model TuzVeSodaTesisiGunlukTuketimMiktarlariAylikVeYillikToplam {
@@ -542,5 +552,3 @@ model AKMAnalizFormu {
   filtreKagidiAgirligi_g            String   @db.VarChar(45)
   filtreKagidiVeNumuneninAgirligi_g String   @db.VarChar(45)
 }
-
-

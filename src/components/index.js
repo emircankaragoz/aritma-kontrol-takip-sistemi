@@ -9,3 +9,6 @@ export {default as IcmeUpdateModal} from "./SuComponents/IcmeSuyuUpdateComponent
 export {default as IsletmeUpdateModal} from "./SuComponents/IsletmeSuyuUpdateComponents/Modal"
 export {default as YemekhaneUpdateModal} from "./SuComponents/YemekhaneSuyuUpdateComponents/Modal"
 export { default as TuzSodaSayacToplama } from "./TuzComponents/TuzSodaSayacToplama"
+export { default as TuzSodaSayacUpdateModal } from "./TuzComponents/TuzSodaSayacUpdateModal"
+export { default as TuzSodaSayacUpdateModalForm } from "./TuzComponents/TuzSodaSayacUpdateModalForm"
+export { default as TuzGunlukTuketimMiktari } from "./TuzComponents/TuzGunlukTuketimMiktari"

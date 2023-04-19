@@ -16,6 +16,7 @@ export default async function handler(req, res) {
         siviSodaLt,
         aritmaTesisineAtilanAtikSiviTuzuLt,
         employeeId,
+        dateTime
       } = req.body;
 
       const data = await prisma.tuzSodaSayacToplama.create({
@@ -41,6 +42,7 @@ export default async function handler(req, res) {
           tasviyedeKullanilanSiviTuzSayac: tasviyedeKullanilanSiviTuzSayac,
           tuzVeSodaTesisiKullanilanSuSayac: tuzVeSodaTesisiKullanilanSuSayac,
           uretilenSu: uretilenSu,
+          dateAndTime: dateTime,
         },
       });
 
