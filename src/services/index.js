@@ -7,3 +7,4 @@ export { default as RenkGidericiTuketimiService } from './renkGidericiTuketimiSe
 export { default as SaatlikVeriService } from './saatlikVeriService'
 export { default as CikisAtiksuSayacService } from './cikisAtiksuSayacService'
 export { default as TduService } from './tduService'
+export { default as AritmaService } from './aritmaService'

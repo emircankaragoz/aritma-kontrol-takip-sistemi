@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
-import { CikisAtiksuSayacService } from "@/services"
+import { AritmaService } from "@/services"
 
 export default function ModalForm({ dataId }) {
 
     const [allDataById, setAllDataById] = useState({});
-    const cikisAtiksuSayac = new CikisAtiksuSayacService();
+    const cikisAtiksuSayac = new AritmaService();
 
     async function getAllCikisAtiksuSayacDataHandler() {
         if (dataId !== undefined && dataId !== null) {

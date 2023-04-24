@@ -1,30 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
-import { toast } from "react-toastify";
 import { AuthFormCSS } from "@/styles";
+import { toast } from "react-toastify";
 import { AritmaService, UserService } from "@/services"
-import { CikisAtiksuSayacUpdateModal } from "@/components";
 import { RiDeleteBin5Line } from "react-icons/ri";
-import { cikisAtiksuSayac_validate } from "lib/validate";
 import moment from "moment/moment";
-
-export default function CikisAtiksuSayacComponent({ session }) {
+export default function AtiksuAritmaGirisCikisComponent({ session }) {
 
     const [allData, setAllData] = useState([]);
     const [sessionUser, setSessionUser] = useState([]);
-    const cikisAtiksuSayac = new AritmaService();
+    const atiksuAritmaGirisCikis = new AritmaService();
 
-    async function getAllCikisAtiksuSayacDataHandler() {
-        await cikisAtiksuSayac.getAllCikisAtiksuSayac().then((result) => setAllData(result.data));
+    async function getAllAtiksuAritmaGirisCikisDataHandler() {
+        await atiksuAritmaGirisCikis.getAllAtiksuAritmaGirisCikis().then((result) => setAllData(result.data));
     }
-
 
     const formik = useFormik({
         initialValues: {
-            atiksuSayac: "",
-            atiksuMetrekup: "",
+            girisAtiksuSayacDegeri: "",
+            cikisAtiksuSayacDegeri: "",
+            kimyasalCokeltimdenCekilenCamurMiktari_m3gun: "",
         },
-        validate: cikisAtiksuSayac_validate,
         onSubmit,
     });
 
@@ -40,7 +36,7 @@ export default function CikisAtiksuSayacComponent({ session }) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(values),
         };
-        await fetch("/api/controller/post/cikisAtikSuSayac", options)
+        await fetch("/api/controller/post/addAtiksuAritmaGirisCikis", options)
             .then((res) => res.json())
             .then((data) => {
                 if (data) {
@@ -53,7 +49,7 @@ export default function CikisAtiksuSayacComponent({ session }) {
 
 
     }
-    async function deleteCikisAtiksuSayac(id) {
+    async function deleteAtiksuAritmaGirisCikis(id) {
         const dataId = {
             dataId: `${id}`,
         };
@@ -63,7 +59,7 @@ export default function CikisAtiksuSayacComponent({ session }) {
             body: JSON.stringify(dataId),
         };
 
-        await fetch("/api/controller/post/deleteCikisAtiksuSayac", options)
+        await fetch("/api/controller/post/deleteAtiksuAritmaGirisCikis", options)
             .then((res) => res.json())
             .then((data) => {
                 if (data) {
@@ -84,7 +80,7 @@ export default function CikisAtiksuSayacComponent({ session }) {
         }
     }
     useEffect(() => {
-        getAllCikisAtiksuSayacDataHandler();
+        getAllAtiksuAritmaGirisCikisDataHandler();
         getSessionUserHandler();
     }, [allData, sessionUser]);
 
@@ -92,9 +88,10 @@ export default function CikisAtiksuSayacComponent({ session }) {
         return <div></div>
       }
 
+
+      
+
     return (
-
-
         <div className="container p-2">
             <div className="d-flex  flex-column mx-auto w-50">
                 <section>
@@ -102,36 +99,29 @@ export default function CikisAtiksuSayacComponent({ session }) {
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
                                 type="text"
-                                name="atiksuSayac"
-                                placeholder="Atık Su Sayac"
-                                {...formik.getFieldProps("atiksuSayac")}
+                                name="girisAtiksuSayacDegeri"
+                                placeholder="Giriş Atik su Sayac Degeri"
+                                {...formik.getFieldProps("girisAtiksuSayacDegeri")}
                             />
-                            {formik.errors.atiksuSayac && formik.touched.atiksuSayac ? (
-                                <span className="text-danger opacity-75">
-                                    {formik.errors.atiksuSayac}
-                                </span>
-                            ) : (
-                                <></>
-                            )}
-
                         </div>
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
                                 type="text"
-                                name="atiksuMetrekup"
-                                placeholder="Atık Su (m3)"
-                                {...formik.getFieldProps("atiksuMetrekup")}
+                                name="cikisAtiksuSayacDegeri"
+                                placeholder="Çikis Atik su Sayac Degeri"
+                                {...formik.getFieldProps("cikisAtiksuSayacDegeri")}
                             />
-                            {formik.errors.atiksuMetrekup && formik.touched.atiksuMetrekup ? (
-                                <span className="text-danger opacity-75">
-                                    {formik.errors.atiksuMetrekup}
-                                </span>
-                            ) : (
-                                <></>
-                            )}
-
                         </div>
+                        <div className={AuthFormCSS.input_group}>
+                            <input className="form-control"
+                                type="text"
+                                name="kimyasalCokeltimdenCekilenCamurMiktari_m3gun"         
+                                placeholder=" Kimyasal Cokeltimden Cekilen Camur Miktari (m3/gun)"
+                                {...formik.getFieldProps("kimyasalCokeltimdenCekilenCamurMiktari_m3gun")}
+                            />
+                           
 
+                        </div>           
                         <div className="input-button mx-auto">
                             <button type="submit" className="btn btn-outline-dark mt-2">
                                 Ekle
@@ -140,10 +130,10 @@ export default function CikisAtiksuSayacComponent({ session }) {
                     </form>
                 </section>
             </div>
-            <hr />
+            <hr/>
             <section>
                 <p className="text-muted text-center fs-5 fw-bolder pb-3">
-                    ÇIKIŞ ATIKSU SAYACI KAYIT FORMU
+                ATIKSU ARITMA TESİSİ GİRİŞ VE ÇIKIŞ ATIKSU MİKTARLARI FORMU
                 </p>
 
                 <div className="row">
@@ -154,8 +144,13 @@ export default function CikisAtiksuSayacComponent({ session }) {
                                     <th scope="col">Sr. No.</th>
                                     <th scope="col">Tarih</th>
                                     <th scope="col">Çalışan ID</th>
-                                    <th scope="col">Atıksu Sayaç</th>
-                                    <th scope="col">Atıksu (m3)</th>
+                                    <th scope="col">Giriş Atik Su Sayac Degeri</th>
+                                     <th scope="col">Giriş Atıksu Miktarı (m3/gün)</th>
+                                    <th scope="col">Çıkış Atik Su Sayac Degeri</th>
+                                    <th scope="col">Çıkış Atıksu Miktarı (m3/gün)</th>
+                                    <th scope="col">Fark(Çekilen Çamur Miktarı) (m3/gün)</th>
+                                    <th scope="col">Kimyasal Cokeltimden Cekilen Camur Miktari (m3/gun)</th>
+                                    <th scope="col">Aerobikten Çekilen Çamur Miktarı m3/gün</th>
                                     <th scope="col">.</th>
 
                                 </tr>
@@ -168,8 +163,13 @@ export default function CikisAtiksuSayacComponent({ session }) {
                                             {moment(data.dateAndTime).format("YYYY-MM-DD HH:mm")}
                                         </td>
                                         <td>@{data.createdBy.employeeId}</td>
-                                        <td>{data.atiksuSayac}</td>
-                                        <td>{data.atiksuMetrekup}</td>
+                                        <td>{data.girisAtiksuSayacDegeri}</td>
+                                         <td>* </td>
+                                        <td>{data.cikisAtiksuSayacDegeri}</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td>{data.kimyasalCokeltimdenCekilenCamurMiktari_m3gun}</td>
+                                        <td>-</td>
 
 
                                         {sessionUser.role.roleName === "admin" ? (
@@ -178,14 +178,14 @@ export default function CikisAtiksuSayacComponent({ session }) {
                                                     <span
                                                         className="fs-4"
                                                         style={{ cursor: "pointer" }}
-                                                        onClick={() => deleteCikisAtiksuSayac(data.id)}
+                                                        onClick={() => deleteAtiksuAritmaGirisCikis(data.id)}
                                                     >
                                                         <RiDeleteBin5Line />
                                                     </span>
                                                 </span>
-                                                <span>
+                                                {/* <span>
                                                     <CikisAtiksuSayacUpdateModal dataId={data.id} />
-                                                </span>
+                                                </span> */}
 
                                             </td>
                                         ) : (
@@ -198,15 +198,9 @@ export default function CikisAtiksuSayacComponent({ session }) {
                     </div>
                 </div>
             </section>
-
-
         </div>
-
-
-
-
-
     )
-}
 
+
+}
 

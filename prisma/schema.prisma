@@ -60,8 +60,6 @@ model User {
 
   createdAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms AtiksuAritmaTesisiGirisVeCikisAtiksuMiktari[] @relation("createdAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms")
   updatedAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms AtiksuAritmaTesisiGirisVeCikisAtiksuMiktari[] @relation("updatedAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms")
-
-  
 }
 
 model Role {
@@ -189,8 +187,6 @@ model RenkGidericiTuketimiVeRenkOlcumSonuclariTakipFormu {
   kullanilanKimyasal                String @db.VarChar(45)
 }
 
-
-
 model CikisAtiksuSayaciKayitFormu {
   id          Int      @id @default(autoincrement())
   category    String   @db.VarChar(45)
@@ -223,7 +219,9 @@ model AtiksuAritmaTesisiGirisVeCikisAtiksuMiktari {
 
   girisAtiksuSayacDegeri                       String @db.VarChar(45)
   cikisAtiksuSayacDegeri                       String @db.VarChar(45)
+  cekilenCamurMiktariFark                      String @db.VarChar(45)
   kimyasalCokeltimdenCekilenCamurMiktari_m3gun String @db.VarChar(45)
+  aerobiktenCekilenCamurMiktari                String @db.VarChar(45)
 }
 
 model SulfurikAsitKullanimMiktarVeMaliyeti {
@@ -559,14 +557,10 @@ model TuzVeSodaTesisiGunlukTuketimMiktarlariAylikVeYillikToplam {
 
   createdAt   DateTime @default(now()) @map(name: "created_at")
   createdById Int
- 
 
   updatedAt   DateTime @updatedAt @map(name: "updated_at")
   updatedById Int
-  
 }
-
-
 
 model SodyumKlorurGirdiKontrolAnalizSonuclari {
   id          Int      @id @default(autoincrement())
