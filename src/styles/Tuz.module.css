@@ -5,3 +5,8 @@
 .updateButton:hover {
     opacity: 50%;
 }
+
+.input_group {
+    position: relative; 
+    flex: auto;
+}

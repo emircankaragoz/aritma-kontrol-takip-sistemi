@@ -15,7 +15,7 @@ export default async function handler(req, res) {
         katiSodaKg,
         aritmaTesisineAtilanAtikSiviTuzuLt,
         employeeId,
-        dateTime
+        dateTime,
       } = req.body;
 
       const data = await prisma.tuzSodaSayacToplama.create({
@@ -31,16 +31,16 @@ export default async function handler(req, res) {
             },
           },
           category: "tuz",
-          aritmaTesisineAtilanAtikSiviTuzuLt: aritmaTesisineAtilanAtikSiviTuzuLt,
-          hazirlananSiviSodaSayac: hazirlananSiviSodaSayac,
-          isletmeyeVerilenSiviTuzHazirlananTankSayisi: isletmeyeVerilenSiviTuzHazirlananTankSayisi,
-          isletmeyeVerilenSiviTuzSayac: isletmeyeVerilenSiviTuzSayac,
-          katiSodaKg: katiSodaKg,
-          siviSodaHattiYikamaSuyuSayac: siviSodaHattiYikamaSuyuSayac,
-          tasviyedeKullanilanSiviTuzSayac: tasviyedeKullanilanSiviTuzSayac,
-          tuzVeSodaTesisiKullanilanSuSayac: tuzVeSodaTesisiKullanilanSuSayac,
-          uretilenSu: uretilenSu,
-          dateAndTime: dateTime,
+          aritmaTesisineAtilanAtikSiviTuzuLt: `${aritmaTesisineAtilanAtikSiviTuzuLt}`,
+          hazirlananSiviSodaSayac: `${hazirlananSiviSodaSayac}`,
+          isletmeyeVerilenSiviTuzHazirlananTankSayisi: `${isletmeyeVerilenSiviTuzHazirlananTankSayisi}`,
+          isletmeyeVerilenSiviTuzSayac: `${isletmeyeVerilenSiviTuzSayac}`,
+          katiSodaKg: `${katiSodaKg}`,
+          siviSodaHattiYikamaSuyuSayac: `${siviSodaHattiYikamaSuyuSayac}`,
+          tasviyedeKullanilanSiviTuzSayac: `${tasviyedeKullanilanSiviTuzSayac}`,
+          tuzVeSodaTesisiKullanilanSuSayac: `${tuzVeSodaTesisiKullanilanSuSayac}`,
+          uretilenSu: `${uretilenSu}`,
+          dateAndTime: `${dateTime}`,
         },
       });
 

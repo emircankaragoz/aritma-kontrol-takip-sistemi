@@ -1,4 +1,5 @@
 import prisma from "../../../../../lib/prismadb";
+import moment from "moment";
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
@@ -23,31 +24,30 @@ export default async function handler(req, res) {
       const siviTuzHazirlamadaKullanilanSiviSodaLt =
         isletmeyeVerilenSiviTuzHazirlananTankSayisi * 80;
       const katiSodaMiktarinaGoreSiviSodaLt = (katiSodaKg / 200) * 1000;
+      const date = moment(dateAndTime).startOf("day").format();
 
       const data = await prisma.tuzVeSodaTesisiGunlukTuketimMiktarlari.create({
         data: {
-          isletmeyeVerilenSiviTuzLt: isletmeyeVerilenSiviTuzLt,
-          tasviyedeKullanilanSiviTuzLt: siviTuzLt,
-          aritmaTesisineAtilanAtikSiviTuzLt: aritmaTesisineAtilanAtikSiviTuzLt,
-          isletmeyeVerilenSiviTuzHazirlananTankSayisi:
-            isletmeyeVerilenSiviTuzHazirlananTankSayisi,
-          siviTuzHazirlamadaKullanilanKostikLt:
-            siviTuzHazirlamadaKullanilanKostikLt,
-          siviTuzHazirlamadaKullanilanPoliGr:
-            siviTuzHazirlamadaKullanilanPoliGr,
-          siviTuzHazirlamadaKullanilanSiviSodaLt:
-            siviTuzHazirlamadaKullanilanSiviSodaLt,
-          kullanilanKatiSodaKg: katiSodaKg,
-          katiSodaMiktarinaGoreSiviSodaLt: katiSodaMiktarinaGoreSiviSodaLt,
-          isletmeyeVerilenSiviSodaLt: isletmeyeVerilenSiviSodaLt,
-          tuzveSodaTesisiKullanilanSuMetreKup: suSayac,
-          uretilenYumusakSuMetreKup: uretilenSu,
-          dateAndTime: dateAndTime,
-
+          category: "Tuz",
+          isletmeyeVerilenSiviTuzLt: `${isletmeyeVerilenSiviTuzLt}`,
+          tasviyedeKullanilanSiviTuzLt: `${siviTuzLt}`,
+          aritmaTesisineAtilanAtikSiviTuzLt: `${aritmaTesisineAtilanAtikSiviTuzLt}`,
+          isletmeyeVerilenSiviTuzHazirlananTankSayisi: `${isletmeyeVerilenSiviTuzHazirlananTankSayisi}`,
+          siviTuzHazirlamadaKullanilanKostikLt: `${siviTuzHazirlamadaKullanilanKostikLt}`,
+          siviTuzHazirlamadaKullanilanPoliGr: `${siviTuzHazirlamadaKullanilanPoliGr}`,
+          siviTuzHazirlamadaKullanilanSiviSodaLt: `${siviTuzHazirlamadaKullanilanSiviSodaLt}`,
+          kullanilanKatiSodaKg: `${katiSodaKg}`,
+          katiSodaMiktarinaGoreSiviSodaLt: `${katiSodaMiktarinaGoreSiviSodaLt}`,
+          isletmeyeVerilenSiviSodaLt: `${isletmeyeVerilenSiviSodaLt}`,
+          tuzveSodaTesisiKullanilanSuMetreKup: `${suSayac}`,
+          uretilenYumusakSuMetreKup: `${uretilenSu}`,
+          dateAndTime: date
         },
       });
 
-      res.status(201).json({ status: true, tuzVeSodaTesisiGunlukTuketimMiktarlari: data });
+      res
+        .status(201)
+        .json({ status: true, tuzVeSodaTesisiGunlukTuketimMiktarlari: data });
     } catch (err) {
       if (err) return res.status(404).json(err);
     }

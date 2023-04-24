@@ -62,6 +62,8 @@ export default class TuzService {
       (item) => moment(item.dateAndTime).format("YYYY-MM-DD") == datetime
     );
 
+    console.log(data)
+
     // Find data for the previous day
     const prevDatetime = moment(datetime)
       .subtract(1, "days")
@@ -72,42 +74,45 @@ export default class TuzService {
     );
 
     if (data && prevData) {
-      siviTuzSayac1 = prevData.tasviyedeKullanilanSiviTuzSayac;
-      siviTuzSayac2 = data.tasviyedeKullanilanSiviTuzSayac;
+      siviTuzSayac1 = parseFloat(prevData.tasviyedeKullanilanSiviTuzSayac);
+      siviTuzSayac2 = parseFloat(data.tasviyedeKullanilanSiviTuzSayac);
       siviTuzLt = siviTuzSayac2 - siviTuzSayac1;
 
-      tuzVeSodaSayac1 = prevData.tuzVeSodaTesisiKullanilanSuSayac;
-      tuzVeSodaSayac2 = data.tuzVeSodaTesisiKullanilanSuSayac;
+      tuzVeSodaSayac1 = parseFloat(prevData.tuzVeSodaTesisiKullanilanSuSayac);
+      tuzVeSodaSayac2 = parseFloat(data.tuzVeSodaTesisiKullanilanSuSayac);
       suSayac = tuzVeSodaSayac2 - tuzVeSodaSayac1;
 
-      isletmeyeVerilenSiviTuzSayac1 = prevData.isletmeyeVerilenSiviTuzSayac;
-      isletmeyeVerilenSiviTuzSayac2 = data.isletmeyeVerilenSiviTuzSayac;
+      isletmeyeVerilenSiviTuzSayac1 = parseFloat(prevData.isletmeyeVerilenSiviTuzSayac);
+      isletmeyeVerilenSiviTuzSayac2 = parseFloat(data.isletmeyeVerilenSiviTuzSayac);
       isletmeyeVerilenSiviTuzLt =
         isletmeyeVerilenSiviTuzSayac2 - isletmeyeVerilenSiviTuzSayac1;
 
-      hazirlananSiviSodaSayac1 = prevData.hazirlananSiviSodaSayac;
-      hazirlananSiviSodaSayac2 = data.hazirlananSiviSodaSayac;
+      hazirlananSiviSodaSayac1 = parseFloat(prevData.hazirlananSiviSodaSayac);
+      hazirlananSiviSodaSayac2 = parseFloat(data.hazirlananSiviSodaSayac);
       hazirlananSiviSodaLt =
-        hazirlananSiviSodaSayac2 - hazirlananSiviSodaSayac1;
+        (hazirlananSiviSodaSayac2- hazirlananSiviSodaSayac1)*1000;
 
-      siviSodaHattiYikamaSuyuSayac1 = prevData.siviSodaHattiYikamaSuyuSayac;
-      siviSodaHattiYikamaSuyuSayac2 = data.siviSodaHattiYikamaSuyuSayac;
+
+      siviSodaHattiYikamaSuyuSayac1 = parseFloat(prevData.siviSodaHattiYikamaSuyuSayac);
+      siviSodaHattiYikamaSuyuSayac2 = parseFloat(data.siviSodaHattiYikamaSuyuSayac);
       siviSodaHattiYikamaSuyuLt =
         (siviSodaHattiYikamaSuyuSayac2 - siviSodaHattiYikamaSuyuSayac1) * 1000;
+
 
       isletmeyeVerilenSiviSodaLt =
         hazirlananSiviSodaLt - siviSodaHattiYikamaSuyuLt;
 
+
       siviSodaLt = (isletmeyeVerilenSiviSodaLt / 200) * 1000;
 
       aritmaTesisineAtilanAtikSiviTuzLt =
-        prevData.aritmaTesisineAtilanAtikSiviTuzuLt;
+        parseFloat(prevData.aritmaTesisineAtilanAtikSiviTuzuLt);
 
       isletmeyeVerilenSiviTuzHazirlananTankSayisi =
-        prevData.isletmeyeVerilenSiviTuzHazirlananTankSayisi;
+        parseFloat(prevData.isletmeyeVerilenSiviTuzHazirlananTankSayisi);
 
-      katiSodaKg = prevData.katiSodaKg;
-      uretilenSu = prevData.uretilenSu;
+      katiSodaKg = parseFloat(prevData.katiSodaKg);
+      uretilenSu = parseFloat(prevData.uretilenSu);
 
       const dateAndTime = prevDatetime;
       return {
@@ -115,7 +120,6 @@ export default class TuzService {
         suSayac,
         isletmeyeVerilenSiviTuzLt,
         isletmeyeVerilenSiviSodaLt,
-        siviSodaLt,
         dateAndTime,
         aritmaTesisineAtilanAtikSiviTuzLt,
         isletmeyeVerilenSiviTuzHazirlananTankSayisi,
@@ -123,25 +127,24 @@ export default class TuzService {
         uretilenSu,
       };
     } else {
+      console.log(data)
       siviTuzLt = 0;
       suSayac = 0;
       isletmeyeVerilenSiviTuzLt = 0;
       isletmeyeVerilenSiviSodaLt = 0;
       siviSodaLt = 0;
       aritmaTesisineAtilanAtikSiviTuzLt =
-        data.aritmaTesisineAtilanAtikSiviTuzLt;
+        parseFloat(data.aritmaTesisineAtilanAtikSiviTuzuLt);
       isletmeyeVerilenSiviTuzHazirlananTankSayisi =
-        data.isletmeyeVerilenSiviTuzHazirlananTankSayisi;
-      katiSodaKg = data.katiSodaKg;
-      uretilenSu = data.uretilenSu;
+        parseFloat(data.isletmeyeVerilenSiviTuzHazirlananTankSayisi);
+      katiSodaKg = parseFloat(data.katiSodaKg);
+      uretilenSu = parseFloat(data.uretilenSu);
       const dateAndTime = datetime;
       return {
         siviTuzLt,
         suSayac,
         isletmeyeVerilenSiviTuzLt,
-        hazirlananSiviSodaLt,
         isletmeyeVerilenSiviSodaLt,
-        siviSodaLt,
         dateAndTime,
         aritmaTesisineAtilanAtikSiviTuzLt,
         isletmeyeVerilenSiviTuzHazirlananTankSayisi,
