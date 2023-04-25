@@ -69,7 +69,10 @@ model User {
 
   createdAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms AtiksuAritmaTesisiGirisVeCikisAtiksuMiktari[] @relation("createdAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms")
   updatedAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms AtiksuAritmaTesisiGirisVeCikisAtiksuMiktari[] @relation("updatedAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms")
+<<<<<<< Updated upstream
  
+=======
+>>>>>>> Stashed changes
 }
 
 model Role {
@@ -624,4 +627,11 @@ model SodaTesisiKontrolFormu {
   updatedBy                   User     @relation("updatedSodaTesisiKontrolForms", fields: [updatedById], references: [id])
   cozeltiYogunlugu            String   @db.VarChar(45)
   kontrolEden                 String   @db.VarChar(45)
+}
+
+model SystemMessage {
+  id        Int      @id @default(autoincrement())
+  title     String?  @db.VarChar(45)
+  content   String?
+  createdAt DateTime @default(now()) @map(name: "created_at")
 }

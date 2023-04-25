@@ -43,7 +43,7 @@ export default function Panel({ session }) {
   useEffect(() => {
     getSessionUserHandler();
     getAllUserHandler();
-  }, [allUser]);
+  }, []);
 
   async function onSubmit(values) {
     const password = {

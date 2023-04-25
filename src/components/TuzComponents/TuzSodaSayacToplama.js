@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
 import { TuzService, UserService } from "@/services";
-import { useEffect } from "react";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import moment from "moment/moment";
 import { TuzCSS } from "@/styles";
@@ -11,9 +10,8 @@ import { tuzSodaSayacToplama_validate } from "lib/validate";
 
 export default function TuzSodaSayacToplamaComponent({ session }) {
   const [allTuzSodaSayacToplama, setAllTuzSodaSayacToplama] = useState([]);
-  const [sessionUser, setSessionUser] = useState([]);
-  const [transferDataToGunlukKullanim, setTransferDataToGunlukKullanim] =
-    useState();
+  const [sessionUser, setSessionUser] = useState(null);
+  const [isDataEntered, setIsDataEntered] = useState(false);
 
   const getToday = moment().startOf("day").format();
 
@@ -38,9 +36,10 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
   const employee_id = session.user.employeeId;
 
   async function getAllTuzSodaSayacToplamaHandler() {
-    await tuzService
-      .getAllTuzSodaSayacToplama()
-      .then((result) => setAllTuzSodaSayacToplama(result.data));
+    await tuzService.getAllTuzSodaSayacToplama().then((result) => {
+      setAllTuzSodaSayacToplama(result.data);
+      isTuzSodaSayacToplamaDatasEntered(result.data);
+    });
   }
 
   async function getSessionUserHandler() {
@@ -50,6 +49,23 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
         .then((result) => setSessionUser(result));
     }
   }
+
+  // veri girildi mi kontrolü yapılır.
+  async function isTuzSodaSayacToplamaDatasEntered(tuzSodaSayacDatas) {
+    await tuzSodaSayacDatas.map((item) => {
+      if (
+        moment(item.dateAndTime).format("YYYY-MM-DD") ===
+        moment(getToday).format("YYYY-MM-DD")
+      ) {
+        setIsDataEntered(true);
+      }
+    });
+  }
+
+  useEffect(() => {
+    getAllTuzSodaSayacToplamaHandler();
+    getSessionUserHandler();
+  }, []);
 
   async function onSubmit(values) {
     const employeeId = {
@@ -77,6 +93,28 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
       });
   }
 
+  async function deleteTuz(id) {
+    const tuzId = {
+      tuzId: `${id}`,
+    };
+    const options = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(tuzId),
+    };
+
+    await fetch("/api/controller/post/deleteTuzSodaSayacToplama", options)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data) {
+          toast.success("Form başarıyla silindi", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+          });
+        }
+      });
+  }
+
+  // hesaplanan veriler günkük tüketim formuna aktarılıyor.
   async function transferDataToGunlukTuketimMiktariForm() {
     const date = moment(getToday).format("YYYY-MM-DD");
     await tuzService
@@ -108,51 +146,8 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
       });
   }
 
-  async function isTuzSodaSayacToplamaDatasEntered() {
-    if (allTuzSodaSayacToplama.length == 0) {
-      allTuzSodaSayacToplama.map((item) => {
-        if (
-          moment(item.dateAndTime).format("YYYY-MM-DD") ===
-          moment(getToday).format("YYYY-MM-DD")
-        ) {
-          console.log("veri girildi");
-        } else {
-          console.log("veri girilmedi");
-        }
-      });
-    }
-  }
-
-  isTuzSodaSayacToplamaDatasEntered();
-
-  useEffect(() => {
-    getAllTuzSodaSayacToplamaHandler();
-    getSessionUserHandler();
-  }, []);
-
-  if (sessionUser.length === 0) {
-    return <div></div>;
-  }
-
-  async function deleteTuz(id) {
-    const tuzId = {
-      tuzId: `${id}`,
-    };
-    const options = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(tuzId),
-    };
-
-    await fetch("/api/controller/post/deleteTuzSodaSayacToplama", options)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data) {
-          toast.success("Form başarıyla silindi", {
-            position: toast.POSITION.BOTTOM_RIGHT,
-          });
-        }
-      });
+  if (sessionUser === null) {
+    return <div className="text-center">Yükleniyor...</div>;
   }
 
   return (
@@ -161,7 +156,17 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
         <p className="text-muted text-center fs-5 fw-bolder pb-3 mt-3">
           Tuz Soda Sayaç Toplama Kayıt Formu
         </p>
-        <section>
+        <span className="text-center text-muted">
+          {moment().format("DD/MM/YYYY")}
+        </span>
+        <div className="text-center mb-2">
+          {isDataEntered ? (
+            <p className="text-success">Günlük veri girişi gerçekleşti</p>
+          ) : (
+            <p className="text-danger">Günlük veri girişi gerçekleşmedi!</p>
+          )}
+        </div>
+        <section style={{ visibility: "revert" }}>
           <form
             onSubmit={formik.handleSubmit}
             className="d-flex flex-column gap-3"
@@ -338,7 +343,11 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
             </div>
 
             <div className="input-button mx-auto">
-              <button type="submit" className="btn btn-outline-dark mt-2">
+              <button
+                type="submit"
+                className="btn btn-outline-dark mt-2"
+                disabled={isDataEntered}
+              >
                 Ekle
               </button>
             </div>
