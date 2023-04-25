@@ -42,6 +42,15 @@ model User {
   createdTuzSodaSayacToplamaForms TuzSodaSayacToplama[] @relation("createdTuzSodaSayacToplamaForms")
   updatedTuzSodaSayacToplamaForms TuzSodaSayacToplama[] @relation("updatedTuzSodaSayacToplamaForms")
 
+  createdTuzTesisiKontrolCizelgesiForms TuzTesisiKontrolCizelgesi[] @relation("createdTuzTesisiKontrolCizelgesiForms")
+  updatedTuzTesisiKontrolCizelgesiForms TuzTesisiKontrolCizelgesi[] @relation("updatedTuzTesisiKontrolCizelgesiForms")
+
+  createdSodaTesisiKontrolForms SodaTesisiKontrolFormu[] @relation("createdSodaTesisiKontrolForms")
+  updatedSodaTesisiKontrolForms SodaTesisiKontrolFormu[] @relation("updatedSodaTesisiKontrolForms")
+
+  createdSodyumKlorurGirdiKontrolForms SodyumKlorurGirdiKontrolAnalizSonuclari[] @relation("createdSodyumKlorurGirdiKontrolForms")
+  updatedSodyumKlorurGirdiKontrolForms SodyumKlorurGirdiKontrolAnalizSonuclari[] @relation("updatedSodyumKlorurGirdiKontrolForms")
+
   //Arıtma
   createdRenkGidericiTuketimiVeRenkOlcumSonuclariTakipForms RenkGidericiTuketimiVeRenkOlcumSonuclariTakipFormu[] @relation("createdRenkGidericiTuketimiVeRenkOlcumuSonuclariTakipForms")
   updatedRenkGidericiTuketimiVeRenkOlcumSonuclariTakipForms RenkGidericiTuketimiVeRenkOlcumSonuclariTakipFormu[] @relation("updatedRenkGidericiTuketimiVeRenkOlcumuSonuclariTakipForms")
@@ -60,6 +69,7 @@ model User {
 
   createdAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms AtiksuAritmaTesisiGirisVeCikisAtiksuMiktari[] @relation("createdAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms")
   updatedAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms AtiksuAritmaTesisiGirisVeCikisAtiksuMiktari[] @relation("updatedAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms")
+ 
 }
 
 model Role {
@@ -567,9 +577,11 @@ model SodyumKlorurGirdiKontrolAnalizSonuclari {
   category    String   @db.VarChar(45)
   dateAndTime DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt   DateTime @default(now()) @map(name: "created_at")
-  updatedAt   DateTime @updatedAt @map(name: "updated_at")
   createdById Int
+  createdBy   User     @relation("createdSodyumKlorurGirdiKontrolForms", fields: [createdById], references: [id])
+  updatedAt   DateTime @updatedAt @map(name: "updated_at")
   updatedById Int
+  updatedBy   User     @relation("updatedSodyumKlorurGirdiKontrolForms", fields: [updatedById], references: [id])
   gorunum     String   @db.VarChar(45)
   sertlik     String   @db.VarChar(45)
   demir       String   @db.VarChar(45)
@@ -585,15 +597,19 @@ model TuzTesisiKontrolCizelgesi {
   id                          Int      @id @default(autoincrement())
   category                    String   @db.VarChar(45)
   isletmeyeVerildigiTarihSaat DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
-  createdAt                   DateTime @default(now()) @map(name: "created_at")
-  updatedAt                   DateTime @updatedAt @map(name: "updated_at")
-  createdById                 Int
-  updatedById                 Int
-  cozeltiSertligi             String   @db.VarChar(45)
-  ph                          String   @db.VarChar(45)
-  yogunluk                    String   @db.VarChar(45)
-  bikarbonat                  String   @db.VarChar(45)
-  kontrolEden                 String   @db.VarChar(45)
+
+  createdAt   DateTime @default(now()) @map(name: "created_at")
+  createdById Int
+  createdBy   User     @relation("createdTuzTesisiKontrolCizelgesiForms", fields: [createdById], references: [id])
+
+  updatedAt       DateTime @updatedAt @map(name: "updated_at")
+  updatedById     Int
+  updatedBy       User     @relation("updatedTuzTesisiKontrolCizelgesiForms", fields: [updatedById], references: [id])
+  cozeltiSertligi String   @db.VarChar(45)
+  ph              String   @db.VarChar(45)
+  yogunluk        String   @db.VarChar(45)
+  bikarbonat      String   @db.VarChar(45)
+  kontrolEden     String   @db.VarChar(45)
 }
 
 model SodaTesisiKontrolFormu {
@@ -601,9 +617,11 @@ model SodaTesisiKontrolFormu {
   category                    String   @db.VarChar(45)
   isletmeyeVerildigiTarihSaat DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt                   DateTime @default(now()) @map(name: "created_at")
-  updatedAt                   DateTime @updatedAt @map(name: "updated_at")
   createdById                 Int
+  createdBy                   User     @relation("createdSodaTesisiKontrolForms", fields: [createdById], references: [id])
+  updatedAt                   DateTime @updatedAt @map(name: "updated_at")
   updatedById                 Int
+  updatedBy                   User     @relation("updatedSodaTesisiKontrolForms", fields: [updatedById], references: [id])
   cozeltiYogunlugu            String   @db.VarChar(45)
   kontrolEden                 String   @db.VarChar(45)
 }

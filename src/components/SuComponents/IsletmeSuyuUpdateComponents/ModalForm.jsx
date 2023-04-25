@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
-import { IsletmeSuyuService } from "@/services"
+import { SuService } from "@/services"
 
 export default function ModalForm({ dataId }) {
 
     const [allDataById, setAllDataById] = useState({});
-    const isletmeSuyuService = new IsletmeSuyuService();
+    const isletmeSuyuService = new SuService();
 
     async function getAllIsletmeSuyuDataHandler() {
         if (dataId) {

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
-import { TduService } from "@/services"
+import { AritmaService } from "@/services"
 
 export default function ModalForm({ dataId }) {
 
     const [allDataById, setAllDataById] = useState({});
-    const tduService = new TduService();
+    const tduService = new AritmaService();
 
     async function getAllTduDataHandler() {
         if (dataId !== undefined && dataId !== null) {

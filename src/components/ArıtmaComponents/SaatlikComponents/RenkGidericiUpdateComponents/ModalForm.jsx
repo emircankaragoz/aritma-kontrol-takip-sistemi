@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
-import { RenkGidericiTuketimiService } from "@/services"
+import { AritmaService } from "@/services"
 
 export default function ModalForm({ dataId }) {
 
     const [allDataById, setAllDataById] = useState({});
-    const renkGidericiTuketimi = new RenkGidericiTuketimiService();
+    const renkGidericiTuketimi = new AritmaService();
     async function getAllRenkGidericiTuketimiDataHandler() {
         if (dataId !== undefined && dataId !== null) {
             await renkGidericiTuketimi.getRenkGidericiTuketimiById(dataId)

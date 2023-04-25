@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
-import { YemekhaneSuyuService } from "@/services"
+import { SuService } from "@/services"
 
 export default function ModalForm({ dataId }) {
 
     const [allDataById, setAllDataById] = useState({});
-    const yemekhaneSuyuService = new YemekhaneSuyuService();
+    const yemekhaneSuyuService = new SuService();
 
     async function getAllYemekhaneSuyuDataHandler() {
         if (dataId) {
@@ -73,37 +73,43 @@ export default function ModalForm({ dataId }) {
                 <form onSubmit={formik.handleSubmit} className="d-flex flex-column gap-3 ">
                     <input className="form-control"
                         type="text"
-                        name="klor_cozeltisi_dozaji"
+                        name="klorCozeltisiDozaji"
+                        defaultValue={allDataById.klorCozeltisiDozaji || ""}
                         placeholder="klorCozeltisiDozaji"
                         {...formik.getFieldProps("klorCozeltisiDozaji")}
                     />
                     <input className="form-control"
                         type="text"
                         name="klor"
+                        defaultValue={allDataById.klor || ""}
                         placeholder="Klor"
                         {...formik.getFieldProps("klor")}
                     />
                     <input className="form-control"
                         type="text"
                         name="ph"
+                        defaultValue={allDataById.ph || ""}
                         placeholder="pH"
                         {...formik.getFieldProps("ph")}
                     />
                     <input className="form-control"
                         type="text"
                         name="iletkenlik"
+                        defaultValue={allDataById.iletkenlik || ""}
                         placeholder="İletkenlik"
                         {...formik.getFieldProps("iletkenlik")}
                     />
                     <input className="form-control"
                         type="text"
-                        name="genel_temizlik"
+                        name="genelTemizlik"
+                        defaultValue={allDataById.genelTemizlik || ""}
                         placeholder="Genel Temizlik"
                         {...formik.getFieldProps("genelTemizlik")}
                     />
                     <input className="form-control"
                         type="text"
                         name="aciklama"
+                        defaultValue={allDataById.aciklama || ""}
                         placeholder="Açıklama"
                         {...formik.getFieldProps("aciklama")}
                     />

@@ -22,19 +22,62 @@ export default class TuzService {
     return tuz;
   }
 
-  async getTuzSodaSayacToplamaById(id) {
-    let tuz;
+  //TUZ TESİSİ KONTROL CİZELGESİ
+  async getAllTuzTesisiKontrolCizelgesi() {
+    return await axios.get(`${URL}/api/controller/get/tuzTesisiKontrolCizelge`);
+  }
+
+  async getTuzTesisiKontrolCizelgesiById(id){
+    let tuzTesisi;
     await axios
-      .get(`${URL}/api/controller/get/tuzSodaSayacToplama`)
+      .get(`${URL}/api/controller/get/tuzTesisiKontrolCizelge`)
       .then((result) => {
         result.data.map((data) => {
           if (data.id === id) {
-            tuz = data;
+            tuzTesisi = data;
           }
         });
       });
-    return tuz;
+    return tuzTesisi;
   }
+
+  //SODA TESİSİ KONTROL CİZELGESİ
+
+  async getAllSodaTesisiKontrolFormu() {
+    return await axios.get(`${URL}/api/controller/get/sodaTesisiKontrolFormu`);
+  }
+  async getSodaTesisiKontrolFormuById(id){
+    let sodaTesisi;
+    await axios
+      .get(`${URL}/api/controller/get/sodaTesisiKontrolFormu`)
+      .then((result) => {
+        result.data.map((data) => {
+          if (data.id === id) {
+            sodaTesisi = data;
+          }
+        });
+      });
+    return sodaTesisi;
+  }
+
+  //SODYUM KLORUR KONTROL 
+  async getAllSodyumKlorurKontrolFormu() {
+    return await axios.get(`${URL}/api/controller/get/sodyumKlorurKontrol`);
+  }
+  async getSodyumKlorurById(id){
+    let sodyum;
+    await axios
+      .get(`${URL}/api/controller/get/sodyumKlorurKontrol`)
+      .then((result) => {
+        result.data.map((data) => {
+          if (data.id === id) {
+            sodyum = data;
+          }
+        });
+      });
+    return sodyum;
+  }
+
 
   async getTransferDataToGunlukKullanimFromTuzSodaSayacToplama(datetime) {
     let siviTuzSayac1, siviTuzSayac2, siviTuzLt;

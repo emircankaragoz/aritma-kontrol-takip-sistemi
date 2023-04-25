@@ -1,6 +1,7 @@
 import React from "react";
-import { Layout } from "@/components";
+import { Layout} from "@/components";
 import { getSession } from "next-auth/react";
+
 
 export default function SabitlerLimitlerPage({ session }) {
   return (
@@ -8,6 +9,7 @@ export default function SabitlerLimitlerPage({ session }) {
       <Layout session={session}>
         <div>
           <h3 className="fs-3 font-bold">Sabitler ve Limitler Page</h3>
+          
         </div>
       </Layout>
     </>

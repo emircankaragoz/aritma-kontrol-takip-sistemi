@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
-import { YemekhaneSuyuService, UserService } from "@/services"
+import { SuService, UserService } from "@/services"
 import { YemekhaneUpdateModal } from "@/components";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { yemekhane_validate } from "lib/validate";
@@ -12,7 +12,7 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
   const [allData, setAllData] = useState([]);
   const [sessionUser, setSessionUser] = useState([]);
 
-  const yemekhaneSuyuService = new YemekhaneSuyuService();
+  const yemekhaneSuyuService = new SuService();
   const userService = new UserService();
   async function getAllYemekhaneSuyuDataHandler() {
     await yemekhaneSuyuService.getAllYemekhaneSuyu().then((result) => setAllData(result.data));

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
 import { AuthFormCSS } from "@/styles";
-import {TduService, UserService} from "@/services";
+import {AritmaService, UserService} from "@/services";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import moment from "moment/moment";
 import {TduFirmasıUpdateModal} from "@/components";
@@ -12,7 +12,7 @@ export default function TduFirmasıAtıksuComponent({ session }) {
 
     const [allData, setAllData] = useState([]);
     const [sessionUser, setSessionUser] = useState([]);
-    const tduService = new TduService();
+    const tduService = new AritmaService();
     const userService = new UserService();
 
     async function getAllTduDataHandler() {

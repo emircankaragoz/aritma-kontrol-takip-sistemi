@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
 import { AuthFormCSS } from "@/styles";
-import { SaatlikVeriService, UserService } from "@/services";
+import { AritmaService, UserService } from "@/services";
 import { SaatlikVeriUpdateModal } from "@/components";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { saatlikVeri_validate } from "lib/validate";
@@ -13,7 +13,7 @@ export default function SaatlikVeriComponent({ session }) {
     const [allData, setAllData] = useState([]);
     const [sessionUser, setSessionUser] = useState([]);
 
-    const saatlikVeri = new SaatlikVeriService();
+    const saatlikVeri = new AritmaService();
 
 
     async function getAllSaatlikVeriDataHandler() {

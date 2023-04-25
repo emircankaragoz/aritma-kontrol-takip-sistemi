@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { Layout, TuzSodaSayacToplama } from "@/components";
+import { Layout, TuzSodaSayacToplama, TuzTesisiKontrolCizelgesi, SodaTesisiKontrolForm,SodyumKlorurKontrolForm } from "@/components";
 import { getSession } from "next-auth/react";
 import { Tab, Tabs, Nav } from "react-bootstrap";
-
 export default function TuzPage({ session }) {
   const [key, setKey] = useState("home");
   return (
@@ -16,7 +15,7 @@ export default function TuzPage({ session }) {
         className="mb-3 justify-content-center"
       >
         <Tab eventKey="home" title="Kayıt Formu">
-          <TuzSodaSayacToplama session={session}/>
+          <TuzSodaSayacToplama session={session} />
         </Tab>
         <Tab eventKey="profile" title="Takip Formları">
           {/* PILLS TAB  */}
@@ -49,7 +48,9 @@ export default function TuzPage({ session }) {
             <Nav variant="pills" className="d-flex justify-content-center mt-4 pt-2">
               <Nav.Item className="px-2">
                 <Nav.Link eventKey="first" className="text-center">
-                  Tuz Sesisi Kontrol Çizelgesi
+                  Tuz Tesisi Kontrol Çizelgesi
+                  
+
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item>
@@ -63,10 +64,16 @@ export default function TuzPage({ session }) {
                 </Nav.Link>
               </Nav.Item>
             </Nav>
-            <Tab.Content className="mt-4 d-flex justify-content-center">
-              <Tab.Pane eventKey="first">Sayfa 1</Tab.Pane>
-              <Tab.Pane eventKey="second">Sayfa 2</Tab.Pane>
-              <Tab.Pane eventKey="third">Sayfa 3</Tab.Pane>
+            <Tab.Content className="mt-4 justify-content-center">
+              <Tab.Pane eventKey="first">
+                <TuzTesisiKontrolCizelgesi session={session}/>
+              </Tab.Pane>
+              <Tab.Pane eventKey="second">
+                <SodaTesisiKontrolForm session={session}/>
+              </Tab.Pane>
+              <Tab.Pane eventKey="third">
+                <SodyumKlorurKontrolForm session={session}/>
+              </Tab.Pane>
             </Tab.Content>
           </Tab.Container>
           {/* END PILLS TAB  */}

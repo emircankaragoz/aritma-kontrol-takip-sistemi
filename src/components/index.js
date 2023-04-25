@@ -16,3 +16,17 @@ export { default as RenkGidericiTuketimiUpdateModal } from "./ArıtmaComponents/
 export { default as SaatlikVeriUpdateModal } from "./ArıtmaComponents/SaatlikComponents/SaatlikVeriUpdateComponents/Modal"
 export { default as CikisAtiksuSayacUpdateModal } from "./ArıtmaComponents/SaatlikComponents/CikisAtiksuSayacUpdateComponents/Modal"
 export { default as TduFirmasıUpdateModal } from "./ArıtmaComponents/SaatlikComponents/TduAtıksuUpdateComponents/Modal"
+
+export { default as TuzTesisiKontrolCizelgesi} from "./TuzComponents/TuzTesisiKontrolCizelgesiForm"
+export { default as TuzTesisiKontrolCizelgeUpdateModal } from "./TuzComponents/TuzTesisiKontrolCizelgeUpdateModal"
+export { default as TuzTesisiKontrolCizelgeUpdateModalForm } from "./TuzComponents/TuzTesisiKontrolCizelgeUpdateModalForm"
+export { default as SodaTesisiKontrolForm} from "./TuzComponents/SodaTesisiKontrolFormu"
+export { default as SodaTesisiKontrolFormUpdateModal } from "./TuzComponents/SodaTesisiKontrolUpdateModal"
+export { default as SodaTesisiKontrolUpdateModalForm } from "./TuzComponents/SodaTesisiKontrolUpdateModalForm"
+
+export { default as SodyumKlorurKontrolForm} from "./TuzComponents/SodyumKlorurKontrolForm"
+export { default as SodyumKlorurKontrolFormUpdateModal } from "./TuzComponents/SodyumKlorurKontrolUpdateModal"
+export { default as SodyumKlorurKontrolFormUpdateModalForm } from "./TuzComponents/SodyumKlorurUpdateModalForm"
+
+
+

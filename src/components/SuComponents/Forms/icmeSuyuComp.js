@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { IcmeUpdateModal } from "@/components";
 import { toast } from "react-toastify";
-import { IcmeSuyuService, UserService  } from "@/services"
+import {SuService, UserService  } from "@/services"
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { AuthFormCSS } from "@/styles";
 import { icme_validate } from "lib/validate";
@@ -12,7 +12,7 @@ export default function IcmeSuyuPageComponent({ session }) {
   const [allData, setAllData] = useState([]);
   const [sessionUser, setSessionUser] = useState([]);
 
-  const icmeSuyuService = new IcmeSuyuService();
+  const icmeSuyuService = new SuService();
   const userService = new UserService();
 
   async function getAllIcmeSuyuDataHandler() {
@@ -120,7 +120,6 @@ export default function IcmeSuyuPageComponent({ session }) {
               <input className="form-control"
                 type="text"
                 name="hamsuTonGun"
-                required
                 placeholder="Ham Su (Ton/Gün)"
                 {...formik.getFieldProps("hamsuTonGun")}
               />

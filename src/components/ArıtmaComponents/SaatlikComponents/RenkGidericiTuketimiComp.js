@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
 import { AuthFormCSS } from "@/styles";
-import { RenkGidericiTuketimiService, UserService } from "@/services"
+import { AritmaService, UserService } from "@/services"
 import { RenkGidericiTuketimiUpdateModal } from "@/components";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { renkGidericiTuketimi_validate } from "lib/validate";
@@ -13,7 +13,7 @@ export default function RenkGidericiTuketimiComponent({ session }) {
     const [allData, setAllData] = useState([]);
     const [sessionUser, setSessionUser] = useState([]);
 
-    const renkGidericiTuketimi = new RenkGidericiTuketimiService();
+    const renkGidericiTuketimi = new AritmaService();
 
     async function getAllRenkGidericiTuketimiDataHandler() {
         await renkGidericiTuketimi.getAllRenkGidericiTuketimi().then((result) => setAllData(result.data));
