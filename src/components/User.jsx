@@ -22,7 +22,7 @@ export default function User({ session }) {
 
   useEffect(() => {
     getAllSystemMessagesHandler();
-  }, [messages.length]);
+  }, []);
 
   return (
     <>
@@ -37,7 +37,7 @@ export default function User({ session }) {
                 <ul className="list-group list-group-flush">
                   <li className="list-group-item text-center">
                     <p>{msg.content}</p>
-                    <p>{moment(msg.createdAt)}</p>
+                    <p>Tarih</p>
                     <button className="btn btn-sm btn-success">
                       Tamamlandı
                     </button>

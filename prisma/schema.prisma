@@ -69,10 +69,7 @@ model User {
 
   createdAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms AtiksuAritmaTesisiGirisVeCikisAtiksuMiktari[] @relation("createdAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms")
   updatedAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms AtiksuAritmaTesisiGirisVeCikisAtiksuMiktari[] @relation("updatedAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms")
-<<<<<<< Updated upstream
  
-=======
->>>>>>> Stashed changes
 }
 
 model Role {
