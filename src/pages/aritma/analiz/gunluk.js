@@ -12,7 +12,7 @@ export default function GunlukPage({ session }) {
         <h2 className="mb-4 fw-bold text-center">Günlük Formlar</h2>
         <Tabs defaultActiveKey="atiksuaritmatesisigirisvecikisformu">
           <Tab eventKey="atiksuaritmatesisigirisvecikisformu" title="ATIKSU ARITMA TESİSİ GİRİŞ VE ÇIKIŞ ATIKSU MİKTARLARI FORMU">
-            {/* <AtiksuAritmaGirisCikisFormu session={session}/> */}
+            <AtiksuAritmaGirisCikisFormu session={session}/>
 
           </Tab>
 

@@ -11,13 +11,7 @@ import moment from "moment/moment";
 export default function CikisAtiksuSayacComponent({ session }) {
 
     const [allData, setAllData] = useState([]);
-    const [sessionUser, setSessionUser] = useState([]);
-    const cikisAtiksuSayac = new AritmaService();
-
-    async function getAllCikisAtiksuSayacDataHandler() {
-        await cikisAtiksuSayac.getAllCikisAtiksuSayac().then((result) => setAllData(result.data));
-    }
-
+    const [sessionUser, setSessionUser] = useState(null);
 
     const formik = useFormik({
         initialValues: {
@@ -27,11 +21,30 @@ export default function CikisAtiksuSayacComponent({ session }) {
         validate: cikisAtiksuSayac_validate,
         onSubmit,
     });
+    const cikisAtiksuSayac = new AritmaService();
+    const userService = new UserService();
+    const employee_id = session.user.employeeId;
 
-    const employeeid = session.user.employeeId;
+    async function getAllCikisAtiksuSayacDataHandler() {
+        await cikisAtiksuSayac.getAllCikisAtiksuSayac().then((result) => setAllData(result.data));
+    }
+
+    async function getSessionUserHandler() {
+        if (session) {
+            await userService
+                .getSessionUser(employee_id)
+                .then((result) => setSessionUser(result));
+        }
+    }
+    useEffect(() => {
+        getAllCikisAtiksuSayacDataHandler();
+        getSessionUserHandler();
+    }, []);
+
+
     async function onSubmit(values, { resetForm }) {
         const employeeId = {
-            employeeId: `${employeeid}`,
+            employeeId: `${employee_id}`,
         };
         values = Object.assign(values, employeeId);
         console.log(values);
@@ -73,23 +86,8 @@ export default function CikisAtiksuSayacComponent({ session }) {
                 }
             });
     }
-    const userService = new UserService();
-    const employee_id = session.user.employeeId;
-
-    async function getSessionUserHandler() {
-        if (session) {
-            await userService
-                .getSessionUser(employee_id)
-                .then((result) => setSessionUser(result));
-        }
-    }
-    useEffect(() => {
-        getAllCikisAtiksuSayacDataHandler();
-        getSessionUserHandler();
-    }, [allData, sessionUser]);
-
-    if(sessionUser.length === 0){
-        return <div></div>
+    if (sessionUser === null) {
+        return <div className="text-center">Yükleniyor...</div>;
       }
 
     return (
@@ -101,7 +99,8 @@ export default function CikisAtiksuSayacComponent({ session }) {
                     <form onSubmit={formik.handleSubmit} className="d-flex flex-column gap-3 ">
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
-                                type="text"
+                                 type="number"
+                                 step="0.01"
                                 name="atiksuSayac"
                                 placeholder="Atık Su Sayac"
                                 {...formik.getFieldProps("atiksuSayac")}
@@ -117,7 +116,8 @@ export default function CikisAtiksuSayacComponent({ session }) {
                         </div>
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
-                                type="text"
+                                 type="number"
+                                 step="0.01"
                                 name="atiksuMetrekup"
                                 placeholder="Atık Su (m3)"
                                 {...formik.getFieldProps("atiksuMetrekup")}

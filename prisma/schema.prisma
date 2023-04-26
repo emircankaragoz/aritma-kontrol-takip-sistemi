@@ -229,9 +229,9 @@ model AtiksuAritmaTesisiGirisVeCikisAtiksuMiktari {
 
   girisAtiksuSayacDegeri                       String @db.VarChar(45)
   cikisAtiksuSayacDegeri                       String @db.VarChar(45)
-  cekilenCamurMiktariFark                      String @db.VarChar(45)
+  //cekilenCamurMiktariFark                      String @db.VarChar(45)
   kimyasalCokeltimdenCekilenCamurMiktari_m3gun String @db.VarChar(45)
-  aerobiktenCekilenCamurMiktari                String @db.VarChar(45)
+  //aerobiktenCekilenCamurMiktari                String @db.VarChar(45)
 }
 
 model SulfurikAsitKullanimMiktarVeMaliyeti {

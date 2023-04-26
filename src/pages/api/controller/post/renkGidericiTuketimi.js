@@ -18,19 +18,15 @@ export default async function handler(req, res) {
                             employeeId: employeeId,
                         },
                     },
-                    renkGidericiDozajiMlDak: renkGidericiDozajiMlDak,
-                    biyolojikCokHavCikisiKompozitRenk: biyolojikCokHavCikisiKompozitRenk,
-                    yavasKaristirmaHavCikisi: yavasKaristirmaHavCikisi,
-                    kimyasalCokHavCikisiRenk: kimyasalCokHavCikisiRenk,
-                    toplamRenkGidericiKgSaat: toplamRenkGidericiKgSaat,
-                    toplamRenkGidericiEuroSaat: toplamRenkGidericiEuroSaat,
-                    atikSu_m3sa: atikSu_m3sa,
-                    kullanilanKimyasal: kullanilanKimyasal,
-
-
-                    category: "Arıtma Renk Giderici"
-
-
+                    category: "arıtma",
+                    renkGidericiDozajiMlDak: `${renkGidericiDozajiMlDak}`,
+                    biyolojikCokHavCikisiKompozitRenk: `${biyolojikCokHavCikisiKompozitRenk}`,
+                    yavasKaristirmaHavCikisi: `${yavasKaristirmaHavCikisi}`,
+                    kimyasalCokHavCikisiRenk: `${kimyasalCokHavCikisiRenk}`,
+                    toplamRenkGidericiKgSaat: `${toplamRenkGidericiKgSaat}`,
+                    toplamRenkGidericiEuroSaat: `${toplamRenkGidericiEuroSaat}`,
+                    atikSu_m3sa: `${atikSu_m3sa}`,
+                    kullanilanKimyasal: `${kullanilanKimyasal}`,
 
                 },
             });

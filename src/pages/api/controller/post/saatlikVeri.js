@@ -18,14 +18,15 @@ export default async function handler(req, res) {
                           employeeId: employeeId,
                         },
                       },
-                    esanjorGirisSicakligi:esanjorGirisSicakligi ,
-                    esanjorCikisSicakligi:esanjorCikisSicakligi ,
-                    oksijen: oksijen,
-                    ph:ph ,
+                    category: "arıtma",
+                    esanjorGirisSicakligi:`${esanjorGirisSicakligi}` ,
+                    esanjorCikisSicakligi:`${esanjorCikisSicakligi}` ,
+                    oksijen: `${oksijen}`,
+                    ph:`${ph}` ,
                     
-
                     
-                    category: "arıtma"
+                    
+                   
                     
                 },
             });

@@ -8,11 +8,6 @@ export default async function handler(req, res) {
             console.log(employeeId);
             const data = await prisma.tduFirmasindanGelenAtiksuTakibi.create({
                 data: {
-                    geldigiFirma:geldigiFirma ,
-                    tasiyanFirma:tasiyanFirma ,
-                    miktarKg:miktarKg,
-                    atikCinsi:atikCinsi,
-                    aciklama:aciklama,
                     createdBy: {
                         connect: {        
                             employeeId: employeeId
@@ -23,7 +18,13 @@ export default async function handler(req, res) {
                             employeeId: employeeId
                         }
                     },
-                    category: "arıtma"
+                    category: "arıtma",
+                    geldigiFirma:`${geldigiFirma}`,
+                    tasiyanFirma:`${tasiyanFirma}` ,
+                    miktarKg:`${miktarKg}`,
+                    atikCinsi:`${atikCinsi}`,
+                    aciklama:`${aciklama}`,
+                  
                     
                 },
             });

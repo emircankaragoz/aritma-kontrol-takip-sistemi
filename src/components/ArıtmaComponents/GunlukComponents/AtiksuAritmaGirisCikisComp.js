@@ -8,13 +8,10 @@ import moment from "moment/moment";
 export default function AtiksuAritmaGirisCikisComponent({ session }) {
 
     const [allData, setAllData] = useState([]);
-    const [sessionUser, setSessionUser] = useState([]);
-    const atiksuAritmaGirisCikis = new AritmaService();
-
-    async function getAllAtiksuAritmaGirisCikisDataHandler() {
-        await atiksuAritmaGirisCikis.getAllAtiksuAritmaGirisCikis().then((result) => setAllData(result.data));
-    }
-
+    const [sessionUser, setSessionUser] = useState(null);
+    const [isDataEntered, setIsDataEntered] = useState(false);
+    const getToday = moment().startOf("day").format();
+    const [deneme, setDeneme] = useState({});
     const formik = useFormik({
         initialValues: {
             girisAtiksuSayacDegeri: "",
@@ -23,11 +20,43 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
         },
         onSubmit,
     });
+    const atiksuAritmaGirisCikis = new AritmaService();
+    const userService = new UserService();
+    const employee_id = session.user.employeeId;
 
-    const employeeid = session.user.employeeId;
+    async function getAllAtiksuAritmaGirisCikisDataHandler() {
+        await atiksuAritmaGirisCikis.getAllAtiksuAritmaGirisCikis().then((result) => {
+            setAllData(result.data);
+            isAtiksuAritmaGirisCikisDatasEntered(result.data);
+        });
+
+    }
+    async function getSessionUserHandler() {
+        if (session) {
+            await userService
+                .getSessionUser(employee_id)
+                .then((result) => setSessionUser(result));
+        }
+    }
+    // veri girildi mi kontrolü yapılır.
+    async function isAtiksuAritmaGirisCikisDatasEntered(datas) {
+        await datas.map((item) => {
+            if (
+                moment(item.dateAndTime).format("YYYY-MM-DD") ===
+                moment(getToday).format("YYYY-MM-DD")
+            ) {
+                setIsDataEntered(true);
+            }
+        });
+    }
+    useEffect(() => {
+        getAllAtiksuAritmaGirisCikisDataHandler();
+        getSessionUserHandler();
+    }, []);
+
     async function onSubmit(values, { resetForm }) {
         const employeeId = {
-            employeeId: `${employeeid}`,
+            employeeId: `${employee_id}`,
         };
         values = Object.assign(values, employeeId);
         console.log(values);
@@ -45,9 +74,7 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                     });
                 }
             });
-        resetForm();
-
-
+            transferDataToSameForm();
     }
     async function deleteAtiksuAritmaGirisCikis(id) {
         const dataId = {
@@ -69,27 +96,29 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                 }
             });
     }
-    const userService = new UserService();
-    const employee_id = session.user.employeeId;
 
-    async function getSessionUserHandler() {
-        if (session) {
-            await userService
-                .getSessionUser(employee_id)
-                .then((result) => setSessionUser(result));
-        }
+    async function transferDataToSameForm() {
+        const date = moment(getToday).format("YYYY-MM-DD");
+        await atiksuAritmaGirisCikis
+            .getCalculationDeneme(date)
+            .then((result) => {
+                const returnedTarget = Object.assign(allData, result);
+                console.log(returnedTarget);
+                
+            });
+            
+            
+           
+        
     }
-    useEffect(() => {
-        getAllAtiksuAritmaGirisCikisDataHandler();
-        getSessionUserHandler();
-    }, [allData, sessionUser]);
+  
 
-    if(sessionUser.length === 0){
-        return <div></div>
-      }
+    if (sessionUser === null) {
+        return <div className="text-center">Yükleniyor...</div>;
+    }
 
 
-      
+
 
     return (
         <div className="container p-2">
@@ -98,7 +127,8 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                     <form onSubmit={formik.handleSubmit} className="d-flex flex-column gap-3 ">
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
-                                type="text"
+                                type="number"
+                                step="0.01"
                                 name="girisAtiksuSayacDegeri"
                                 placeholder="Giriş Atik su Sayac Degeri"
                                 {...formik.getFieldProps("girisAtiksuSayacDegeri")}
@@ -106,7 +136,8 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                         </div>
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
-                                type="text"
+                                type="number"
+                                step="0.01"
                                 name="cikisAtiksuSayacDegeri"
                                 placeholder="Çikis Atik su Sayac Degeri"
                                 {...formik.getFieldProps("cikisAtiksuSayacDegeri")}
@@ -114,14 +145,15 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                         </div>
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
-                                type="text"
-                                name="kimyasalCokeltimdenCekilenCamurMiktari_m3gun"         
+                                type="number"
+                                step="0.01"
+                                name="kimyasalCokeltimdenCekilenCamurMiktari_m3gun"
                                 placeholder=" Kimyasal Cokeltimden Cekilen Camur Miktari (m3/gun)"
                                 {...formik.getFieldProps("kimyasalCokeltimdenCekilenCamurMiktari_m3gun")}
                             />
-                           
 
-                        </div>           
+
+                        </div>
                         <div className="input-button mx-auto">
                             <button type="submit" className="btn btn-outline-dark mt-2">
                                 Ekle
@@ -130,10 +162,10 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                     </form>
                 </section>
             </div>
-            <hr/>
+            <hr />
             <section>
                 <p className="text-muted text-center fs-5 fw-bolder pb-3">
-                ATIKSU ARITMA TESİSİ GİRİŞ VE ÇIKIŞ ATIKSU MİKTARLARI FORMU
+                    ATIKSU ARITMA TESİSİ GİRİŞ VE ÇIKIŞ ATIKSU MİKTARLARI FORMU
                 </p>
 
                 <div className="row">
@@ -145,7 +177,7 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                                     <th scope="col">Tarih</th>
                                     <th scope="col">Çalışan ID</th>
                                     <th scope="col">Giriş Atik Su Sayac Degeri</th>
-                                     <th scope="col">Giriş Atıksu Miktarı (m3/gün)</th>
+                                    <th scope="col">Giriş Atıksu Miktarı (m3/gün)</th>
                                     <th scope="col">Çıkış Atik Su Sayac Degeri</th>
                                     <th scope="col">Çıkış Atıksu Miktarı (m3/gün)</th>
                                     <th scope="col">Fark(Çekilen Çamur Miktarı) (m3/gün)</th>
@@ -164,12 +196,15 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                                         </td>
                                         <td>@{data.createdBy.employeeId}</td>
                                         <td>{data.girisAtiksuSayacDegeri}</td>
-                                         <td>* </td>
+                                        <td>{data.girisAtiksuMiktariM3Gun}</td>
                                         <td>{data.cikisAtiksuSayacDegeri}</td>
-                                        <td>-</td>
-                                        <td>-</td>
+                                        <td>{data.cikisAtiksuMiktariM3Gun}</td>
+                                        <td>{data.farkCekilenCamurMiktari}</td>
                                         <td>{data.kimyasalCokeltimdenCekilenCamurMiktari_m3gun}</td>
-                                        <td>-</td>
+                                        <td>{data.aerobiktenCekilenCamurMiktari}</td>
+                                        
+                                       
+                                       
 
 
                                         {sessionUser.role.roleName === "admin" ? (

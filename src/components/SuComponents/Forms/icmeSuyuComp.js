@@ -10,15 +10,8 @@ import moment from "moment/moment";
 export default function IcmeSuyuPageComponent({ session }) {
 
   const [allData, setAllData] = useState([]);
-  const [sessionUser, setSessionUser] = useState([]);
-
-  const icmeSuyuService = new SuService();
-  const userService = new UserService();
-
-  async function getAllIcmeSuyuDataHandler() {
-    await icmeSuyuService.getAllIcmeSuyu().then((result) => setAllData(result.data));
-  }
-  
+  const [sessionUser, setSessionUser] = useState(null);
+  const refresh = () => window.location.reload(true);
   const formik = useFormik({
     initialValues: {
       hamsusayac: "",
@@ -32,7 +25,13 @@ export default function IcmeSuyuPageComponent({ session }) {
     validate: icme_validate,
     onSubmit,
   });
+  const icmeSuyuService = new SuService();
+  const userService = new UserService();
   const employee_id = session.user.employeeId;
+
+  async function getAllIcmeSuyuDataHandler() {
+    await icmeSuyuService.getAllIcmeSuyu().then((result) => setAllData(result.data));
+  }
   async function getSessionUserHandler() {
     if (session) {
       await userService
@@ -40,11 +39,13 @@ export default function IcmeSuyuPageComponent({ session }) {
         .then((result) => setSessionUser(result));
     }
   }
-
-  const employeeid = session.user.employeeId;
+  useEffect(() => {
+    getSessionUserHandler();
+    getAllIcmeSuyuDataHandler();
+  }, []);
   async function onSubmit(values,{resetForm}) {
     const employeeId = {
-      employeeId: `${employeeid}`,
+      employeeId: `${employee_id}`,
     };
     values = Object.assign(values, employeeId);
     console.log(values);
@@ -88,10 +89,12 @@ export default function IcmeSuyuPageComponent({ session }) {
         }
       });
   }
-  useEffect(() => {
-    getSessionUserHandler();
-    getAllIcmeSuyuDataHandler();
-  }, [allData, sessionUser]);
+  if (sessionUser === null) {
+    return <div className="text-center">Yükleniyor...</div>;
+  }
+
+  
+ 
 
 
   return (
@@ -103,7 +106,8 @@ export default function IcmeSuyuPageComponent({ session }) {
           <form onSubmit={formik.handleSubmit} className="d-flex flex-column gap-3 ">
             <div className={AuthFormCSS.input_group}>
               <input className="form-control"
-                type="text"
+                type="number"
+                step="0.01"
                 name="hamsusayac"
                 placeholder="Ham Su Sayac"
                 {...formik.getFieldProps("hamsusayac")}
@@ -118,7 +122,8 @@ export default function IcmeSuyuPageComponent({ session }) {
             </div>
             <div className={AuthFormCSS.input_group}>
               <input className="form-control"
-                type="text"
+                type="number"
+                step="0.01"
                 name="hamsuTonGun"
                 placeholder="Ham Su (Ton/Gün)"
                 {...formik.getFieldProps("hamsuTonGun")}
@@ -133,7 +138,8 @@ export default function IcmeSuyuPageComponent({ session }) {
             </div>
             <div className={AuthFormCSS.input_group}>
               <input className="form-control"
-                type="text"
+                type="number"
+                step="0.01"
                 name="uretilenSuTonGun"
                 placeholder="Üretilen Su (Ton/Gün)"
                 {...formik.getFieldProps("uretilenSuTonGun")}
@@ -149,7 +155,8 @@ export default function IcmeSuyuPageComponent({ session }) {
             <div className={AuthFormCSS.input_group}>
               <input
                 className="form-control"
-                type="text"
+                type="number"
+                step="0.01"
                 name="klorCozHazir"
                 placeholder="Klor Cözeltisi Hazirlama"
                 {...formik.getFieldProps("klorCozHazir")}
@@ -166,9 +173,10 @@ export default function IcmeSuyuPageComponent({ session }) {
             <div className={AuthFormCSS.input_group}>
               <input
                 className="form-control"
-                type="text"
+                type="number"
+                step="0.01"
                 name="klorAnalizSonucuMgL"
-                placeholder="klor Analiz Sonucu (Mg/L)"
+                placeholder="Klor Analiz Sonucu (Mg/L)"
                 {...formik.getFieldProps("klorAnalizSonucuMgL")}
               />
                {formik.errors.klorAnalizSonucuMgL && formik.touched.klorAnalizSonucuMgL ? (
@@ -215,7 +223,7 @@ export default function IcmeSuyuPageComponent({ session }) {
 
             </div>
             <div className="input-button mx-auto">
-              <button type="submit" className="btn btn-outline-dark mt-2">
+              <button onClick={refresh} type="submit" className="btn btn-outline-dark mt-2">
                 Ekle
               </button>
             </div>

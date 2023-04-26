@@ -10,23 +10,24 @@ import { sodaTesisiKontrolFormu_validate } from "lib/validate";
 export default function SodaTesisiKontrolFormuComponent({ session }) {
 
   const [allData, setAllData] = useState([]);
-  const [sessionUser, setSessionUser] = useState([]);
+  const [sessionUser, setSessionUser] = useState(null);
+  const [isDataCorrect, setIsDataCorrect] = useState(false);
   const formik = useFormik({
     initialValues: {
-        cozeltiYogunlugu: "",
-        kontrolEden: "",
+      cozeltiYogunlugu: "",
+      kontrolEden: "",
     },
-    validate:sodaTesisiKontrolFormu_validate,
+    validate: sodaTesisiKontrolFormu_validate,
     onSubmit,
   });
-  
+
   const tuzTesisiService = new TuzService();
   const userService = new UserService();
   const employee_id = session.user.employeeId;
 
   async function getAllSodaTesisiKontrolFormuDataHandler() {
     await tuzTesisiService.getAllSodaTesisiKontrolFormu().then((result) => setAllData(result.data));
-  } 
+  }
   async function getSessionUserHandler() {
     if (session) {
       await userService
@@ -34,17 +35,25 @@ export default function SodaTesisiKontrolFormuComponent({ session }) {
         .then((result) => setSessionUser(result));
     }
   }
+
+
+
   useEffect(() => {
     getSessionUserHandler();
     getAllSodaTesisiKontrolFormuDataHandler();
-  }, [allData]);
+  }, []);
 
   async function onSubmit(values, { resetForm }) {
+
+
     const employeeId = {
       employeeId: `${employee_id}`,
     };
     values = Object.assign(values, employeeId);
     console.log(values);
+
+
+
     const options = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -62,10 +71,10 @@ export default function SodaTesisiKontrolFormuComponent({ session }) {
       });
     resetForm();
 
+
+
   }
-  if (sessionUser.length === 0) {
-    return <div></div>;
-  }
+
   async function deleteSoda(id) {
     const sodaId = {
       sodaId: `${id}`,
@@ -86,6 +95,9 @@ export default function SodaTesisiKontrolFormuComponent({ session }) {
         }
       });
   }
+  if (sessionUser === null) {
+    return <div className="text-center">Yükleniyor...</div>;
+  }
 
   return (
 
@@ -102,8 +114,8 @@ export default function SodaTesisiKontrolFormuComponent({ session }) {
                 placeholder="Çözelti Yoğunlugu"
                 {...formik.getFieldProps("cozeltiYogunlugu")}
               />
-               {formik.errors.cozeltiYogunlugu &&
-              formik.touched.cozeltiYogunlugu ? (
+              {formik.errors.cozeltiYogunlugu &&
+                formik.touched.cozeltiYogunlugu ? (
                 <span className="text-danger opacity-75">
                   {formik.errors.cozeltiYogunlugu}
                 </span>
@@ -114,13 +126,13 @@ export default function SodaTesisiKontrolFormuComponent({ session }) {
             </div>
             <div className={AuthFormCSS.input_group}>
               <input className="form-control"
-                type="text"              
+                type="text"
                 name="kontrolEden"
                 placeholder="Kontrol Eden"
                 {...formik.getFieldProps("kontrolEden")}
               />
-               {formik.errors.kontrolEden &&
-              formik.touched.kontrolEden ? (
+              {formik.errors.kontrolEden &&
+                formik.touched.kontrolEden ? (
                 <span className="text-danger opacity-75">
                   {formik.errors.kontrolEden}
                 </span>
@@ -129,7 +141,7 @@ export default function SodaTesisiKontrolFormuComponent({ session }) {
               )}
 
             </div>
-           
+
             <div className="input-button mx-auto">
               <button type="submit" className="btn btn-outline-dark mt-2">
                 Ekle
@@ -141,7 +153,7 @@ export default function SodaTesisiKontrolFormuComponent({ session }) {
       <hr />
       <section>
         <p className="text-muted text-center fs-5 fw-bolder pb-3">
-        İŞLETMEYE VERİLEN SIVI SODA ANALİZ SONUCU
+          İŞLETMEYE VERİLEN SIVI SODA ANALİZ SONUCU
         </p>
 
         <div className="row">
@@ -152,8 +164,8 @@ export default function SodaTesisiKontrolFormuComponent({ session }) {
                   <th scope="col">Sr. No.</th>
                   <th scope="col">Tarih</th>
                   <th scope="col">Çalışan ID</th>
-                  <th scope="col">Çözelti<br/> Yoğunluğu</th>
-                  <th scope="col">Kontrol Eden</th>          
+                  <th scope="col">Çözelti<br /> Yoğunluğu<br />1.163Max:1.168Kg/m3</th>
+                  <th scope="col">Kontrol Eden</th>
                   <th scope="col">.</th>
                 </tr>
               </thead>
@@ -162,7 +174,7 @@ export default function SodaTesisiKontrolFormuComponent({ session }) {
                   <tr key={index}>
                     <th scope="row">{index + 1}</th>
                     <td>
-                      {moment(data.dateAndTime).format("YYYY-MM-DD HH:mm")}
+                      {moment(data.isletmeyeVerildigiTarihSaat).format("YYYY-MM-DD HH:mm")}
                     </td>
                     <td>@{data.createdBy.employeeId}</td>
                     <td>{data.cozeltiYogunlugu}</td>
@@ -175,21 +187,21 @@ export default function SodaTesisiKontrolFormuComponent({ session }) {
                             style={{ cursor: "pointer" }}
                             onClick={() => deleteSoda(data.id)}
                           >
-                            <RiDeleteBin5Line/>
+                            <RiDeleteBin5Line />
                           </span>
                         </div>
                         <span>
                           <SodaTesisiKontrolFormUpdateModal dataId={data.id} />
                         </span>
-                        
+
                       </td>
                     ) : (
                       <></>
                     )}
-                    
-                    
 
-                   
+
+
+
 
                   </tr>
                 ))}

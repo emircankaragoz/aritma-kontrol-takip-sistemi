@@ -10,7 +10,7 @@ import moment from "moment/moment";
 export default function TuzTesisiKontrolCizelgesiComponent({ session }) {
 
   const [allData, setAllData] = useState([]);
-  const [sessionUser, setSessionUser] = useState([]);
+  const [sessionUser, setSessionUser] = useState(null);
   const formik = useFormik({
     initialValues: {
       cozeltiSertligi: "",
@@ -39,7 +39,7 @@ export default function TuzTesisiKontrolCizelgesiComponent({ session }) {
   useEffect(() => {
     getSessionUserHandler();
     getAllTuzTesisiKontrolDataHandler();
-  }, [allData]);
+  }, []);
 
 
   async function onSubmit(values, { resetForm }) {
@@ -68,9 +68,7 @@ export default function TuzTesisiKontrolCizelgesiComponent({ session }) {
   }
 
 
-  if (sessionUser.length === 0) {
-    return <div></div>;
-  }
+  
   async function deleteTuzTesisiKontrolCizelgesi(id) {
     const tuzId = {
       tuzId: `${id}`,
@@ -91,6 +89,9 @@ export default function TuzTesisiKontrolCizelgesiComponent({ session }) {
         }
       });
   }
+  if (sessionUser === null) {
+    return <div className="text-center">Yükleniyor...</div>;
+  }
 
   return (
     <div className="container p-2">
@@ -98,6 +99,7 @@ export default function TuzTesisiKontrolCizelgesiComponent({ session }) {
         <section>
           <form onSubmit={formik.handleSubmit} className="d-flex flex-column gap-3 ">
             <div className={TuzCSS.input_group}>
+            
               <input className="form-control"
                 type="number"
                 step="0.01"
@@ -212,10 +214,10 @@ export default function TuzTesisiKontrolCizelgesiComponent({ session }) {
                   <th scope="col">Sr. No.</th>
                   <th scope="col">Tarih</th>
                   <th scope="col">Çalışan ID</th>
-                  <th scope="col">Çözelti Sertliği</th>
-                  <th scope="col">pH</th>
-                  <th scope="col">Yoğunluk</th>
-                  <th scope="col">Bikarbonat</th>
+                  <th scope="col">Çözelti Sertliği <br/>(0) AS</th>
+                  <th scope="col">pH <br/>6.00-7.00<br/> Aralığında</th>
+                  <th scope="col">Yoğunluk <br/>1.190 - 1.195 gr/cm3</th>
+                  <th scope="col">Bikarbonat <br/>Max 40 ppm</th>
                   <th scope="col">Kontrol Eden</th>
                   <th scope="col">.</th>
                 </tr>
@@ -225,8 +227,8 @@ export default function TuzTesisiKontrolCizelgesiComponent({ session }) {
                   <tr key={index}>
                     <th scope="row">{index + 1}</th>
                     <td>
-                      {moment(data.dateAndTime).format("YYYY-MM-DD HH:mm")}
-                    </td>
+                      {moment(data.isletmeyeVerildigiTarihSaat).format("YYYY-MM-DD HH:mm")}
+                    </td>      
                     <td>@{data.createdBy.employeeId}</td>
                     <td>{data.cozeltiSertligi}</td>
                     <td>{data.ph}</td>

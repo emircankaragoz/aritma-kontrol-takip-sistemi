@@ -7,11 +7,7 @@ export default async function handler(req, res) {
             const { ph, sertlik, bikarbonat,subcategory,employeeId} = req.body; 
             console.log(employeeId);
             const data = await prisma.isletmeSuyuKontrolu.create({
-                data: {
-                    ph:ph,
-                    sertlik:sertlik,
-                    bikarbonat:bikarbonat,
-                   
+                data: {       
                     createdBy:{
                         connect:{
                             employeeId:employeeId
@@ -22,9 +18,11 @@ export default async function handler(req, res) {
                             employeeId:employeeId
                         }
                     },
-                    
-                    subCategory:subcategory,
-                    category:"isletmeSuyu"
+                    ph: `${ph}`,
+                    sertlik: `${sertlik}`,
+                    bikarbonat: `${bikarbonat}`,                  
+                    subCategory: subcategory,
+                    category:"su"
                     
                       
                 

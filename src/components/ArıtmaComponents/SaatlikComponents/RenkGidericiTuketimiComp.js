@@ -11,16 +11,7 @@ import moment from "moment/moment";
 export default function RenkGidericiTuketimiComponent({ session }) {
 
     const [allData, setAllData] = useState([]);
-    const [sessionUser, setSessionUser] = useState([]);
-
-    const renkGidericiTuketimi = new AritmaService();
-
-    async function getAllRenkGidericiTuketimiDataHandler() {
-        await renkGidericiTuketimi.getAllRenkGidericiTuketimi().then((result) => setAllData(result.data));
-    }
-
-
-
+    const [sessionUser, setSessionUser] = useState(null);
     const formik = useFormik({
         initialValues: {
             renkGidericiDozajiMlDak: "",
@@ -35,11 +26,29 @@ export default function RenkGidericiTuketimiComponent({ session }) {
         validate: renkGidericiTuketimi_validate,
         onSubmit,
     });
+    
+    const renkGidericiTuketimi = new AritmaService();
+    const userService = new UserService();
+    const employee_id = session.user.employeeId;
+    async function getAllRenkGidericiTuketimiDataHandler() {
+        await renkGidericiTuketimi.getAllRenkGidericiTuketimi().then((result) => setAllData(result.data));
+    }
+  
+    async function getSessionUserHandler() {
+        if (session) {
+            await userService
+                .getSessionUser(employee_id)
+                .then((result) => setSessionUser(result));
+        }
+    }
+    useEffect(() => {
+        getAllRenkGidericiTuketimiDataHandler();
+        getSessionUserHandler();
+    }, []);
 
-    const employeeid = session.user.employeeId;
     async function onSubmit(values, { resetForm }) {
         const employeeId = {
-            employeeId: `${employeeid}`,
+            employeeId: `${employee_id}`,
         };
         values = Object.assign(values, employeeId);
         console.log(values);
@@ -81,21 +90,8 @@ export default function RenkGidericiTuketimiComponent({ session }) {
                 }
             });
     }
-    const userService = new UserService();
-    const employee_id = session.user.employeeId;
-    async function getSessionUserHandler() {
-        if (session) {
-            await userService
-                .getSessionUser(employee_id)
-                .then((result) => setSessionUser(result));
-        }
-    }
-    useEffect(() => {
-        getAllRenkGidericiTuketimiDataHandler();
-        getSessionUserHandler();
-    }, [allData, sessionUser]);
-    if(sessionUser.length === 0){
-        return <div></div>
+    if (sessionUser === null) {
+        return <div className="text-center">Yükleniyor...</div>;
       }
 
 
@@ -108,7 +104,8 @@ export default function RenkGidericiTuketimiComponent({ session }) {
                     <form onSubmit={formik.handleSubmit} className="d-flex flex-column gap-3 ">
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
-                                type="text"
+                                 type="number"
+                                 step="0.01"
                                 name="renkGidericiDozajiMlDak"
                                 placeholder="Renk Giderici Dozaji (Ml/Dak)"
                                 {...formik.getFieldProps("renkGidericiDozajiMlDak")}
@@ -124,7 +121,8 @@ export default function RenkGidericiTuketimiComponent({ session }) {
                         </div>
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
-                                type="text"
+                                 type="number"
+                                 step="0.01"
                                 name="biyolojikCokHavCikisiKompozitRenk"
                                 placeholder="Biyolojik Cok. Hav. Cikisi Kompozit Renk"
                                 {...formik.getFieldProps("biyolojikCokHavCikisiKompozitRenk")}
@@ -140,7 +138,8 @@ export default function RenkGidericiTuketimiComponent({ session }) {
                         </div>
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
-                                type="text"
+                                 type="number"
+                                 step="0.01"
                                 name="yavasKaristirmaHavCikisi"
                                 placeholder="Yavas Karistirma Hav. Cikisi"
                                 {...formik.getFieldProps("yavasKaristirmaHavCikisi")}
@@ -157,7 +156,8 @@ export default function RenkGidericiTuketimiComponent({ session }) {
                         <div className={AuthFormCSS.input_group}>
                             <input
                                 className="form-control"
-                                type="text"
+                                type="number"
+                                step="0.01"
                                 name="kimyasalCokHavCikisiRenk"
                                 placeholder="Kimyasal Cok. Hav. Cikisi Renk"
                                 {...formik.getFieldProps("kimyasalCokHavCikisiRenk")}
@@ -175,7 +175,8 @@ export default function RenkGidericiTuketimiComponent({ session }) {
                         <div className={AuthFormCSS.input_group}>
                             <input
                                 className="form-control"
-                                type="text"
+                                type="number"
+                                step="0.01"
                                 name="toplamRenkGidericiKgSaat"
                                 placeholder="Toplam Renk Giderici (Kg/Saat)"
                                 {...formik.getFieldProps("toplamRenkGidericiKgSaat")}
@@ -193,7 +194,8 @@ export default function RenkGidericiTuketimiComponent({ session }) {
                         <div className={AuthFormCSS.input_group}>
                             <input
                                 className="form-control"
-                                type="text"
+                                type="number"
+                                step="0.01"
                                 name="toplamRenkGidericiEuroSaat"
                                 placeholder="Toplam Renk Giderici (Euro/Saat)"
                                 {...formik.getFieldProps("toplamRenkGidericiEuroSaat")}
@@ -211,7 +213,8 @@ export default function RenkGidericiTuketimiComponent({ session }) {
                         <div className={AuthFormCSS.input_group}>
                             <input
                                 className="form-control"
-                                type="text"
+                                type="number"
+                                step="0.01"
                                 name="atikSu_m3sa"
                                 placeholder="Atık Su (m3/sa)"
                                 {...formik.getFieldProps("atikSu_m3sa")}

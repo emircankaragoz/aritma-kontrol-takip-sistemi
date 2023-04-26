@@ -7,10 +7,7 @@ export default async function handler(req, res) {
             const { girisAtiksuSayacDegeri,cikisAtiksuSayacDegeri,kimyasalCokeltimdenCekilenCamurMiktari_m3gun,employeeId } = req.body; 
             const data = await prisma.atiksuAritmaTesisiGirisVeCikisAtiksuMiktari.create({
                 data: {
-                    girisAtiksuSayacDegeri:girisAtiksuSayacDegeri ,
-                    cikisAtiksuSayacDegeri:cikisAtiksuSayacDegeri ,
-                    kimyasalCokeltimdenCekilenCamurMiktari_m3gun:kimyasalCokeltimdenCekilenCamurMiktari_m3gun,
-                    createdBy: {
+                     createdBy: {
                         connect: {        
                             employeeId: employeeId
                         }
@@ -20,7 +17,11 @@ export default async function handler(req, res) {
                             employeeId: employeeId
                         }
                     },
-                    category: "arıtma"                 
+                    category: "arıtma"    ,
+                    girisAtiksuSayacDegeri:`${girisAtiksuSayacDegeri}`,
+                    cikisAtiksuSayacDegeri:`${cikisAtiksuSayacDegeri}`,
+                    kimyasalCokeltimdenCekilenCamurMiktari_m3gun:`${kimyasalCokeltimdenCekilenCamurMiktari_m3gun}`,
+                                
                 },
             });
             res.status(201).json({ status: true, atiksuAritmaTesisiGirisVeCikisAtiksuMiktari: data });

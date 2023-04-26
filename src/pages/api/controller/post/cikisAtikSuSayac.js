@@ -8,11 +8,6 @@ export default async function handler(req, res) {
             console.log(employeeId);
             const data = await prisma.cikisAtiksuSayaciKayitFormu.create({
                 data: {
-                    atiksuSayac:atiksuSayac ,
-                    atiksuMetrekup:atiksuMetrekup ,
-                    
-                    
-
                     createdBy: {
                         connect: {        
 
@@ -25,7 +20,13 @@ export default async function handler(req, res) {
 
                         }
                     },
-                    category: "arıtma"
+                    category: "arıtma",
+                    atiksuSayac: `${atiksuSayac}` ,
+                    atiksuMetrekup: `${atiksuMetrekup}` ,
+                    
+                    
+                   
+       
                     
                 },
             });

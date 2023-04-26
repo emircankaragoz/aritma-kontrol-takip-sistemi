@@ -11,11 +11,11 @@ export default function SuPage({ session }) {
 
   const [key, setKey] = useState("Yumuşak Su");
   const [keySecond, setKeySecond] = useState('Yemekhane 1.Tank');
-
+  
   return (
     <Layout session={session}>
       <h2 className="mb-4 fw-bold text-center">Su Page</h2>
-      <Tabs defaultActiveKey="isletmeSuyuKontrolü">
+      <Tabs>
         <Tab eventKey="isletmeSuyuKontrolü" title="İŞLETME SUYU KONTROL FORMU" >
           <Tabs id="controlled-tab-example"
             activeKey={key}

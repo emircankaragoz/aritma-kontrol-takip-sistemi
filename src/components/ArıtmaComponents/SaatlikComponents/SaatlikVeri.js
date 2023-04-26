@@ -11,19 +11,7 @@ import moment from "moment/moment";
 export default function SaatlikVeriComponent({ session }) {
 
     const [allData, setAllData] = useState([]);
-    const [sessionUser, setSessionUser] = useState([]);
-
-    const saatlikVeri = new AritmaService();
-
-
-    async function getAllSaatlikVeriDataHandler() {
-        await saatlikVeri.getAllSaatlikVeri().then((result) => setAllData(result.data));
-    }
-
-    const userService = new UserService();
-
-
-
+    const [sessionUser, setSessionUser] = useState(null);
     const formik = useFormik({
         initialValues: {
             esanjorGirisSicakligi: "",
@@ -34,7 +22,13 @@ export default function SaatlikVeriComponent({ session }) {
         validate: saatlikVeri_validate,
         onSubmit,
     });
+    const saatlikVeri = new AritmaService();
+    const userService = new UserService();
     const employee_id = session.user.employeeId;
+    async function getAllSaatlikVeriDataHandler() {
+        await saatlikVeri.getAllSaatlikVeri().then((result) => setAllData(result.data));
+    } 
+    
     async function getSessionUserHandler() {
         if (session) {
             await userService
@@ -42,11 +36,15 @@ export default function SaatlikVeriComponent({ session }) {
                 .then((result) => setSessionUser(result));
         }
     }
+       
+    useEffect(() => {
+        getSessionUserHandler();
+        getAllSaatlikVeriDataHandler();
+    }, []);
 
-    const employeeid = session.user.employeeId;
     async function onSubmit(values, { resetForm }) {
         const employeeId = {
-            employeeId: `${employeeid}`,
+            employeeId: `${employee_id}`,
         };
         values = Object.assign(values, employeeId);
         console.log(values);
@@ -87,18 +85,10 @@ export default function SaatlikVeriComponent({ session }) {
                     });
                 }
             });
-    }
-    
-    
-    useEffect(() => {
-        getSessionUserHandler();
-        getAllSaatlikVeriDataHandler();
-    }, [allData, sessionUser]);
-
-    if(sessionUser.length === 0){
-        return <div></div>
+    } 
+    if (sessionUser === null) {
+        return <div className="text-center">Yükleniyor...</div>;
       }
-
 
     return (
 
@@ -110,7 +100,8 @@ export default function SaatlikVeriComponent({ session }) {
                         <div className={AuthFormCSS.input_group}>
                             <h3 className="text-muted  fs-5 fw-bolder pb-3">Isı Geri Kazanım</h3>
                             <input className="form-control"
-                                type="text"
+                                 type="number"
+                                 step="0.01"
                                 name="esanjorGirisSicakligi"
                                 placeholder="Eşanjor Giriş Sıcaklığı"
                                 {...formik.getFieldProps("esanjorGirisSicakligi")} />
@@ -126,7 +117,8 @@ export default function SaatlikVeriComponent({ session }) {
                         <div className={AuthFormCSS.input_group}>
 
                             <input className="form-control"
-                                type="text"
+                                 type="number"
+                                 step="0.01"
                                 name="esanjorCikisSicakligi"
                                 placeholder="Eşanjor Çıkış Sıcaklığı"
                                 {...formik.getFieldProps("esanjorCikisSicakligi")} />
@@ -142,7 +134,8 @@ export default function SaatlikVeriComponent({ session }) {
                         <div className={AuthFormCSS.input_group}>
                             <h3 className="text-muted  fs-5 fw-bolder pb-3">Aerobik</h3>
                             <input className="form-control"
-                                type="text"
+                                 type="number"
+                                 step="0.01"
                                 name="oksijen"
                                 placeholder="Oksijen"
                                 {...formik.getFieldProps("oksijen")} />
@@ -159,7 +152,8 @@ export default function SaatlikVeriComponent({ session }) {
                             <h3 className="text-muted  fs-5 fw-bolder pb-3">Nötralizasyon</h3>
                             <input
                                 className="form-control"
-                                type="text"
+                                type="number"
+                                step="0.01"
                                 name="ph"
                                 placeholder="pH"
                                 {...formik.getFieldProps("ph")} />

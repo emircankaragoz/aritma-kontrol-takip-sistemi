@@ -10,14 +10,8 @@ import moment from "moment/moment";
 
 export default function YemekhaneSuyuPageComp({ session, subCategory }) {
   const [allData, setAllData] = useState([]);
-  const [sessionUser, setSessionUser] = useState([]);
-
-  const yemekhaneSuyuService = new SuService();
-  const userService = new UserService();
-  async function getAllYemekhaneSuyuDataHandler() {
-    await yemekhaneSuyuService.getAllYemekhaneSuyu().then((result) => setAllData(result.data));
-  }
-
+  const [sessionUser, setSessionUser] = useState(null);
+  const refresh = () => window.location.reload(true);
   const formik = useFormik({
     initialValues: {
       klorCozeltisiDozaji: "",
@@ -32,7 +26,13 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
     onSubmit,
   });
 
+  const yemekhaneSuyuService = new SuService();
+  const userService = new UserService();
   const employee_id = session.user.employeeId;
+  async function getAllYemekhaneSuyuDataHandler() {
+    await yemekhaneSuyuService.getAllYemekhaneSuyu().then((result) => setAllData(result.data));
+  }
+  
   async function getSessionUserHandler() {
     if (session) {
       await userService
@@ -40,13 +40,14 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
         .then((result) => setSessionUser(result));
     }
   }
-
-
-  const employeeid = session.user.employeeId;
+  useEffect(() => {
+    getSessionUserHandler();
+    getAllYemekhaneSuyuDataHandler();
+  }, []);
 
   async function onSubmit(values, { resetForm }) {
     const employeeId = {
-      employeeId: `${employeeid}`,
+      employeeId: `${employee_id}`,
     };
     const subcategory = {
       subcategory: `${subCategory}`,
@@ -91,13 +92,8 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
         }
       });
   }
-  useEffect(() => {
-    getSessionUserHandler();
-    getAllYemekhaneSuyuDataHandler();
-  }, [allData, sessionUser]);
-
-  if (sessionUser.length === 0) {
-    return <div></div>
+  if (sessionUser === null) {
+    return <div className="text-center">Yükleniyor...</div>;
   }
 
 
@@ -109,9 +105,10 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
           <form onSubmit={formik.handleSubmit} className="d-flex flex-column gap-3 ">
             <div className={AuthFormCSS.input_group}>
               <input className="form-control"
-                type="text"
+                type="number"
+                step="0.01"
                 name="klor_cozeltisi_dozaji"
-                placeholder="klorCozeltisiDozaji"
+                placeholder="Klor Çözeltisi Dozaji"
                 {...formik.getFieldProps("klorCozeltisiDozaji")}
               />
               {formik.errors.klorCozeltisiDozaji && formik.touched.klorCozeltisiDozaji ? (
@@ -124,7 +121,8 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
             </div>
             <div className={AuthFormCSS.input_group}>
               <input className="form-control"
-                type="text"
+                type="number"
+                step="0.01"
                 name="klor"
                 placeholder="Klor"
                 {...formik.getFieldProps("klor")}
@@ -139,7 +137,8 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
             </div>
             <div className={AuthFormCSS.input_group}>
               <input className="form-control"
-                type="text"
+                type="number"
+                step="0.01"
                 name="ph"
                 placeholder="pH"
                 {...formik.getFieldProps("ph")}
@@ -155,7 +154,8 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
             <div className={AuthFormCSS.input_group}>
 
               <input className="form-control"
-                type="text"
+                type="number"
+                step="0.01"
                 name="iletkenlik"
                 placeholder="İletkenlik"
                 {...formik.getFieldProps("iletkenlik")}
@@ -199,7 +199,7 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
               )}
             </div>
             <div className="input-button mx-auto">
-              <button type="submit" className="btn btn-outline-dark mt-2">
+              <button onClick={refresh} type="submit" className="btn btn-outline-dark mt-2">
                 Ekle
               </button>
             </div>

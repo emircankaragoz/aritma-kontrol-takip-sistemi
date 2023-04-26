@@ -2,36 +2,96 @@ import axios from "axios";
 import { URL } from "../../environment";
 import moment from "moment";
 export default class AritmaService {
-  
+
   async getAllAtiksuAritmaGirisCikis() {
     return await axios.get(`${URL}/api/controller/get/atiksuAritmaGirisCikis`);
   }
-   
-   async getAtiksuAritmaGirisCikisById(id) {
+
+  async getAtiksuAritmaGirisCikisById(id) {
     let atiksuAritma;
     await axios.get(`${URL}/api/controller/get/atiksuAritmaGirisCikis`).then((result) => {
       result.data.map((data) => {
         if (data.id === id) {
-          atiksuAritma = data ;
+          atiksuAritma = data;
         }
-      });     
+      });
     });
-    
+
     return atiksuAritma;
   }
 
-  async getTransferDeneme(datetime){
-    let girisAtiksuMiktariM3Gun1,girisAtiksuMiktariM3Gun2,girisAtiksuMiktariM3Gun;
-    let cikisAtiksuMiktariM3Gun1,cikisAtiksuMiktariM3Gun2,cikisAtiksuMiktariM3Gun;
+  async getCalculationDeneme(datetime) {
+    let girisAtiksuMiktariM3Gun1, girisAtiksuMiktariM3Gun2, girisAtiksuMiktariM3Gun;
+    let cikisAtiksuMiktariM3Gun1, cikisAtiksuMiktariM3Gun2, cikisAtiksuMiktariM3Gun;
     let farkCekilenCamurMiktari;
     let aerobiktenCekilenCamurMiktari;
+    let kimyasalCokeltimdenCekilenCamurMiktari;
 
     const response = await axios.get(
-        `${URL}/api/controller/get/atiksuAritmaGirisCikis`
+      `${URL}/api/controller/get/atiksuAritmaGirisCikis`
     );
+    console.log(response.data);
+    console.log(datetime);
     const data = response.data.find(
-        (item) => moment(item.dateAndTime).format("YYYY-MM-DD") == datetime
-      );
+      (item) => moment(item.dateAndTime).format("YYYY-MM-DD") == datetime
+    );
+    console.log("today");
+    console.log(data);
+
+    // Find data for the previous day
+    const prevDatetime = moment(datetime)
+      .subtract(1, "days")
+      .startOf("day")
+      .format("YYYY-MM-DD");
+    const prevData = response.data.find(
+      (item) => moment(item.dateAndTime).format("YYYY-MM-DD") == prevDatetime
+    );
+    console.log("prev");
+    console.log(prevData);
+
+    if (data && prevData) {
+      girisAtiksuMiktariM3Gun1 = parseFloat(prevData.girisAtiksuSayacDegeri);
+      girisAtiksuMiktariM3Gun2 = parseFloat(data.girisAtiksuSayacDegeri);
+      girisAtiksuMiktariM3Gun =
+        girisAtiksuMiktariM3Gun2 - girisAtiksuMiktariM3Gun1;
+
+      cikisAtiksuMiktariM3Gun1 = parseFloat(prevData.cikisAtiksuSayacDegeri);
+      cikisAtiksuMiktariM3Gun2 = parseFloat(data.cikisAtiksuSayacDegeri);
+      cikisAtiksuMiktariM3Gun = cikisAtiksuMiktariM3Gun2 - cikisAtiksuMiktariM3Gun1;
+
+      farkCekilenCamurMiktari = girisAtiksuMiktariM3Gun-cikisAtiksuMiktariM3Gun;
+      kimyasalCokeltimdenCekilenCamurMiktari = parseFloat(data.kimyasalCokeltimdenCekilenCamurMiktari_m3gun);
+      aerobiktenCekilenCamurMiktari = farkCekilenCamurMiktari-kimyasalCokeltimdenCekilenCamurMiktari;
+      const dateAndTime = prevDatetime;
+      return {
+        girisAtiksuMiktariM3Gun,
+        cikisAtiksuMiktariM3Gun,
+        farkCekilenCamurMiktari,
+        kimyasalCokeltimdenCekilenCamurMiktari,
+        aerobiktenCekilenCamurMiktari,
+        dateAndTime,
+      };
+    }
+    else {
+      console.log(data)
+        girisAtiksuMiktariM3Gun = 0;
+        cikisAtiksuMiktariM3Gun = 0;
+        farkCekilenCamurMiktari = 0;
+        kimyasalCokeltimdenCekilenCamurMiktari = 0;
+        aerobiktenCekilenCamurMiktari = 0;
+        const dateAndTime = datetime;
+      
+
+      return {
+        girisAtiksuMiktariM3Gun,
+        cikisAtiksuMiktariM3Gun,
+        farkCekilenCamurMiktari,
+        kimyasalCokeltimdenCekilenCamurMiktari,
+        aerobiktenCekilenCamurMiktari,
+        dateAndTime,
+       
+      };
+    }
 
   }
 
@@ -45,17 +105,17 @@ export default class AritmaService {
   async getAllCikisAtiksuSayac() {
     return await axios.get(`${URL}/api/controller/get/cikisAtiksuSayac`);
   }
-   
-   async getCikisAtiksuSayacById(id) {
+
+  async getCikisAtiksuSayacById(id) {
     let atiksu;
     await axios.get(`${URL}/api/controller/get/cikisAtiksuSayac`).then((result) => {
       result.data.map((data) => {
         if (data.id === id) {
-          atiksu = data ;
+          atiksu = data;
         }
-      });     
+      });
     });
-    
+
     return atiksu;
   }
 
@@ -64,17 +124,17 @@ export default class AritmaService {
   async getAllRenkGidericiTuketimi() {
     return await axios.get(`${URL}/api/controller/get/renkGidericiTuketimi`);
   }
-  
-   async getRenkGidericiTuketimiById(id) {
+
+  async getRenkGidericiTuketimiById(id) {
     let renkGidericiTuketimi;
     await axios.get(`${URL}/api/controller/get/renkGidericiTuketimi`).then((result) => {
       result.data.map((data) => {
         if (data.id === id) {
-            renkGidericiTuketimi = data ;
+          renkGidericiTuketimi = data;
         }
-      });     
+      });
     });
-    
+
     return renkGidericiTuketimi;
   }
 
@@ -83,14 +143,14 @@ export default class AritmaService {
     return await axios.get(`${URL}/api/controller/get/saatlikVeri`);
   }
 
-   async getSaatlikVeriById(id) {
+  async getSaatlikVeriById(id) {
     let saatlikVeri;
     await axios.get(`${URL}/api/controller/get/saatlikVeri`).then((result) => {
       result.data.map((data) => {
         if (data.id === id) {
-            saatlikVeri = data ;
+          saatlikVeri = data;
         }
-      });     
+      });
     });
     console.log(saatlikVeri);
     return saatlikVeri;
@@ -101,14 +161,14 @@ export default class AritmaService {
     return await axios.get(`${URL}/api/controller/get/tdu`);
   }
 
-   async getTduById(id) {
+  async getTduById(id) {
     let tdu;
     await axios.get(`${URL}/api/controller/get/tdu`).then((result) => {
       result.data.map((data) => {
         if (data.id === id) {
-            tdu = data ;
+          tdu = data;
         }
-      });     
+      });
     });
     return tdu;
   }

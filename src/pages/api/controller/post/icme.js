@@ -8,15 +8,6 @@ export default async function handler(req, res) {
             console.log(employeeId);
             const data = await prisma.icmeSuyuTesisiKontrolFormu.create({
                 data: {
-                    hamsusayac: hamsusayac,
-                    hamsuTonGun: hamsuTonGun,
-                    uretilenSuTonGun: uretilenSuTonGun,
-                    klorCozHazir: klorCozHazir,
-                    klorAnalizSonucuMgL: klorAnalizSonucuMgL,
-                    genelTemizlik: genelTemizlik,
-                    aciklama: aciklama,
-                    
-
                     createdBy: {
                         connect: {        
 
@@ -29,8 +20,14 @@ export default async function handler(req, res) {
 
                         }
                     },
-                    category: "icmeSuyu"
-                    
+                    category: "su",
+                    hamsusayac: `${hamsusayac}`,
+                    hamsuTonGun: `${hamsuTonGun}`,
+                    uretilenSuTonGun: `${uretilenSuTonGun}`,
+                    klorCozHazir: `${klorCozHazir}`,
+                    klorAnalizSonucuMgL: `${klorAnalizSonucuMgL}`,
+                    genelTemizlik: `${genelTemizlik}`,
+                    aciklama:`${aciklama}`,                 
                 },
             });
             res.status(201).json({ status: true, icmeSuyuTesisiKontrolFormu: data });

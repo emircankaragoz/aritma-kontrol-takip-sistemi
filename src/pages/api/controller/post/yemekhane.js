@@ -10,13 +10,6 @@ export default async function handler(req, res) {
             
             const data = await prisma.yemekhaneVeKullanmaSuyu.create({
                 data: {
-                    klorCozeltisiDozaji:klorCozeltisiDozaji,
-                    klor:klor,
-                    ph:ph,
-                    iletkenlik:iletkenlik,
-                    genelTemizlik:genelTemizlik,
-                    aciklama:aciklama,
-                    
                     createdBy: {                      
                         connect: {                                                  
                             employeeId: employeeId
@@ -28,7 +21,15 @@ export default async function handler(req, res) {
                         }
                     },
                     subCategory:subcategory,
-                    category: "yemekhaneveKullanmaSuyu",  
+                    category: "su",  
+                    klorCozeltisiDozaji:`${klorCozeltisiDozaji}`,
+                    klor:`${klor}`,
+                    ph:`${ph}`,
+                    iletkenlik:`${iletkenlik}`,
+                    genelTemizlik:`${genelTemizlik}`,
+                    aciklama:`${aciklama}`,
+                   
+                
                     
                                 
                 },

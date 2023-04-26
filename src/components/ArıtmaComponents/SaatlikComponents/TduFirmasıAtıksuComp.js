@@ -2,24 +2,16 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
 import { AuthFormCSS } from "@/styles";
-import {AritmaService, UserService} from "@/services";
+import { AritmaService, UserService } from "@/services";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import moment from "moment/moment";
-import {TduFirmasıUpdateModal} from "@/components";
+import { TduFirmasıUpdateModal } from "@/components";
 import { tdu_validate } from "lib/validate";
 
 export default function TduFirmasıAtıksuComponent({ session }) {
 
     const [allData, setAllData] = useState([]);
-    const [sessionUser, setSessionUser] = useState([]);
-    const tduService = new AritmaService();
-    const userService = new UserService();
-
-    async function getAllTduDataHandler() {
-        await tduService.getAllTdu().then((result) => setAllData(result.data));
-    }
-
-
+    const [sessionUser, setSessionUser] = useState(null);
     const formik = useFormik({
         initialValues: {
             geldigiFirma: "",
@@ -32,8 +24,13 @@ export default function TduFirmasıAtıksuComponent({ session }) {
         validate: tdu_validate,
         onSubmit,
     });
-
+    const tduService = new AritmaService();
+    const userService = new UserService();
     const employee_id = session.user.employeeId;
+    async function getAllTduDataHandler() {
+        await tduService.getAllTdu().then((result) => setAllData(result.data));
+    }
+    
     async function getSessionUserHandler() {
         if (session) {
             await userService
@@ -41,13 +38,17 @@ export default function TduFirmasıAtıksuComponent({ session }) {
                 .then((result) => setSessionUser(result));
         }
     }
+    useEffect(() => {
+        getSessionUserHandler();
+        getAllTduDataHandler();
+    }, []);
 
-    const employeeid = session.user.employeeId;
+
     async function onSubmit(values, { resetForm }) {
         const employeeId = {
             employeeId: `${employeeid}`,
         };
-        values = Object.assign(values, employeeId);
+        values = Object.assign(values, employee_Id);
         console.log(values);
         const options = {
             method: "POST",
@@ -85,12 +86,9 @@ export default function TduFirmasıAtıksuComponent({ session }) {
                 }
             });
     }
-    useEffect(() => {
-        getSessionUserHandler();
-        getAllTduDataHandler();
-    }, [allData,sessionUser]);
-    if(sessionUser.length === 0){
-        return <div></div>
+
+    if (sessionUser === null) {
+        return <div className="text-center">Yükleniyor...</div>;
       }
 
     return (
@@ -112,7 +110,7 @@ export default function TduFirmasıAtıksuComponent({ session }) {
                             ) : (
                                 <></>
                             )}
-                          
+
 
                         </div>
                         <div className={AuthFormCSS.input_group}>
@@ -129,12 +127,13 @@ export default function TduFirmasıAtıksuComponent({ session }) {
                             ) : (
                                 <></>
                             )}
-                            
+
 
                         </div>
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
-                                type="text"
+                                 type="number"
+                                 step="0.01"
                                 name="miktarKg"
                                 placeholder="Miktar (kg)"
                                 {...formik.getFieldProps("miktarKg")}
@@ -146,7 +145,7 @@ export default function TduFirmasıAtıksuComponent({ session }) {
                             ) : (
                                 <></>
                             )}
-                           
+
 
                         </div>
                         <div className={AuthFormCSS.input_group}>
@@ -165,7 +164,7 @@ export default function TduFirmasıAtıksuComponent({ session }) {
                             ) : (
                                 <></>
                             )}
-                           
+
 
                         </div>
                         <div className={AuthFormCSS.input_group}>
@@ -183,10 +182,10 @@ export default function TduFirmasıAtıksuComponent({ session }) {
                             ) : (
                                 <></>
                             )}
-                          
 
 
-                        </div>           
+
+                        </div>
                         <div className="input-button mx-auto">
                             <button type="submit" className="btn btn-outline-dark mt-2">
                                 Ekle
@@ -195,7 +194,7 @@ export default function TduFirmasıAtıksuComponent({ session }) {
                     </form>
                 </section>
             </div>
-            <hr/>
+            <hr />
             <section>
                 <p className="text-muted text-center fs-5 fw-bolder pb-3">
                     TDU FİRMASI ATIK SU TAKİP FORMU
@@ -225,7 +224,7 @@ export default function TduFirmasıAtıksuComponent({ session }) {
                                         <td>
                                             {moment(data.dateAndTime).format("YYYY-MM-DD HH:mm")}
                                         </td>
-                                         <td>@{data.createdBy.employeeId}</td>
+                                        <td>@{data.createdBy.employeeId}</td>
                                         <td>{data.geldigiFirma}</td>
                                         <td>{data.tasiyanFirma}</td>
                                         <td>{data.miktarKg}</td>

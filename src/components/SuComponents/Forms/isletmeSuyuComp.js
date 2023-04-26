@@ -10,27 +10,27 @@ import moment from "moment/moment";
 
 export default function IsletmeSuyuPageComp({ session, subCategory }) {
   const [allData, setAllData] = useState([]);
-  const [sessionUser, setSessionUser] = useState([]);
-
+  const [sessionUser, setSessionUser] = useState(null);
+  const [isCorrect, setIsCorrect] = useState(false);
+  const refresh = () => window.location.reload(true);
+  const myError = {};
+  const formik = useFormik({
+    initialValues: {
+      ph: "",
+      sertlik: "",
+      bikarbonat: "",
+    },
+    validate: (values) => isletme_validate(values, subCategory),
+    onSubmit,
+  });
   const isletmeSuyuService = new SuService();
   const userService = new UserService();
+  const employee_id = session.user.employeeId;
 
   async function getAllIsletmeSuyuDataHandler() {
     await isletmeSuyuService.getAllIsletmeSuyu().then((result) => setAllData(result.data));
   }
 
-
-  const formik = useFormik({
-    initialValues: {
-      ph: "",
-      sertlik: "",
-      bikarbonat: ""
-    },
-    validate: isletme_validate,
-    onSubmit,
-  });
-
-  const employee_id = session.user.employeeId;
   async function getSessionUserHandler() {
     if (session) {
       await userService
@@ -38,12 +38,16 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
         .then((result) => setSessionUser(result));
     }
   }
+  useEffect(() => {
+    getSessionUserHandler();
+    getAllIsletmeSuyuDataHandler();
+  }, []);
 
 
-  const employeeid = session.user.employeeId;
+
   async function onSubmit(values, { resetForm }) {
     const employeeId = {
-      employeeId: `${employeeid}`,
+      employeeId: `${employee_id}`,
     };
     const subcategory = {
       subcategory: `${subCategory}`,
@@ -88,13 +92,8 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
         }
       });
   }
-  useEffect(() => {
-    getSessionUserHandler();
-    getAllIsletmeSuyuDataHandler();
-  }, [allData, sessionUser]);
-
-  if (sessionUser.length === 0) {
-    return <div></div>
+  if (sessionUser === null) {
+    return <div className="text-center">Yükleniyor...</div>;
   }
 
   return (
@@ -102,13 +101,16 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
 
     <div className="container p-2">
       <div className="d-flex flex-column mx-auto w-50">
+
         <section>
+
           <form
             onSubmit={formik.handleSubmit}
             className="d-flex flex-column gap-3 ">
             <div className={AuthFormCSS.input_group}>
               <input className="form-control"
-                type="text"
+                type="number"
+                step="0.01"
                 name="ph"
                 placeholder="pH"
                 {...formik.getFieldProps("ph")}
@@ -120,13 +122,12 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
               ) : (
                 <></>
               )}
-
             </div>
 
             <div className={AuthFormCSS.input_group}>  <input className="form-control"
-              type="text"
+              type="number"
+              step="0.01"
               name="sertlik"
-
               placeholder="Sertlik"
               {...formik.getFieldProps("sertlik")}
             />
@@ -139,7 +140,8 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
               )}</div>
             <div className={AuthFormCSS.input_group}>
               <input className="form-control"
-                type="text"
+                type="number"
+                step="0.01"
                 name="bikarbonat"
 
                 placeholder="Bikarbonat"
