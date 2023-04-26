@@ -36,8 +36,8 @@ export default function User({ session }) {
               <div className="card w-50 mx-auto mb-1">
                 <ul className="list-group list-group-flush">
                   <li className="list-group-item text-center">
-                    <p>{msg.content}</p>
-                    <p>Tarih</p>
+                    <span className="fw-semibold">{msg.content}</span> <br/>
+                    <span>{moment(msg.createdAt).format("DD/MM/YYYY")}</span> <br/>
                     <button className="btn btn-sm btn-success">
                       Tamamlandı
                     </button>

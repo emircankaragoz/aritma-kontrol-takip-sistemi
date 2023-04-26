@@ -568,6 +568,7 @@ model TuzVeSodaTesisiGunlukTuketimMiktarlariAylikVeYillikToplam {
   createdAt   DateTime @default(now()) @map(name: "created_at")
   createdById Int
 
+
   updatedAt   DateTime @updatedAt @map(name: "updated_at")
   updatedById Int
 }
