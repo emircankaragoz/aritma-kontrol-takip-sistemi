@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Layout, TuzSodaSayacToplama, TuzTesisiKontrolCizelgesi, SodaTesisiKontrolForm,SodyumKlorurKontrolForm } from "@/components";
+import { Layout, TuzSodaSayacToplama, TuzTesisiKontrolCizelgesi, SodaTesisiKontrolForm,SodyumKlorurKontrolForm, TuzGunlukTuketimMiktari } from "@/components";
 import { getSession } from "next-auth/react";
 import { Tab, Tabs, Nav } from "react-bootstrap";
 export default function TuzPage({ session }) {
@@ -36,7 +36,7 @@ export default function TuzPage({ session }) {
               </Nav.Item>
             </Nav>
             <Tab.Content className="mt-4 d-flex justify-content-center">
-              <Tab.Pane eventKey="first">Sayfa 1</Tab.Pane>
+              <Tab.Pane eventKey="first">{/* <TuzGunlukTuketimMiktari /> */}</Tab.Pane>
               <Tab.Pane eventKey="second">Sayfa 2</Tab.Pane>
             </Tab.Content>
           </Tab.Container>

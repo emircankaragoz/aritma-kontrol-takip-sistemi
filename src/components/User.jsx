@@ -32,19 +32,31 @@ export default function User({ session }) {
           <p className="fs-3 font-bold text-center">Sistem Mesajları</p>
           {/* System Message Box */}
           <section className="mt-2">
-            {messages.map((msg) => (
-              <div className="card w-50 mx-auto mb-1">
-                <ul className="list-group list-group-flush">
-                  <li className="list-group-item text-center">
-                    <span className="fw-semibold">{msg.content}</span> <br/>
-                    <span>{moment(msg.createdAt).format("DD/MM/YYYY")}</span> <br/>
-                    <button className="btn btn-sm btn-success">
-                      Tamamlandı
-                    </button>
-                  </li>
-                </ul>
+            {messages.length === 0 ? (
+              <div className="text-center text-success">
+                Sistem mesajı bulunmamaktadır.
               </div>
-            ))}
+            ) : (
+              <div>
+                {messages.map((msg, index) => (
+                  <div key={index} className="card w-50 mx-auto mb-1">
+                    <ul className="list-group list-group-flush">
+                      <li className="list-group-item text-center">
+                        <span className="fw-semibold">{msg.title}</span> <br />
+                        <span>{msg.content}</span> <br />
+                        <span className="text-muted">
+                          {moment(msg.createdAt).format("DD/MM/YYYY")}
+                        </span>{" "}
+                        <br />
+                        <button className="btn btn-sm btn-success mt-2">
+                          Tamamlandı
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            )}
           </section>
         </section>
       </Layout>

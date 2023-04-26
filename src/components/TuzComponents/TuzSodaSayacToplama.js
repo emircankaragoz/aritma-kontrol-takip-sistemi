@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
-import { TuzService, UserService } from "@/services";
+import { SystemMessageService, TuzService, UserService } from "@/services";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import moment from "moment/moment";
 import { TuzCSS } from "@/styles";
 import { TuzSodaSayacUpdateModal } from "..";
 import { tuzSodaSayacToplama_validate } from "lib/validate";
+import { TUZSODASAYAC_MESSAGE } from "../../../environment";
+import { useRouter } from "next/navigation";
 
 export default function TuzSodaSayacToplamaComponent({ session }) {
+  const router = useRouter();
+
   const [allTuzSodaSayacToplama, setAllTuzSodaSayacToplama] = useState([]);
   const [sessionUser, setSessionUser] = useState(null);
-  const [isDataEntered, setIsDataEntered] = useState(false);
+  const [isDataEntered, setIsDataEntered] = useState(null);
+  const [isMessageCreated, setIsMessageCreated] = useState(false);
 
   const getToday = moment().startOf("day").format();
 
@@ -33,6 +38,7 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
 
   const tuzService = new TuzService();
   const userService = new UserService();
+  const systemMessageService = new SystemMessageService();
   const employee_id = session.user.employeeId;
 
   async function getAllTuzSodaSayacToplamaHandler() {
@@ -52,19 +58,38 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
 
   // veri girildi mi kontrolü yapılır.
   async function isTuzSodaSayacToplamaDatasEntered(tuzSodaSayacDatas) {
-    await tuzSodaSayacDatas.map((item) => {
-      if (
+    const result = tuzSodaSayacDatas.find(
+      (item) =>
         moment(item.dateAndTime).format("YYYY-MM-DD") ===
         moment(getToday).format("YYYY-MM-DD")
-      ) {
-        setIsDataEntered(true);
-      }
-    });
+    );
+
+    if (result) {
+      setIsDataEntered(true);
+      deleteSystemMessageHandler();
+    } else {
+      setIsDataEntered(false);
+      createdSystemMessageHandler();
+    }
+  }
+
+  async function deleteSystemMessageHandler() {
+    await systemMessageService.deleteSystemMessage(TUZSODASAYAC_MESSAGE.code);
+  }
+
+  async function createdSystemMessageHandler() {
+    await systemMessageService.addSystemMessage(
+      TUZSODASAYAC_MESSAGE.content,
+      TUZSODASAYAC_MESSAGE.title,
+      TUZSODASAYAC_MESSAGE.code
+    );
   }
 
   useEffect(() => {
-    getAllTuzSodaSayacToplamaHandler();
-    getSessionUserHandler();
+    return () => {
+      getAllTuzSodaSayacToplamaHandler();
+      getSessionUserHandler();
+    };
   }, []);
 
   async function onSubmit(values) {
@@ -120,7 +145,6 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
     await tuzService
       .getTransferDataToGunlukKullanimFromTuzSodaSayacToplama(date)
       .then((result) => {
-        console.log(result);
         sendDataHandler(result);
       });
   }
@@ -144,6 +168,8 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
           );
         }
       });
+
+    router.refresh();
   }
 
   if (sessionUser === null) {
@@ -166,7 +192,7 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
             <p className="text-danger">Günlük veri girişi gerçekleşmedi!</p>
           )}
         </div>
-        <section style={{ visibility: "revert" }}>
+        <section>
           <form
             onSubmit={formik.handleSubmit}
             className="d-flex flex-column gap-3"

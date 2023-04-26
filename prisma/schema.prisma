@@ -632,4 +632,5 @@ model SystemMessage {
   title     String?  @db.VarChar(45)
   content   String?
   createdAt DateTime @default(now()) @map(name: "created_at")
+  messageCode String @db.VarChar(30) @unique
 }
