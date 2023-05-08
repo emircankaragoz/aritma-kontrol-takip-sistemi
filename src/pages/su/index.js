@@ -3,9 +3,9 @@ import { Layout } from "@/components";
 import { getSession } from "next-auth/react";
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
-import IcmeSuyuKontrolFormu from "../../components/SuComponents/Forms/IcmeSuyuComp"
-import IsletmeSuyuKontrolForm from "../../components/SuComponents/Forms/IsletmeSuyuComp"
-import YemekhaneSuyuKontrolForm from "../../components/SuComponents/Forms/YemekhaneSuyuComp"
+import IcmeSuyuKontrolFormu from "../../components/SuComponents/Forms/icmeSuyuComp"
+import IsletmeSuyuKontrolForm from "../../components/SuComponents/Forms/isletmeSuyuComp"
+import YemekhaneSuyuKontrolForm from "../../components/SuComponents/Forms/yemekhaneSuyuComp"
 import styles from "../../styles/Tab.module.css"
 export default function SuPage({ session }) {
 
