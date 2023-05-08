@@ -26,17 +26,17 @@ export default class AritmaService {
     let farkCekilenCamurMiktari;
     let aerobiktenCekilenCamurMiktari;
     let kimyasalCokeltimdenCekilenCamurMiktari;
+    let girisAtiksuSayacDegeri, cikisAtiksuSayacDegeri;
 
     const response = await axios.get(
       `${URL}/api/controller/get/atiksuAritmaGirisCikis`
     );
-    console.log(response.data);
-    console.log(datetime);
+   
     const data = response.data.find(
       (item) => moment(item.dateAndTime).format("YYYY-MM-DD") == datetime
     );
-    console.log("today");
-    console.log(data);
+    
+   
 
     // Find data for the previous day
     const prevDatetime = moment(datetime)
@@ -46,8 +46,7 @@ export default class AritmaService {
     const prevData = response.data.find(
       (item) => moment(item.dateAndTime).format("YYYY-MM-DD") == prevDatetime
     );
-    console.log("prev");
-    console.log(prevData);
+    
 
     if (data && prevData) {
       girisAtiksuMiktariM3Gun1 = parseFloat(prevData.girisAtiksuSayacDegeri);
@@ -63,32 +62,49 @@ export default class AritmaService {
       kimyasalCokeltimdenCekilenCamurMiktari = parseFloat(data.kimyasalCokeltimdenCekilenCamurMiktari_m3gun);
       aerobiktenCekilenCamurMiktari = farkCekilenCamurMiktari-kimyasalCokeltimdenCekilenCamurMiktari;
       const dateAndTime = prevDatetime;
+      const id = data.id;
+      girisAtiksuSayacDegeri = parseFloat(data.girisAtiksuSayacDegeri);
+      cikisAtiksuSayacDegeri = parseFloat(data.cikisAtiksuSayacDegeri);
+      //kimyasalCokeltimdenCekilenCamurMiktari = parseFloat(data.kimyasalCokeltimdenCekilenCamurMiktari_m3gun);
+
       return {
+        girisAtiksuSayacDegeri,
         girisAtiksuMiktariM3Gun,
+        cikisAtiksuSayacDegeri,
         cikisAtiksuMiktariM3Gun,
         farkCekilenCamurMiktari,
         kimyasalCokeltimdenCekilenCamurMiktari,
         aerobiktenCekilenCamurMiktari,
         dateAndTime,
+        id
       };
     }
     else {
-      console.log(data)
-        girisAtiksuMiktariM3Gun = 0;
-        cikisAtiksuMiktariM3Gun = 0;
-        farkCekilenCamurMiktari = 0;
-        kimyasalCokeltimdenCekilenCamurMiktari = 0;
-        aerobiktenCekilenCamurMiktari = 0;
+      
+      
+        girisAtiksuMiktariM3Gun = parseFloat(data.girisAtiksuSayacDegeri);
+        cikisAtiksuMiktariM3Gun = parseFloat(data.cikisAtiksuSayacDegeri);
+        farkCekilenCamurMiktari = parseFloat(data.girisAtiksuSayacDegeri)-parseFloat(data.cikisAtiksuSayacDegeri) ;
+        kimyasalCokeltimdenCekilenCamurMiktari = parseFloat(data.kimyasalCokeltimdenCekilenCamurMiktari_m3gun);
+        aerobiktenCekilenCamurMiktari = farkCekilenCamurMiktari-kimyasalCokeltimdenCekilenCamurMiktari;
         const dateAndTime = datetime;
+        const id = data.id;
+        
+        girisAtiksuSayacDegeri = parseFloat(data.girisAtiksuSayacDegeri);
+        cikisAtiksuSayacDegeri = parseFloat(data.cikisAtiksuSayacDegeri);
       
 
       return {
+        girisAtiksuSayacDegeri,
         girisAtiksuMiktariM3Gun,
+        cikisAtiksuSayacDegeri,
         cikisAtiksuMiktariM3Gun,
         farkCekilenCamurMiktari,
         kimyasalCokeltimdenCekilenCamurMiktari,
         aerobiktenCekilenCamurMiktari,
         dateAndTime,
+        id
+        
        
       };
     }

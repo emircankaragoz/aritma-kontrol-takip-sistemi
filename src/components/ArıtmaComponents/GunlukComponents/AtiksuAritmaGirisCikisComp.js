@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { AuthFormCSS } from "@/styles";
 import { toast } from "react-toastify";
+import { AtiksuAritmaGirisCikisUpdateModal} from "../../ArıtmaComponents/GunlukComponents/UpdateComponents/AtiksuAritmaGirisCikisUpdateModal";
 import { AritmaService, UserService } from "@/services"
 import { RiDeleteBin5Line } from "react-icons/ri";
 import moment from "moment/moment";
@@ -11,7 +12,7 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
     const [sessionUser, setSessionUser] = useState(null);
     const [isDataEntered, setIsDataEntered] = useState(false);
     const getToday = moment().startOf("day").format();
-    const [deneme, setDeneme] = useState({});
+
     const formik = useFormik({
         initialValues: {
             girisAtiksuSayacDegeri: "",
@@ -23,6 +24,7 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
     const atiksuAritmaGirisCikis = new AritmaService();
     const userService = new UserService();
     const employee_id = session.user.employeeId;
+
 
     async function getAllAtiksuAritmaGirisCikisDataHandler() {
         await atiksuAritmaGirisCikis.getAllAtiksuAritmaGirisCikis().then((result) => {
@@ -39,27 +41,33 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
         }
     }
     // veri girildi mi kontrolü yapılır.
-    async function isAtiksuAritmaGirisCikisDatasEntered(datas) {
-        await datas.map((item) => {
-            if (
+    async function isAtiksuAritmaGirisCikisDatasEntered(atiksuDatas) {
+        const result = atiksuDatas.find(
+            (item) =>
                 moment(item.dateAndTime).format("YYYY-MM-DD") ===
                 moment(getToday).format("YYYY-MM-DD")
-            ) {
-                setIsDataEntered(true);
-            }
-        });
+        );
+
+        if (result) {
+            setIsDataEntered(true);
+
+        } else {
+            setIsDataEntered(false);
+        }
     }
     useEffect(() => {
         getAllAtiksuAritmaGirisCikisDataHandler();
         getSessionUserHandler();
+
     }, []);
 
-    async function onSubmit(values, { resetForm }) {
+    async function onSubmit(values) {
+
         const employeeId = {
             employeeId: `${employee_id}`,
         };
         values = Object.assign(values, employeeId);
-        console.log(values);
+        console.log
         const options = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -74,7 +82,9 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                     });
                 }
             });
-            transferDataToSameForm();
+        transferDataToSameForm();
+
+
     }
     async function deleteAtiksuAritmaGirisCikis(id) {
         const dataId = {
@@ -97,21 +107,50 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
             });
     }
 
+
+
     async function transferDataToSameForm() {
         const date = moment(getToday).format("YYYY-MM-DD");
         await atiksuAritmaGirisCikis
             .getCalculationDeneme(date)
             .then((result) => {
-                const returnedTarget = Object.assign(allData, result);
-                console.log(returnedTarget);
-                
+                sendDataHandler(result);
             });
-            
-            
-           
-        
+
     }
-  
+    async function sendDataHandler(result) {
+        console.log("resultid");
+        console.log(result.id);
+        console.log(result);
+
+
+        ;
+        const options = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(result),
+        };
+
+        await fetch("/api/controller/post/updateAtiksuAritmaGirisCikis", options)
+            .then((res) => res.json())
+            .then((data) => {
+                if (data) {
+                    toast.success(
+                        "Hesaplamalar başarıyla yapıldı.",
+                        {
+                            position: toast.POSITION.BOTTOM_RIGHT,
+                        }
+                    );
+                }
+            });
+
+
+    }
+
+
+
+
+
 
     if (sessionUser === null) {
         return <div className="text-center">Yükleniyor...</div>;
@@ -123,6 +162,19 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
     return (
         <div className="container p-2">
             <div className="d-flex  flex-column mx-auto w-50">
+                <p className="text-muted text-center fs-5 fw-bolder pb-3 mt-3">
+                    ATIKSU ARITMA TESİSİ GİRİŞ VE ÇIKIŞ ATIKSU MİKTARLARI
+                </p>
+                <span className="text-center text-muted">
+                    {moment().format("DD/MM/YYYY")}
+                </span>
+                <div className="text-center mb-2">
+                    {isDataEntered ? (
+                        <p className="text-success">Günlük veri girişi gerçekleşti</p>
+                    ) : (
+                        <p className="text-danger">Günlük veri girişi gerçekleşmedi!</p>
+                    )}
+                </div>
                 <section>
                     <form onSubmit={formik.handleSubmit} className="d-flex flex-column gap-3 ">
                         <div className={AuthFormCSS.input_group}>
@@ -151,11 +203,13 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                                 placeholder=" Kimyasal Cokeltimden Cekilen Camur Miktari (m3/gun)"
                                 {...formik.getFieldProps("kimyasalCokeltimdenCekilenCamurMiktari_m3gun")}
                             />
-
-
                         </div>
                         <div className="input-button mx-auto">
-                            <button type="submit" className="btn btn-outline-dark mt-2">
+                            <button
+                                type="submit"
+                                className="btn btn-outline-dark mt-2"
+                                disabled={isDataEntered}
+                            >
                                 Ekle
                             </button>
                         </div>
@@ -167,7 +221,6 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                 <p className="text-muted text-center fs-5 fw-bolder pb-3">
                     ATIKSU ARITMA TESİSİ GİRİŞ VE ÇIKIŞ ATIKSU MİKTARLARI FORMU
                 </p>
-
                 <div className="row">
                     <div className="col-sm-12">
                         <table className="table text-dark table-bordered mt-2">
@@ -194,7 +247,7 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                                         <td>
                                             {moment(data.dateAndTime).format("YYYY-MM-DD HH:mm")}
                                         </td>
-                                        <td>@{data.createdBy.employeeId}</td>
+                                        <td>@12345</td>
                                         <td>{data.girisAtiksuSayacDegeri}</td>
                                         <td>{data.girisAtiksuMiktariM3Gun}</td>
                                         <td>{data.cikisAtiksuSayacDegeri}</td>
@@ -202,11 +255,6 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                                         <td>{data.farkCekilenCamurMiktari}</td>
                                         <td>{data.kimyasalCokeltimdenCekilenCamurMiktari_m3gun}</td>
                                         <td>{data.aerobiktenCekilenCamurMiktari}</td>
-                                        
-                                       
-                                       
-
-
                                         {sessionUser.role.roleName === "admin" ? (
                                             <td>
                                                 <span className="me-2">

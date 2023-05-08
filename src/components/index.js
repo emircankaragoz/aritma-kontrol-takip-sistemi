@@ -31,3 +31,9 @@ export { default as SodyumKlorurKontrolFormUpdateModalForm } from "./TuzComponen
 export { default as TuzGunlukTuketimMiktariUpdateModal } from "./TuzComponents/TuzGunlukTuketimMiktariUpdateModal"
 export { default as TuzGunlukTuketimMiktariUpdateModalForm } from "./TuzComponents/TuzGunlukTuketimMiktariUpdateModalForm"
 export { default as TuzAylikYillikTuketimMiktari } from "./TuzComponents/TuzAylikYillikTuketimMiktari"
+export { default as AtiksuAritmaGirisCikisFormu} from "./ArıtmaComponents/GunlukComponents/AtiksuAritmaGirisCikisComp"
+export { default as AtiksuAritmaGirisCikisUpdateModal } from "./ArıtmaComponents/GunlukComponents/UpdateComponents/AtiksuAritmaGirisCikisUpdateModal"
+export { default as AtiksuAritmaGirisCikisUpdateModalForm } from "./ArıtmaComponents/GunlukComponents/UpdateComponents/AtiksuAritmaGirisCikisCompUpdateModalForm"
+
+
+

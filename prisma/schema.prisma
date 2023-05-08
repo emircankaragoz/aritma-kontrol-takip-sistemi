@@ -69,7 +69,6 @@ model User {
 
   createdAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms AtiksuAritmaTesisiGirisVeCikisAtiksuMiktari[] @relation("createdAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms")
   updatedAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms AtiksuAritmaTesisiGirisVeCikisAtiksuMiktari[] @relation("updatedAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms")
- 
 }
 
 model Role {
@@ -228,10 +227,12 @@ model AtiksuAritmaTesisiGirisVeCikisAtiksuMiktari {
   updatedBy   User     @relation("updatedAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms", fields: [updatedById], references: [id])
 
   girisAtiksuSayacDegeri                       String @db.VarChar(45)
+  girisAtiksuMiktariM3Gun                      String @db.VarChar(45)
   cikisAtiksuSayacDegeri                       String @db.VarChar(45)
-  //cekilenCamurMiktariFark                      String @db.VarChar(45)
+  cikisAtiksuMiktariM3Gun                      String @db.VarChar(45)
+  farkCekilenCamurMiktari                      String @db.VarChar(45)
   kimyasalCokeltimdenCekilenCamurMiktari_m3gun String @db.VarChar(45)
-  //aerobiktenCekilenCamurMiktari                String @db.VarChar(45)
+  aerobiktenCekilenCamurMiktari                String @db.VarChar(45)
 }
 
 model SulfurikAsitKullanimMiktarVeMaliyeti {
@@ -568,7 +569,6 @@ model TuzVeSodaTesisiGunlukTuketimMiktarlariAylikVeYillikToplam {
   createdAt   DateTime @default(now()) @map(name: "created_at")
   createdById Int
 
-
   updatedAt   DateTime @updatedAt @map(name: "updated_at")
   updatedById Int
 }
@@ -628,9 +628,9 @@ model SodaTesisiKontrolFormu {
 }
 
 model SystemMessage {
-  id        Int      @id @default(autoincrement())
-  title     String?  @db.VarChar(45)
-  content   String?
-  createdAt DateTime @default(now()) @map(name: "created_at")
-  messageCode String @db.VarChar(30) @unique
+  id          Int      @id @default(autoincrement())
+  title       String?  @db.VarChar(45)
+  content     String?
+  createdAt   DateTime @default(now()) @map(name: "created_at")
+  messageCode String   @unique @db.VarChar(30)
 }
