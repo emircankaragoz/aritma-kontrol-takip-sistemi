@@ -22,12 +22,30 @@ export default class TuzService {
     return tuz;
   }
 
+  async getAllTuzGunlukTuketimMiktari() {
+    return await axios.get(`${URL}/api/controller/get/tuzGunlukTuketimMiktari`);
+  }
+
+  async getTuzGunlukTuketimMiktariById(id) {
+    let tuz;
+    await axios
+      .get(`${URL}/api/controller/get/tuzGunlukTuketimMiktari`)
+      .then((result) => {
+        result.data.map((data) => {
+          if (data.id === id) {
+            tuz = data;
+          }
+        });
+      });
+    return tuz;
+  }
+
   //TUZ TESİSİ KONTROL CİZELGESİ
   async getAllTuzTesisiKontrolCizelgesi() {
     return await axios.get(`${URL}/api/controller/get/tuzTesisiKontrolCizelge`);
   }
 
-  async getTuzTesisiKontrolCizelgesiById(id){
+  async getTuzTesisiKontrolCizelgesiById(id) {
     let tuzTesisi;
     await axios
       .get(`${URL}/api/controller/get/tuzTesisiKontrolCizelge`)
@@ -46,7 +64,7 @@ export default class TuzService {
   async getAllSodaTesisiKontrolFormu() {
     return await axios.get(`${URL}/api/controller/get/sodaTesisiKontrolFormu`);
   }
-  async getSodaTesisiKontrolFormuById(id){
+  async getSodaTesisiKontrolFormuById(id) {
     let sodaTesisi;
     await axios
       .get(`${URL}/api/controller/get/sodaTesisiKontrolFormu`)
@@ -60,11 +78,11 @@ export default class TuzService {
     return sodaTesisi;
   }
 
-  //SODYUM KLORUR KONTROL 
+  //SODYUM KLORUR KONTROL
   async getAllSodyumKlorurKontrolFormu() {
     return await axios.get(`${URL}/api/controller/get/sodyumKlorurKontrol`);
   }
-  async getSodyumKlorurById(id){
+  async getSodyumKlorurById(id) {
     let sodyum;
     await axios
       .get(`${URL}/api/controller/get/sodyumKlorurKontrol`)
@@ -77,7 +95,6 @@ export default class TuzService {
       });
     return sodyum;
   }
-
 
   async getTransferDataToGunlukKullanimFromTuzSodaSayacToplama(datetime) {
     let siviTuzSayac1, siviTuzSayac2, siviTuzLt;
@@ -105,8 +122,6 @@ export default class TuzService {
       (item) => moment(item.dateAndTime).format("YYYY-MM-DD") == datetime
     );
 
-    console.log(data)
-
     // Find data for the previous day
     const prevDatetime = moment(datetime)
       .subtract(1, "days")
@@ -125,39 +140,47 @@ export default class TuzService {
       tuzVeSodaSayac2 = parseFloat(data.tuzVeSodaTesisiKullanilanSuSayac);
       suSayac = tuzVeSodaSayac2 - tuzVeSodaSayac1;
 
-      isletmeyeVerilenSiviTuzSayac1 = parseFloat(prevData.isletmeyeVerilenSiviTuzSayac);
-      isletmeyeVerilenSiviTuzSayac2 = parseFloat(data.isletmeyeVerilenSiviTuzSayac);
+      isletmeyeVerilenSiviTuzSayac1 = parseFloat(
+        prevData.isletmeyeVerilenSiviTuzSayac
+      );
+      isletmeyeVerilenSiviTuzSayac2 = parseFloat(
+        data.isletmeyeVerilenSiviTuzSayac
+      );
       isletmeyeVerilenSiviTuzLt =
-        isletmeyeVerilenSiviTuzSayac2 - isletmeyeVerilenSiviTuzSayac1;
+        (isletmeyeVerilenSiviTuzSayac2 - isletmeyeVerilenSiviTuzSayac1) * 1000;
 
       hazirlananSiviSodaSayac1 = parseFloat(prevData.hazirlananSiviSodaSayac);
       hazirlananSiviSodaSayac2 = parseFloat(data.hazirlananSiviSodaSayac);
       hazirlananSiviSodaLt =
-        (hazirlananSiviSodaSayac2- hazirlananSiviSodaSayac1)*1000;
+        (hazirlananSiviSodaSayac2 - hazirlananSiviSodaSayac1) * 1000;
 
-
-      siviSodaHattiYikamaSuyuSayac1 = parseFloat(prevData.siviSodaHattiYikamaSuyuSayac);
-      siviSodaHattiYikamaSuyuSayac2 = parseFloat(data.siviSodaHattiYikamaSuyuSayac);
+      siviSodaHattiYikamaSuyuSayac1 = parseFloat(
+        prevData.siviSodaHattiYikamaSuyuSayac
+      );
+      siviSodaHattiYikamaSuyuSayac2 = parseFloat(
+        data.siviSodaHattiYikamaSuyuSayac
+      );
       siviSodaHattiYikamaSuyuLt =
         (siviSodaHattiYikamaSuyuSayac2 - siviSodaHattiYikamaSuyuSayac1) * 1000;
-
 
       isletmeyeVerilenSiviSodaLt =
         hazirlananSiviSodaLt - siviSodaHattiYikamaSuyuLt;
 
-
       siviSodaLt = (isletmeyeVerilenSiviSodaLt / 200) * 1000;
 
-      aritmaTesisineAtilanAtikSiviTuzLt =
-        parseFloat(prevData.aritmaTesisineAtilanAtikSiviTuzuLt);
+      aritmaTesisineAtilanAtikSiviTuzLt = parseFloat(
+        prevData.aritmaTesisineAtilanAtikSiviTuzuLt
+      );
 
-      isletmeyeVerilenSiviTuzHazirlananTankSayisi =
-        parseFloat(prevData.isletmeyeVerilenSiviTuzHazirlananTankSayisi);
+      isletmeyeVerilenSiviTuzHazirlananTankSayisi = parseFloat(
+        prevData.isletmeyeVerilenSiviTuzHazirlananTankSayisi
+      );
 
       katiSodaKg = parseFloat(prevData.katiSodaKg);
       uretilenSu = parseFloat(prevData.uretilenSu);
 
       const dateAndTime = prevDatetime;
+
       return {
         siviTuzLt,
         suSayac,
@@ -170,16 +193,17 @@ export default class TuzService {
         uretilenSu,
       };
     } else {
-      console.log(data)
       siviTuzLt = 0;
       suSayac = 0;
       isletmeyeVerilenSiviTuzLt = 0;
       isletmeyeVerilenSiviSodaLt = 0;
       siviSodaLt = 0;
-      aritmaTesisineAtilanAtikSiviTuzLt =
-        parseFloat(data.aritmaTesisineAtilanAtikSiviTuzuLt);
-      isletmeyeVerilenSiviTuzHazirlananTankSayisi =
-        parseFloat(data.isletmeyeVerilenSiviTuzHazirlananTankSayisi);
+      aritmaTesisineAtilanAtikSiviTuzLt = parseFloat(
+        data.aritmaTesisineAtilanAtikSiviTuzuLt
+      );
+      isletmeyeVerilenSiviTuzHazirlananTankSayisi = parseFloat(
+        data.isletmeyeVerilenSiviTuzHazirlananTankSayisi
+      );
       katiSodaKg = parseFloat(data.katiSodaKg);
       uretilenSu = parseFloat(data.uretilenSu);
       const dateAndTime = datetime;
@@ -195,5 +219,102 @@ export default class TuzService {
         uretilenSu,
       };
     }
+  }
+
+  async getTuzSodaAylikTuketimMiktari(year) {
+    const dataByMonth = {};
+    const subtract = moment().year() - moment(year).year();
+    const startOf = moment()
+      .subtract(subtract, "year")
+      .startOf("year")
+      .format();
+    const endOf = moment().subtract(subtract, "year").endOf("year").format();
+    await axios
+      .get(`${URL}/api/controller/get/tuzGunlukTuketimMiktari`)
+      .then((result) =>
+        result.data.forEach((data) => {
+          if (data.dateAndTime >= startOf && data.dateAndTime <= endOf) {
+            const month = moment(data.dateAndTime).format("MMM");
+            const keys = Object.keys(data).filter(
+              (key) =>
+                key !== "id" &&
+                key !== "dateAndTime" &&
+                key !== "updatedAt" &&
+                key !== "createdAt" &&
+                key !== "category"
+            );
+            if (!dataByMonth[month]) {
+              dataByMonth[month] = {};
+            }
+            keys.forEach((key) => {
+              if (data[key]) {
+                if (dataByMonth[month][key]) {
+                  dataByMonth[month][key] += parseFloat(data[key]);
+                } else {
+                  dataByMonth[month][key] = parseFloat(data[key]);
+                }
+              }
+            });
+          }
+        })
+      );
+    const result = [];
+    for (const month in dataByMonth) {
+      result.push({ month, ...dataByMonth[month] });
+    }
+
+    return result;
+  }
+
+  async getTuzSodaTuketimMiktariYillari() {
+    const years = [];
+    await axios
+      .get(`${URL}/api/controller/get/tuzGunlukTuketimMiktari`)
+      .then((result) => {
+        result.data.map((data) => {
+          if (!years.includes(moment(data.dateAndTime).year()))
+            years.push(moment(data.dateAndTime).year());
+        });
+      });
+    return years;
+  }
+
+  async getTuzSodaTuketimMiktariYillikToplam(year) {
+    const dataByYear = {};
+    const subtract = moment().year() - moment(year).year();
+    const startOf = moment()
+      .subtract(subtract, "year")
+      .startOf("year")
+      .format();
+    const endOf = moment().subtract(subtract, "year").endOf("year").format();
+    await axios
+      .get(`${URL}/api/controller/get/tuzGunlukTuketimMiktari`)
+      .then((result) =>
+        result.data.forEach((data) => {
+          if (data.dateAndTime >= startOf && data.dateAndTime <= endOf) {
+            const keys = Object.keys(data).filter(
+              (key) =>
+                key !== "id" &&
+                key !== "dateAndTime" &&
+                key !== "updatedAt" &&
+                key !== "createdAt" &&
+                key !== "category"
+            );
+            /* if (!dataByMonth[month]) {
+              dataByMonth[month] = {};
+            } */
+            keys.forEach((key) => {
+              if (data[key]) {
+                if (dataByYear[key]) {
+                  dataByYear[key] += parseFloat(data[key]);
+                } else {
+                  dataByYear[key] = parseFloat(data[key]);
+                }
+              }
+            });
+          }
+        })
+      );
+    return dataByYear;
   }
 }

@@ -1,154 +1,123 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
+import { UserService, TuzService } from "@/services";
+import { TuzCSS } from "@/styles";
+import moment from "moment";
+import { RiDeleteBin5Line } from "react-icons/ri";
+import { TuzGunlukTuketimMiktariUpdateModal } from "..";
 
-export default function TuzGunlukTuketimMiktari() {
-  const formik = useFormik({
-    initialValues: {
-      gelenKatiTuzKg: "",
-      siviTuzHazirlamadaKullanilanSulfurikAsitKg: "",
-      date: "",
-    },
-    onSubmit,
-  });
+export default function TuzGunlukTuketimMiktari({ session }) {
+  const [sessionUser, setSessionUser] = useState(null);
+  const [getAllGunlukTuketimMiktari, setGetAllGunlukTuketimMiktari] = useState(
+    []
+  );
 
+  const tuzService = new TuzService();
+  const userService = new UserService();
   const employee_id = session.user.employeeId;
 
-  async function onSubmit(values) {
-    const employeeId = {
-      employeeId: `${employee_id}`,
-    };
-    const dateTime = {
-      dateTime: `${getToday}`,
-    };
-    values = Object.assign(values, employeeId, dateTime);
-    const options = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
-    };
-
-    await fetch("/api/controller/post/addTuzSodaSayacToplama", options)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data) {
-          toast.success("Form başarıyla oluşturuldu", {
-            position: toast.POSITION.BOTTOM_RIGHT,
-          });
-          transferDataToGunlukTuketimMiktariForm();
-        }
-      });
+  async function getAllTuzGunlukTuketimMiktariHandler() {
+    await tuzService.getAllTuzGunlukTuketimMiktari().then((result) => {
+      setGetAllGunlukTuketimMiktari(result.data);
+    });
   }
+
+  async function getSessionUserHandler() {
+    if (session) {
+      await userService
+        .getSessionUser(employee_id)
+        .then((result) => setSessionUser(result));
+    }
+  }
+
+  useEffect(() => {
+    return () => {
+      getAllTuzGunlukTuketimMiktariHandler();
+      getSessionUserHandler();
+    };
+  }, []);
+
 
   if (sessionUser === null) {
     return <div className="text-center">Yükleniyor...</div>;
   }
 
   return (
-    <div className="container p-2">
-      <div className="d-flex  flex-column mx-auto w-50">
-        <p className="text-muted text-center fs-5 fw-bolder pb-3 mt-3">
-          Tuz Soda Sayaç Toplama Kayıt Formu
-        </p>
-        <span className="text-center text-muted">
+    <div className="container p-3">
+      <div className="d-flex flex-column  mx-auto w-50">
+        <span className="text-center text-muted mb-3">
           {moment().format("DD/MM/YYYY")}
         </span>
-        <div className="text-center mb-2">
-          {isDataEntered ? (
-            <p className="text-success">Günlük veri girişi gerçekleşti</p>
-          ) : (
-            <p className="text-danger">Günlük veri girişi gerçekleşmedi!</p>
-          )}
-        </div>
-        <section>
-          <form
-            onSubmit={formik.handleSubmit}
-            className="d-flex flex-column gap-3"
-          >
-            <div className={TuzCSS.input_group}>
-              <input
-                className="form-control"
-                type="number"
-                step="0.01"
-                name="gelenKatiTuzKg"
-                placeholder="Gelen KatI Tuz Kg"
-                {...formik.getFieldProps("gelenKatiTuzKg")}
-              />
-              {formik.errors.gelenKatiTuzKg && formik.touched.gelenKatiTuzKg ? (
-                <span className="text-danger opacity-75">
-                  {formik.errors.gelenKatiTuzKg}
-                </span>
-              ) : (
-                <></>
-              )}
-            </div>
-
-            <div className={TuzCSS.input_group}>
-              <input
-                className="form-control"
-                type="number"
-                step="0.01"
-                name="siviTuzHazirlamadaKullanilanSulfurikAsitKg"
-                placeholder="Sıvı Tuz Hazırlamada Kullanılan Sülfirik Asit Kg"
-                {...formik.getFieldProps(
-                  "siviTuzHazirlamadaKullanilanSulfurikAsitKg"
-                )}
-              />
-              {formik.errors.siviTuzHazirlamadaKullanilanSulfurikAsitKg &&
-              formik.touched.siviTuzHazirlamadaKullanilanSulfurikAsitKg ? (
-                <span className="text-danger opacity-75">
-                  {formik.errors.siviTuzHazirlamadaKullanilanSulfurikAsitKg}
-                </span>
-              ) : (
-                <></>
-              )}
-            </div>
-
-            <div className={TuzCSS.input_group}>
-              <input
-                className="form-control"
-                type="number"
-                step="0.01"
-                name="tuzVeSodaTesisiKullanilanSuSayac"
-                placeholder="Tuz ve Soda Tesisi Kullanılan Su Sayaç"
-                {...formik.getFieldProps("tuzVeSodaTesisiKullanilanSuSayac")}
-              />
-              {formik.errors.tuzVeSodaTesisiKullanilanSuSayac &&
-              formik.touched.tuzVeSodaTesisiKullanilanSuSayac ? (
-                <span className="text-danger opacity-75">
-                  {formik.errors.tuzVeSodaTesisiKullanilanSuSayac}
-                </span>
-              ) : (
-                <></>
-              )}
-            </div>
-
-            <div className={TuzCSS.input_group}>
-              <input
-                type="date"
-                className={`${"form-control"} ${
-                  formik.errors.date && formik.touched.date
-                    ? "border-danger"
-                    : ""
-                }`}
-                placeholder="Date"
-                maxLength={140}
-                {...formik.getFieldProps("date")}
-              />
-            </div>
-
-            <div className="input-button mx-auto">
-              <button
-                type="submit"
-                className="btn btn-outline-dark mt-2"
-                disabled={isDataEntered}
-              >
-                Ekle
-              </button>
-            </div>
-          </form>
-        </section>
       </div>
-      <hr />
+      <section className="mx-auto w-75">
+        <p className="text-muted text-center fs-5 fw-bolder pb-3">
+          Tüm Günlük Tüketim Miktarı Verileri
+        </p>
+        <div className="row">
+          <div className="col-sm-12 table-responsive">
+            <table className="table table-sm  table-bordered text-dark mt-2">
+              <thead>
+                <tr className="text-center">
+                  <th scope="col" className="text-center">
+                    Sr. No.
+                  </th>
+                  <th scope="col">Tarih</th>
+                  <th scope="col">Gelen Katı Tuz Kg</th>
+                  <th scope="col">Sülfirik Asit Kg</th>
+                  <th scope="col">İşletmeye Verilen Sıvı Tuz Lt </th>
+                  <th scope="col">Tasviyede Kullanılan Sıvı Tuz Lt</th>
+                  <th scope="col">Arıtma Tesisine Atılan Atık Sıvı Tuz Lt</th>
+                  <th scope="col">
+                    İşletmeye Verilen Sıvı Tuz Hazırlanan Tank Sayısı
+                  </th>
+                  <th scope="col">Sıvı Tuz Hazırlamada Kullanılan Kostik Lt</th>
+                  <th scope="col">Sıvı TuzHazırlamada Kullanılan Poli Gr</th>
+                  <th scope="col">
+                    Sıvı Tuz Hazırlamada Kullanılan Sıvı Soda Lt
+                  </th>
+                  <th scope="col">Kullanılan Katı Soda Kg</th>
+                  <th scope="col">Katı Soda Miktarına Göre Sıvı Soda Lt</th>
+                  <th scope="col">İşletmeye Verilen Sıvı Soda Lt</th>
+                  <th scope="col">Tuz ve Soda Tesisi Kullanılan Su m3</th>
+                  <th scope="col">Üretilen Yumuşak Su m3</th>
+                </tr>
+              </thead>
+              <tbody className="text-center">
+                {getAllGunlukTuketimMiktari.map((tuz, index) => (
+                  <tr key={index}>
+                    <th scope="row">{index + 1}</th>
+                    <td>{moment(tuz.dateAndTime).format("DD/MM/YY")}</td>
+                    <td>{tuz.gelenKatiTuzKg}</td>
+                    <td>{tuz.siviTuzHazirlamadaKullanilanSulfurikAsitKg}</td>
+                    <td>{parseFloat(tuz.isletmeyeVerilenSiviTuzLt).toFixed(2)}</td>
+                    <td>{parseFloat(tuz.tasviyedeKullanilanSiviTuzLt).toFixed(2)}</td>
+                    <td>{parseFloat(tuz.aritmaTesisineAtilanAtikSiviTuzLt).toFixed(2)}</td>
+                    <td>{parseFloat(tuz.isletmeyeVerilenSiviTuzHazirlananTankSayisi).toFixed(2)}</td>
+                    <td>{parseFloat(tuz.siviTuzHazirlamadaKullanilanKostikLt).toFixed(2)}</td>
+                    <td>{parseFloat(tuz.siviTuzHazirlamadaKullanilanPoliGr).toFixed(2)}</td>
+                    <td>{parseFloat(tuz.siviTuzHazirlamadaKullanilanSiviSodaLt).toFixed(2)}</td>
+                    <td>{parseFloat(tuz.kullanilanKatiSodaKg).toFixed(2)}</td>
+                    <td>{parseFloat(tuz.katiSodaMiktarinaGoreSiviSodaLt).toFixed(2)}</td>
+                    <td>{parseFloat(tuz.isletmeyeVerilenSiviSodaLt).toFixed(2)}</td>
+                    <td>{parseFloat(tuz.tuzveSodaTesisiKullanilanSuMetreKup).toFixed(2)}</td>
+                    <td>{parseFloat(tuz.uretilenYumusakSuMetreKup).toFixed(2)}</td>
+                    {sessionUser.role.roleName === "admin" ? (
+                      <td>
+                        <div></div>
+                        <div>
+                          <TuzGunlukTuketimMiktariUpdateModal formIdToBeUpdated={tuz.id} />
+                        </div>
+                      </td>
+                    ) : (
+                      <></>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

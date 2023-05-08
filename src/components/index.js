@@ -28,5 +28,6 @@ export { default as SodyumKlorurKontrolForm} from "./TuzComponents/SodyumKlorurK
 export { default as SodyumKlorurKontrolFormUpdateModal } from "./TuzComponents/SodyumKlorurKontrolUpdateModal"
 export { default as SodyumKlorurKontrolFormUpdateModalForm } from "./TuzComponents/SodyumKlorurUpdateModalForm"
 
-
-
+export { default as TuzGunlukTuketimMiktariUpdateModal } from "./TuzComponents/TuzGunlukTuketimMiktariUpdateModal"
+export { default as TuzGunlukTuketimMiktariUpdateModalForm } from "./TuzComponents/TuzGunlukTuketimMiktariUpdateModalForm"
+export { default as TuzAylikYillikTuketimMiktari } from "./TuzComponents/TuzAylikYillikTuketimMiktari"

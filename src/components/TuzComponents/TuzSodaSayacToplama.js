@@ -128,13 +128,11 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
       body: JSON.stringify(tuzId),
     };
 
-    await fetch("/api/controller/post/deleteTuzSodaSayacToplama", options)
+    await fetch("/api/controller/post/deleteTuzSodaSayacToplamaAndGunlukTuketimMiktari", options)
       .then((res) => res.json())
       .then((data) => {
         if (data) {
-          toast.success("Form başarıyla silindi", {
-            position: toast.POSITION.BOTTOM_RIGHT,
-          });
+          router.refresh();
         }
       });
   }
@@ -412,7 +410,7 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
                 {allTuzSodaSayacToplama.map((tuz, index) => (
                   <tr key={index}>
                     <th scope="row">{index + 1}</th>
-                    <td>{moment(tuz.dateAndTime).format("YYYY-MM-DD")}</td>
+                    <td>{moment(tuz.dateAndTime).format("DD/MM/YY")}</td>
                     <td>@{tuz.createdBy.employeeId}</td>
                     <td>{tuz.uretilenSu}</td>
                     <td>{tuz.tasviyedeKullanilanSiviTuzSayac}</td>
@@ -423,7 +421,7 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
                     <td>{tuz.siviSodaHattiYikamaSuyuSayac}</td>
                     <td>{tuz.katiSodaKg}</td>
                     <td>{tuz.aritmaTesisineAtilanAtikSiviTuzuLt}</td>
-                    {sessionUser.role.roleName === "admin" ? (
+                    {(index === allTuzSodaSayacToplama.length - 1 && sessionUser.role.roleName === "admin") ? (
                       <td>
                         <div>
                           <span

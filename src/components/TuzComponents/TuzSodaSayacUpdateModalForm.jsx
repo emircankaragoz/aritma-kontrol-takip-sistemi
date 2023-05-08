@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
-import { register_validate } from "lib/validate";
+import moment from "moment";
 import { toast } from "react-toastify";
 import { TuzService } from "@/services";
+import { useRouter } from "next/navigation";
 
 export default function ModalForm({ formIdToBeUpdated }) {
+  const router = useRouter();
+
   const [tuzSodaSayacToplama, setTuzSodaSayacToplama] = useState();
 
   const formik = useFormik({
@@ -46,9 +49,6 @@ export default function ModalForm({ formIdToBeUpdated }) {
       katiSodaKg: `${
         tuzSodaSayacToplama != undefined ? tuzSodaSayacToplama.katiSodaKg : ""
       }`,
-      siviSodaLt: `${
-        tuzSodaSayacToplama != undefined ? tuzSodaSayacToplama.siviSodaLt : ""
-      }`,
       aritmaTesisineAtilanAtikSiviTuzuLt: `${
         tuzSodaSayacToplama != undefined
           ? tuzSodaSayacToplama.aritmaTesisineAtilanAtikSiviTuzuLt
@@ -59,6 +59,18 @@ export default function ModalForm({ formIdToBeUpdated }) {
   });
 
   const tuzService = new TuzService();
+
+  async function getTuzSodaSayacToplamaByIdHandler() {
+    if (formIdToBeUpdated) {
+      await tuzService
+        .getTuzSodaSayacToplamaById(formIdToBeUpdated)
+        .then((result) => setTuzSodaSayacToplama(result));
+    }
+  }
+
+  useEffect(() => {
+    getTuzSodaSayacToplamaByIdHandler();
+  }, []);
 
   async function onSubmit(values) {
     const tuzId = {
@@ -78,21 +90,47 @@ export default function ModalForm({ formIdToBeUpdated }) {
           toast.success("Form başarıyla güncellendi", {
             position: toast.POSITION.BOTTOM_RIGHT,
           });
+          transferUpdateDataToGunlukTuketimMiktariForm();
         }
       });
   }
 
-  async function getTuzSodaSayacToplamaByIdHandler() {
-    if (formIdToBeUpdated) {
+  async function transferUpdateDataToGunlukTuketimMiktariForm() {
+    if(tuzSodaSayacToplama) {
+      const date = moment(tuzSodaSayacToplama.dateAndTime).format("YYYY-MM-DD");
+      console.log("date: "+ date)
       await tuzService
-        .getTuzSodaSayacToplamaById(formIdToBeUpdated)
-        .then((result) => setTuzSodaSayacToplama(result));
+        .getTransferDataToGunlukKullanimFromTuzSodaSayacToplama(date)
+        .then((result) => {
+          console.log(result)
+          sendDataHandler(result);
+        });
     }
   }
 
-  useEffect(() => {
-    getTuzSodaSayacToplamaByIdHandler();
-  }, []);
+  async function sendDataHandler(result) {
+    const options = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(result),
+    };
+
+    await fetch("/api/controller/post/updateTransferTuzSodaGunlukTuketimMiktari", options)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data) {
+          toast.success(
+            "Günlük Tüketim Miktarları formu başarıyla güncellendi",
+            {
+              position: toast.POSITION.BOTTOM_RIGHT,
+            }
+          );
+        }
+      });
+
+   /*  router.refresh(); */
+  }
+
 
   if (tuzSodaSayacToplama === null || tuzSodaSayacToplama === undefined) {
     return <div></div>;
@@ -198,16 +236,6 @@ export default function ModalForm({ formIdToBeUpdated }) {
           />
           </div>
           
-          <div className="form-group py-2">
-            <label>Sıvı Soda Lt</label>
-            <input
-            className="form-control"
-            type="text"
-            name="siviSodaLt"
-            placeholder=" siviSodaLt"
-            {...formik.getFieldProps("siviSodaLt")}
-          />
-          </div>
         
           <div className="form-group py-2">
             <label>Arıtma Tesisine Atılan Atık Sıvı Tuzu Lt</label>
