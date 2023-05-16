@@ -1,5 +1,5 @@
 import prisma from "../../../../../lib/prismadb";
-import moment from "moment";
+
 
 export default async function handler(req, res) {
   // only post method is accepted
@@ -10,29 +10,20 @@ export default async function handler(req, res) {
     const id = parseInt(dataId);
 
     //chechk users
-    const checkexisting = await prisma.atiksuAritmaTesisiGirisVeCikisAtiksuMiktari.findMany({
+    const checkexisting = await prisma.renkGidericiKimyasalGirdiKontrolu.findMany({
       where: { id: id },
       select: {
         id: true,
-        dateAndTime:true
       },
     });
-    const Datetime = moment(checkexisting.dateAndTime).startOf("day")
-    .format();
-    console.log(Datetime);
     
     if (checkexisting !== null) {
       try {
-        await prisma.atiksuAritmaTesisiGirisVeCikisAtiksuMiktari.delete({
+        await prisma.renkGidericiKimyasalGirdiKontrolu.delete({
             where: {
                 id: id
             }
         })
-        await prisma.camurYogunlastirma.delete({
-          where: {
-            dateAndTime: Datetime,
-          }
-      })
 
         res.status(201).json({ status: true});
       } catch (err) {

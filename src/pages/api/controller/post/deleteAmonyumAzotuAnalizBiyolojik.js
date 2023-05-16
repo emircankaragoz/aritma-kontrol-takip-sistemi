@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     const id = parseInt(dataId);
 
     //chechk users
-    const checkexisting = await prisma.atiksuAritmaTesisiGirisVeCikisAtiksuMiktari.findMany({
+    const checkexisting = await prisma.amonyumAzotuAnalizBiyolojik.findMany({
       where: { id: id },
       select: {
         id: true,
@@ -19,21 +19,14 @@ export default async function handler(req, res) {
     });
     const Datetime = moment(checkexisting.dateAndTime).startOf("day")
     .format();
-    console.log(Datetime);
     
     if (checkexisting !== null) {
       try {
-        await prisma.atiksuAritmaTesisiGirisVeCikisAtiksuMiktari.delete({
+        await prisma.amonyumAzotuAnalizBiyolojik.delete({
             where: {
                 id: id
             }
         })
-        await prisma.camurYogunlastirma.delete({
-          where: {
-            dateAndTime: Datetime,
-          }
-      })
-
         res.status(201).json({ status: true});
       } catch (err) {
         if (err) return res.status(404).json(err);

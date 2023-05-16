@@ -1,21 +1,168 @@
-import React from 'react'
-import { Layout } from '@/components'
+import React, { useState } from 'react'
 import { getSession } from "next-auth/react";
-import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
-import AtiksuAritmaGirisCikisFormu from "../../../components/ArıtmaComponents/GunlukComponents/AtiksuAritmaGirisCikisComp"
+import { Tab, Tabs, Nav } from "react-bootstrap";
+import { AtiksuAritmaGirisCikisFormu, CamurYogunlastirmaFormu, FiltrepresKimyasalCamurFormu, RenkGidericiKimyasalGirdiKontroluFormu, AmonyumAzotuAnalizDengelemeFormu, AmonyumAzotuAnalizCikisFormu, AmonyumAzotuAnalizBiyolojikFormu, DengelemeHavuzuFormu, IsiGeriKazanimFormu, Layout, AnaerobikHavuzuFormu, GeriDevirHaznesiFormu, BiyolojikCokeltimHavuzuFormu, FiltrepresFormu,Desarj } from '@/components'
+
 
 export default function GunlukPage({ session }) {
+  const [key, setKey] = useState("home");
+  const [keySecond, setKeySecond] = useState('Dengeleme');
   return (
     <>
       <Layout session={session}>
         <h2 className="mb-4 fw-bold text-center">Günlük Formlar</h2>
-        <Tabs defaultActiveKey="atiksuaritmatesisigirisvecikisformu">
-          <Tab eventKey="atiksuaritmatesisigirisvecikisformu" title="ATIKSU ARITMA TESİSİ GİRİŞ VE ÇIKIŞ ATIKSU MİKTARLARI FORMU">
-            <AtiksuAritmaGirisCikisFormu session={session}/>
+        <Tabs id="controlled-tab-example"
+          className="mb-3 justify-content-center">
+          <Tab eventKey="kayıt" title="Kayıt Formu">
+            <Tab.Container id="left-tabs-example" defaultActiveKey="first">
+              <Nav variant="pills" className="d-flex justify-content-center">
+                <Nav.Item>
+                  <Nav.Link eventKey="first" className="text-center">
+                    ATIKSU ARITMA GİRİŞ ÇIKIŞ
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="second" className="text-center">
+                    ISI GERİ KAZANIM PH VE AMPER
+                  </Nav.Link>
+                </Nav.Item>
+              </Nav>
+              <Tab.Content className="mt-4">
+                <Tab.Pane eventKey="first">
+                  <AtiksuAritmaGirisCikisFormu session={session} />
+                </Tab.Pane>
+                <Tab.Pane eventKey="second">
+                  <IsiGeriKazanimFormu session={session} />
+                </Tab.Pane>
+              </Tab.Content>
+            </Tab.Container>
 
           </Tab>
+          <Tab eventKey="analiz" title="Analiz Formu">
+            <Tab.Container id="left-tabs-example" defaultActiveKey="amonyum">
+              <Nav variant="pills" className="d-flex justify-content-center">
+                <Nav.Item>
+                  <Nav.Link eventKey="amonyum" className="text-center">
+                    AMONYUM AZOTU ANALİZ VERİLERİ FORMU
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="dengeleme" className="text-center">
+                    DENGELEME HAVUZU
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="anaerobik" className="text-center">
+                    ANAEROBİK HAVUZU
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="geridevir" className="text-center">
+                    GERİ DEVİR HAZNESİ
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="biyolojik" className="text-center">
+                    BİYOLOJİK ÇÖKELTİM HAVUZU
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="filtrepres" className="text-center">
+                    FİLTREPRES
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="desarj" className="text-center">
+                    DEŞARJ
+                  </Nav.Link>
+                </Nav.Item>
 
+
+              </Nav>
+              <Tab.Content className="mt-4">
+                <Tab.Pane eventKey="amonyum">
+                  <Tab.Container id="left-tabs-example" defaultActiveKey="dengeleme">
+                    <Nav variant="pills" className="d-flex justify-content-center">
+                      <Nav.Item>
+                        <Nav.Link eventKey="dengeleme" className="text-center">
+                           Dengeleme 
+                        </Nav.Link>
+                      </Nav.Item>
+                      <Nav.Item>
+                        <Nav.Link eventKey="cikis" className="text-center">
+                           Cikis 
+                        </Nav.Link>
+                      </Nav.Item>
+                      <Nav.Item>
+                        <Nav.Link eventKey="biyolojik" className="text-center">
+                          Biyolojik A
+                        </Nav.Link>
+                      </Nav.Item>
+
+                    </Nav>
+                    <Tab.Content className="mt-4">
+                      <Tab.Pane eventKey="dengeleme">
+                        <AmonyumAzotuAnalizDengelemeFormu session={session} subCategory={keySecond} />
+                      </Tab.Pane>
+                      <Tab.Pane eventKey="cikis">
+                        <AmonyumAzotuAnalizCikisFormu session={session} subCategory={keySecond} />
+                      </Tab.Pane>
+                      <Tab.Pane eventKey="biyolojik">
+                        <AmonyumAzotuAnalizBiyolojikFormu session={session} subCategory={keySecond} />
+                      </Tab.Pane>
+                    </Tab.Content>
+                  </Tab.Container>
+                </Tab.Pane>
+                <Tab.Pane eventKey="dengeleme">
+                  <DengelemeHavuzuFormu session={session} />
+                </Tab.Pane>
+                <Tab.Pane eventKey="anaerobik">
+                  <AnaerobikHavuzuFormu session={session} />
+                </Tab.Pane>
+                <Tab.Pane eventKey="geridevir">
+                  <GeriDevirHaznesiFormu session={session} />
+                </Tab.Pane>
+                <Tab.Pane eventKey="biyolojik">
+                  <BiyolojikCokeltimHavuzuFormu session={session} />
+                </Tab.Pane>
+                <Tab.Pane eventKey="filtrepres">
+                  <FiltrepresFormu session={session} />
+                </Tab.Pane>
+                {/* <Tab.Pane eventKey="desarj">
+                  <Desarj session={session} />
+                </Tab.Pane> */}
+              </Tab.Content>
+            </Tab.Container>
+
+          </Tab>
+          <Tab eventKey="takip" title="Takip Formu">
+            <CamurYogunlastirmaFormu session={session} />
+          </Tab>
+          <Tab eventKey="kontrol" title="Kontrol Formu">
+            <Tab.Container id="left-tabs-example" defaultActiveKey="first">
+              <Nav variant="pills" className="d-flex justify-content-center">
+                <Nav.Item>
+                  <Nav.Link eventKey="first" className="text-center">
+                    FİLTREPRES KİMYASAL VE ÇAMUR PERFORMANS
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="second" className="text-center">
+                    RENK GİDERİCİ KİMYASAL GİRDİ KONTROLÜ
+                  </Nav.Link>
+                </Nav.Item>
+              </Nav>
+              <Tab.Content className="mt-4">
+                <Tab.Pane eventKey="first">
+                  <FiltrepresKimyasalCamurFormu session={session} />
+                </Tab.Pane>
+                <Tab.Pane eventKey="second">
+                  <RenkGidericiKimyasalGirdiKontroluFormu session={session} />
+                </Tab.Pane>
+              </Tab.Content>
+            </Tab.Container>
+
+          </Tab>
         </Tabs>
       </Layout>
     </>

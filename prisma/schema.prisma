@@ -70,6 +70,45 @@ model User {
   createdAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms AtiksuAritmaTesisiGirisVeCikisAtiksuMiktari[] @relation("createdAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms")
   updatedAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms AtiksuAritmaTesisiGirisVeCikisAtiksuMiktari[] @relation("updatedAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms")
 
+  createdFiltrepresKimyasalVeCamurPerformansForms FiltrepresKimyasalVeCamurPerformans[] @relation("createdFiltrepresKimyasalVeCamurPerformansForms")
+  updatedFiltrepresKimyasalVeCamurPerformansForms FiltrepresKimyasalVeCamurPerformans[] @relation("updatedFiltrepresKimyasalVeCamurPerformansForms")
+
+  createdRenkGidericiKimyasalGirdiKontroluForms RenkGidericiKimyasalGirdiKontrolu[] @relation("createdRenkGidericiKimyasalGirdiKontroluForms")
+  updatedRenkGidericiKimyasalGirdiKontroluForms RenkGidericiKimyasalGirdiKontrolu[] @relation("updatedRenkGidericiKimyasalGirdiKontroluForms")
+
+  createdCamurYogunlastirmaTakibiForms CamurYogunlastirma[] @relation("createdCamurYogunlastirmaTakibiForms")
+  updatedCamurYogunlastirmaTakibiForms CamurYogunlastirma[] @relation("updatedCamurYogunlastirmaTakibiForms")
+
+  //ARITMA ANALİZ FORMLARI
+  createdAmonyumAzotuAnalizDengelemeForms AmonyumAzotuAnalizDengeleme[] @relation("createdAmonyumAzotuAnalizDengelemeForms")
+  updatedAmonyumAzotuAnalizDengelemeForms AmonyumAzotuAnalizDengeleme[] @relation("updatedAmonyumAzotuAnalizDengelemeForms")
+
+  createdAmonyumAzotuAnalizCikisForms AmonyumAzotuAnalizCikis[] @relation("createdAmonyumAzotuAnalizCikisForms")
+  updatedAmonyumAzotuAnalizCikisForms AmonyumAzotuAnalizCikis[] @relation("updatedAmonyumAzotuAnalizCikisForms")
+
+  createdAmonyumAzotuAnalizBiyolojikForms AmonyumAzotuAnalizBiyolojik[] @relation("createdAmonyumAzotuAnalizBiyolojikForms")
+  updatedAmonyumAzotuAnalizBiyolojikForms AmonyumAzotuAnalizBiyolojik[] @relation("updatedAmonyumAzotuAnalizBiyolojikForms")
+
+  //DENGELEME HAVUZU createdDengelemeHavuzuForms
+  createdDengelemeHavuzuForms DengelemeHavuzu[] @relation("createdDengelemeHavuzuForms")
+  updatedDengelemeHavuzuForms DengelemeHavuzu[] @relation("updatedDengelemeHavuzuForms")
+
+  //anaerobik havuzu
+  createdAnaerobikHavuzuForms         AnaerobikHavuzu[]         @relation("createdAnaerobikHavuzuForms")
+  updatedAnaerobikHavuzuForms         AnaerobikHavuzu[]         @relation("updatedAnaerobikHavuzuForms")
+  //geri devir haznesi
+  createdGeriDevirHaznesiForms        GeriDevirHaznesi[]        @relation("createdGeriDevirHaznesiForms")
+  updatedGeriDevirHaznesiForms        GeriDevirHaznesi[]        @relation("updatedGeriDevirHaznesiForms")
+  //BiyolojikCokeltimHavuzu
+  createdBiyolojikCokeltimHavuzuForms BiyolojikCokeltimHavuzu[] @relation("createdBiyolojikCokeltimHavuzuForms")
+  updatedBiyolojikCokeltimHavuzuForms BiyolojikCokeltimHavuzu[] @relation("updatedBiyolojikCokeltimHavuzuForms")
+  //filtrepres
+  createdFiltrepresForms              Filtrepres[]              @relation("createdFiltrepresForms")
+  updatedFiltrepresForms              Filtrepres[]              @relation("updatedFiltrepresForms")
+
+  createdDesarjForms Desarj[] @relation("createdDesarjForms")
+  updatedDesarjForms Desarj[] @relation("updatedDesarjForms")
+
   // Madde Kullanım 
   createdSulfurikAsitKullanimMiktarVeMaliyeti SulfurikAsitKullanimMiktarVeMaliyeti[] @relation("createdSulfurikAsitKullanimMiktarVeMaliyeti")
   updatedSulfurikAsitKullanimMiktarVeMaliyeti SulfurikAsitKullanimMiktarVeMaliyeti[] @relation("updatedSulfurikAsitKullanimMiktarVeMaliyeti")
@@ -306,18 +345,27 @@ model FiltrepresKimyasalVeCamurPerformans {
   createdAt                        DateTime @default(now()) @map(name: "created_at")
   updatedAt                        DateTime @updatedAt @map(name: "updated_at")
   createdById                      Int
+  createdBy                        User     @relation("createdFiltrepresKimyasalVeCamurPerformansForms", fields: [createdById], references: [id])
   updatedById                      Int
-  calismaSaatiBaslangic            String   @db.VarChar(45)
-  calismaSaatiBitis                String   @db.VarChar(45)
-  kirecSarfiyatBaslangicLt         String   @db.VarChar(45)
-  kirecSarfiyatBitisLt             String   @db.VarChar(45)
-  feClUcSarfiyatiBaslangicLt       String   @db.VarChar(45)
-  feClUcSarfiyatiBitisLt           String   @db.VarChar(45)
-  yogunlastirmaKatiMaddeYuzdeOrani String   @db.VarChar(45)
-  camurKekiNemYuzdeOrani           String   @db.VarChar(45)
-  hazirlananKirecMiktariKg         String   @db.VarChar(45)
-  hazirlananKirecBirimFiyatTL      String   @db.VarChar(45)
-  hazirlananFeClUcBirimFiyatTL     String   @db.VarChar(45)
+  updatedBy                        User     @relation("updatedFiltrepresKimyasalVeCamurPerformansForms", fields: [updatedById], references: [id])
+  calismaSaatiBaslangic            String   @db.VarChar(45) //
+  calismaSaatiBitis                String   @db.VarChar(45) //
+  kirecSarfiyatBaslangicLt         String   @db.VarChar(45) //
+  kirecSarfiyatBitisLt             String   @db.VarChar(45) //
+  netKirecSarfiyatiLt              String   @db.VarChar(45)
+  netKirecSarfiyatiKg              String   @db.VarChar(45)
+  feClUcSarfiyatiBaslangicLt       String   @db.VarChar(45) //
+  feClUcSarfiyatiBitisLt           String   @db.VarChar(45) //
+  feClUcSarfiyatiLt                String   @db.VarChar(45)
+  feClUcSarfiyatiKg                String   @db.VarChar(45)
+  yogunlastirmaKatiMaddeYuzdeOrani String   @db.VarChar(45) //
+  camurKekiNemYuzdeOrani           String   @db.VarChar(45) //
+  hazirlananKirecMiktariKg         String   @db.VarChar(45) //
+  hazirlananKirecBirimFiyatTL      String   @db.VarChar(45) //
+  hazirlananKirecMiktariTL         String   @db.VarChar(45)
+  hazirlananFeClUcMiktariKG        String   @db.VarChar(45)
+  hazirlananFeClUcBirimFiyatTL     String   @db.VarChar(45) //
+  hazirlananFeClUcMiktariTL        String   @db.VarChar(45)
 }
 
 model IsiGeriKazanimAmperVePhKayitFormu {
@@ -365,30 +413,71 @@ model TduFirmasindanGelenAtiksuTakibi {
 }
 
 model RenkGidericiKimyasalGirdiKontrolu {
-  id              Int      @id @default(autoincrement())
-  category        String   @db.VarChar(45)
-  dateAndTime     DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
-  createdAt       DateTime @default(now()) @map(name: "created_at")
-  updatedAt       DateTime @updatedAt @map(name: "updated_at")
-  createdById     Int
-  updatedById     Int
-  firma           String   @db.VarChar(45)
-  urunAdi         String   @db.VarChar(45)
-  yogunluk_gr_cm3 String   @db.VarChar(45)
-  miktar          String   @db.VarChar(45)
-  bosKapAgirligi  String   @db.VarChar(45)
-  numuneAgirligi  String   @db.VarChar(45)
+  id                Int      @id @default(autoincrement())
+  category          String   @db.VarChar(45)
+  dateAndTime       DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
+  createdAt         DateTime @default(now()) @map(name: "created_at")
+  updatedAt         DateTime @updatedAt @map(name: "updated_at")
+  createdById       Int
+  createdBy         User     @relation("createdRenkGidericiKimyasalGirdiKontroluForms", fields: [createdById], references: [id])
+  updatedById       Int
+  updatedBy         User     @relation("updatedRenkGidericiKimyasalGirdiKontroluForms", fields: [updatedById], references: [id])
+  firma             String   @db.VarChar(45) //+
+  urunAdi           String   @db.VarChar(45) //+
+  yogunluk_gr_cm3   String   @db.VarChar(45) //+
+  miktar            String   @db.VarChar(45) //+
+  katiMaddeYuzdesi  String   @db.VarChar(45)
+  bosKapAgirligi    String   @db.VarChar(45) //+
+  numuneAgirligi    String   @db.VarChar(45) //+
+  bosKapArtiNumune  String   @db.VarChar(45)
+  kuruToplamAgirlik String   @db.VarChar(45) //+
+  ph                String   @db.VarChar(45) //+
+  sonuc             String   @db.VarChar(45) //+
 }
 
-model AmonyumAzotuAnalizVerileri {
+model AmonyumAzotuAnalizDengeleme {
   id                  Int      @id @default(autoincrement())
   category            String   @db.VarChar(45)
   dateAndTime         DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
   createdAt           DateTime @default(now()) @map(name: "created_at")
   updatedAt           DateTime @updatedAt @map(name: "updated_at")
   createdById         Int
+  createdBy           User     @relation("createdAmonyumAzotuAnalizDengelemeForms", fields: [createdById], references: [id])
   updatedById         Int
+  updatedBy           User     @relation("updatedAmonyumAzotuAnalizDengelemeForms", fields: [updatedById], references: [id])
   veriGirisiAbzorbans String   @db.VarChar(45)
+  seyreltme           String   @db.VarChar(45)
+  sonuc               String   @db.VarChar(45)
+}
+
+model AmonyumAzotuAnalizCikis {
+  id                  Int      @id @default(autoincrement())
+  category            String   @db.VarChar(45)
+  dateAndTime         DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
+  createdAt           DateTime @default(now()) @map(name: "created_at")
+  updatedAt           DateTime @updatedAt @map(name: "updated_at")
+  createdById         Int
+  createdBy           User     @relation("createdAmonyumAzotuAnalizCikisForms", fields: [createdById], references: [id])
+  updatedById         Int
+  updatedBy           User     @relation("updatedAmonyumAzotuAnalizCikisForms", fields: [updatedById], references: [id])
+  veriGirisiAbzorbans String   @db.VarChar(45)
+  seyreltme           String   @db.VarChar(45)
+  sonuc               String   @db.VarChar(45)
+}
+
+model AmonyumAzotuAnalizBiyolojik {
+  id                  Int      @id @default(autoincrement())
+  category            String   @db.VarChar(45)
+  dateAndTime         DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
+  createdAt           DateTime @default(now()) @map(name: "created_at")
+  updatedAt           DateTime @updatedAt @map(name: "updated_at")
+  createdById         Int
+  createdBy           User     @relation("createdAmonyumAzotuAnalizBiyolojikForms", fields: [createdById], references: [id])
+  updatedById         Int
+  updatedBy           User     @relation("updatedAmonyumAzotuAnalizBiyolojikForms", fields: [updatedById], references: [id])
+  veriGirisiAbzorbans String   @db.VarChar(45)
+  seyreltme           String   @db.VarChar(45)
+  sonuc               String   @db.VarChar(45)
 }
 
 model DengelemeHavuzu {
@@ -398,15 +487,19 @@ model DengelemeHavuzu {
   createdAt   DateTime @default(now()) @map(name: "created_at")
   updatedAt   DateTime @updatedAt @map(name: "updated_at")
   createdById Int
+  createdBy   User     @relation("createdDengelemeHavuzuForms", fields: [createdById], references: [id])
   updatedById Int
+  updatedBy   User     @relation("updatedDengelemeHavuzuForms", fields: [updatedById], references: [id])
   sicaklik    String   @db.VarChar(45)
   ph          String   @db.VarChar(45)
   koi         String   @db.VarChar(45)
   akm         String   @db.VarChar(45)
   sulfit      String   @db.VarChar(45)
+  amonyumAzot String   @db.VarChar(45) //+
   fosfor      String   @db.VarChar(45)
   azot        String   @db.VarChar(45)
   renk        String   @db.VarChar(45)
+  debi        String   @db.VarChar(45) //+
 }
 
 model NotralizasyonHavuzu {
@@ -426,7 +519,9 @@ model AnaerobikHavuzu {
   createdAt   DateTime @default(now()) @map(name: "created_at")
   updatedAt   DateTime @updatedAt @map(name: "updated_at")
   createdById Int
+  createdBy   User     @relation("createdAnaerobikHavuzuForms", fields: [createdById], references: [id])
   updatedById Int
+  updatedBy   User     @relation("updatedAnaerobikHavuzuForms", fields: [updatedById], references: [id])
   akm         String   @db.VarChar(45)
   imhoff      String   @db.VarChar(45)
   oksijen     String   @db.VarChar(45)
@@ -451,7 +546,9 @@ model GeriDevirHaznesi {
   createdAt                    DateTime @default(now()) @map(name: "created_at")
   updatedAt                    DateTime @updatedAt @map(name: "updated_at")
   createdById                  Int
+  createdBy                    User     @relation("createdGeriDevirHaznesiForms", fields: [createdById], references: [id])
   updatedById                  Int
+  updatedBy                    User     @relation("updatedGeriDevirHaznesiForms", fields: [updatedById], references: [id])
   anaerobikHavuzaGeriDonenDebi String   @db.VarChar(45)
   akm                          String   @db.VarChar(45)
 }
@@ -463,7 +560,9 @@ model BiyolojikCokeltimHavuzu {
   createdAt    DateTime @default(now()) @map(name: "created_at")
   updatedAt    DateTime @updatedAt @map(name: "updated_at")
   createdById  Int
+  createdBy    User     @relation("createdBiyolojikCokeltimHavuzuForms", fields: [createdById], references: [id])
   updatedById  Int
+  updatedBy    User     @relation("updatedBiyolojikCokeltimHavuzuForms", fields: [updatedById], references: [id])
   sicaklik     String   @db.VarChar(45)
   ph           String   @db.VarChar(45)
   koi          String   @db.VarChar(45)
@@ -480,7 +579,9 @@ model Desarj {
   createdAt   DateTime @default(now()) @map(name: "created_at")
   updatedAt   DateTime @updatedAt @map(name: "updated_at")
   createdById Int
+  createdBy   User     @relation("createdDesarjForms", fields: [createdById], references: [id])
   updatedById Int
+  updatedBy   User     @relation("updatedDesarjForms", fields: [updatedById], references: [id])
   debi        String   @db.VarChar(45)
   sicaklik    String   @db.VarChar(45)
   ph          String   @db.VarChar(45)
@@ -499,13 +600,17 @@ model Desarj {
 }
 
 model CamurYogunlastirma {
-  id          Int      @id @default(autoincrement())
-  category    String   @db.VarChar(45)
-  dateAndTime DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
-  createdAt   DateTime @default(now()) @map(name: "created_at")
-  updatedAt   DateTime @updatedAt @map(name: "updated_at")
-  createdById Int
-  updatedById Int
+  id                                           Int      @id @default(autoincrement())
+  category                                     String   @db.VarChar(45)
+  dateAndTime                                  DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
+  createdAt                                    DateTime @default(now()) @map(name: "created_at")
+  updatedAt                                    DateTime @updatedAt @map(name: "updated_at")
+  createdById                                  Int
+  createdBy                                    User     @relation("createdCamurYogunlastirmaTakibiForms", fields: [createdById], references: [id])
+  updatedById                                  Int
+  updatedBy                                    User     @relation("updatedCamurYogunlastirmaTakibiForms", fields: [updatedById], references: [id])
+  kimyasalCokeltimdenCekilenCamurMiktari_m3gun String   @db.VarChar(45)
+  aerobiktenCekilenCamurMiktari                String   @db.VarChar(45)
 }
 
 model Filtrepres {
@@ -515,7 +620,9 @@ model Filtrepres {
   createdAt            DateTime @default(now()) @map(name: "created_at")
   updatedAt            DateTime @updatedAt @map(name: "updated_at")
   createdById          Int
+  createdBy            User     @relation("createdFiltrepresForms", fields: [createdById], references: [id])
   updatedById          Int
+  updatedBy            User     @relation("updatedFiltrepresForms", fields: [updatedById], references: [id])
   camurKekiNem         String   @db.VarChar(45)
   filtrepresSarjSayisi String   @db.VarChar(45)
 }

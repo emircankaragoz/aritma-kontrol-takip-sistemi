@@ -3,10 +3,7 @@ import { Layout } from '@/components'
 import { getSession } from "next-auth/react";
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
-import RenkGidericiVeTuketimiForm from "../../../components/ArıtmaComponents/SaatlikComponents/RenkGidericiTuketimiComp"
-import SaatlikVeriForm from "../../../components/ArıtmaComponents/SaatlikComponents/SaatlikVeri"
-import CikisAtiksuSayacForm from "../../../components/ArıtmaComponents/SaatlikComponents/CikisAtiksuSayacComp"
-import TduFirmasıAtıkSuForm from "../../../components/ArıtmaComponents/SaatlikComponents/TduFirmasıAtıksuComp"
+import { RenkGidericiVeTuketimiForm,SaatlikVeriForm,CikisAtiksuSayacForm,TduFirmasıAtıkSuForm } from '@/components'
 
 export default function SaatlikPage({ session }) {
   return (

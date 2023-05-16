@@ -3,6 +3,7 @@ import { URL } from "../../environment";
 import moment from "moment";
 export default class AritmaService {
 
+  //atiksu aritma giris cikis
   async getAllAtiksuAritmaGirisCikis() {
     return await axios.get(`${URL}/api/controller/get/atiksuAritmaGirisCikis`);
   }
@@ -35,9 +36,6 @@ export default class AritmaService {
     const data = response.data.find(
       (item) => moment(item.dateAndTime).format("YYYY-MM-DD") == datetime
     );
-    
-   
-
     // Find data for the previous day
     const prevDatetime = moment(datetime)
       .subtract(1, "days")
@@ -110,11 +108,72 @@ export default class AritmaService {
     }
 
   }
+  //FİLTREPRES KİMYASAL CAMUR HESAPLAMALARI 
+
+  async getAllFiltrepresKimyasalCamur() {
+    return await axios.get(`${URL}/api/controller/get/filtrepresKimyasalCamur`);
+  }
+
+  async getFiltrepresKimyasalCamurById(id) {
+    let kimyasalCamur;
+    await axios.get(`${URL}/api/controller/get/filtrepresKimyasalCamur`).then((result) => {
+      result.data.map((data) => {
+        if (data.id === id) {
+          kimyasalCamur = data;
+        }
+      });
+    });
+
+    return kimyasalCamur;
+  }
+
+  //CAMUR YOGUNLASTİRMA
+  async getTransferDataToCamurYogunlastirmaFromAtiksuAritmaGirisCikis(datetime){
+
+    let kimyasalCokeltimdenCekilenCamurMiktari_m3gun;
+    let aerobiktenCekilenCamurMiktari;
+
+    const response = await axios.get(
+      `${URL}/api/controller/get/atiksuAritmaGirisCikis`
+    );
+    const data = response.data.find(
+      (item) => moment(item.dateAndTime).format("YYYY-MM-DD") == datetime
+    );
+    console.log(data);
+    if(data){
+      kimyasalCokeltimdenCekilenCamurMiktari_m3gun = data.kimyasalCokeltimdenCekilenCamurMiktari_m3gun
+      aerobiktenCekilenCamurMiktari = data.aerobiktenCekilenCamurMiktari
+
+    }
+    return{
+      kimyasalCokeltimdenCekilenCamurMiktari_m3gun,
+      aerobiktenCekilenCamurMiktari,
 
 
+    };
+  }
+  async getAllCamurMiktari() {
+    return await axios.get(`${URL}/api/controller/get/camurYogunlastirma`);
+  }
 
+  //Renk GİDERİCİ KİMYASAL GİRDİ KONTROLU
 
+   async getAllRenkGidericiKimyasalGirdiKontrolu() {
+    return await axios.get(`${URL}/api/controller/get/renkGidericiKimyasalGirdiKontrol`);
+  }
 
+  async getRenkGidericiKimyasalGirdiKontroluById(id) {
+    let Data;
+    await axios.get(`${URL}/api/controller/get/renkGidericiKimyasalGirdiKontrol`).then((result) => {
+      result.data.map((data) => {
+        if (data.id === id) {
+          Data = data;
+        }
+      });
+    });
+
+    return Data;
+  }
 
 
   //CİKİS ATİKSU SAYAC SERVİCE
@@ -153,6 +212,162 @@ export default class AritmaService {
 
     return renkGidericiTuketimi;
   }
+  //ANALİZ FORMLARI SERVİCE
+
+  //AMONYUM AZOT
+  //DENGELEME
+  async getAllAmonyumAzotuAnalizDengelemeVerileri() {
+    return await axios.get(`${URL}/api/controller/get/amonyumAzotuAnalizDengeleme`);
+  }
+
+  //AMONYUM AZOT DENGELEME DEN DENGELEME HAVUZUNA VERİ AKTARIMI
+  async getValuesFromAnotherForms(datetime){
+
+    let amonyumAzot;
+    let debi;
+    const response = await axios.get(
+      `${URL}/api/controller/get/amonyumAzotuAnalizDengeleme`
+    );
+    const response2 = await axios.get(
+      `${URL}/api/controller/get/atiksuAritmaGirisCikis`
+    );
+    const data = response.data.find(
+      (item) => moment(item.dateAndTime).format("YYYY-MM-DD") == datetime
+    );
+    const data2 = response2.data.find(
+      (item) => moment(item.dateAndTime).format("YYYY-MM-DD") == datetime
+    );
+    
+    if(data && data2){
+      amonyumAzot = data.seyreltme;
+      debi = data2.girisAtiksuMiktariM3Gun;
+    }
+    return{
+      amonyumAzot,
+      debi
+      
+    };
+  }
+
+  //CİKİS
+  async getAllAmonyumAzotuAnalizCikisVerileri() {
+    return await axios.get(`${URL}/api/controller/get/amonyumAzotuAnalizCikis`);
+  }
+  //BİYOLOJİK
+  async getAllAmonyumAzotuAnalizBiyolojikVerileri() {
+    return await axios.get(`${URL}/api/controller/get/amonyumAzotuAnalizBiyolojik`);
+  }
+
+  //DENGELEME HAVUZU FORMU
+  async getAllDengelemeHavuzuVerileri() {
+    return await axios.get(`${URL}/api/controller/get/dengelemeHavuzuVerileri`);
+  }
+
+  //ISI GERİ KAZANIM PH AND AMPER
+ async getAllIsiGeriKazanimVerileri (){
+  return await axios.get(`${URL}/api/controller/get/isiGeriKazanim`);
+ }
+ async getIsiGeriKazanimById(id) {
+  let isiGeriKazanim;
+  await axios.get(`${URL}/api/controller/get/isiGeriKazanim`).then((result) => {
+    result.data.map((data) => {
+      if (data.id === id) {
+        isiGeriKazanim = data;
+      }
+    });
+  });
+  
+  return isiGeriKazanim;
+}
+//ANAEROBİK HAVUZU 
+async getAllAnaerobikHavuzuVerileri (){
+  return await axios.get(`${URL}/api/controller/get/anaerobikHavuzu`);
+ }
+ async getAnaerobikHavuzuById(id) {
+  let anaerobik;
+  await axios.get(`${URL}/api/controller/get/anaerobikHavuzu`).then((result) => {
+    result.data.map((data) => {
+      if (data.id === id) {
+        anaerobik = data;
+      }
+    });
+  });
+  
+  return anaerobik;
+}
+//GERİ DEVİR HAZNESİ
+async getAllGeriDevirHaznesiVerileri (){
+  return await axios.get(`${URL}/api/controller/get/geriDevirHaznesi`);
+ }
+ async getGeriDevirHaznesiById(id) {
+  let devirHazne;
+  await axios.get(`${URL}/api/controller/get/geriDevirHaznesi`).then((result) => {
+    result.data.map((data) => {
+      if (data.id === id) {
+        devirHazne = data;
+      }
+    });
+  });
+  
+  
+  return devirHazne;
+}
+//BİYOLOJİK COKELTİM HAVUZU
+async getAllBiyolojikCokeltimHavuzuVerileri (){
+  return await axios.get(`${URL}/api/controller/get/biyolojikCokeltimHavuzu`);
+ }
+ async getBiyolojikCokeltimHavuzuById(id) {
+  let biyolojikCokeltimHavuzu;
+  await axios.get(`${URL}/api/controller/get/biyolojikCokeltimHavuzu`).then((result) => {
+    result.data.map((data) => {
+      if (data.id === id) {
+        biyolojikCokeltimHavuzu = data;
+      }
+    });
+  });
+  
+  
+  return biyolojikCokeltimHavuzu;
+}
+//FİLTREPRES
+async getAllFiltrepresVerileri (){
+  return await axios.get(`${URL}/api/controller/get/filtrepres`);
+ }
+ async getFiltrepresById(id) {
+  let filtrepres;
+  await axios.get(`${URL}/api/controller/get/filtrepres`).then((result) => {
+    result.data.map((data) => {
+      if (data.id === id) {
+        filtrepres = data;
+      }
+    });
+  });
+  
+  
+  return filtrepres;
+}
+
+//DEŞARJ
+async getAllDesarjVerileri (){
+  return await axios.get(`${URL}/api/controller/get/desarj`);
+ }
+ async getDesarjById(id) {
+  let desarj;
+  await axios.get(`${URL}/api/controller/get/desarj`).then((result) => {
+    result.data.map((data) => {
+      if (data.id === id) {
+        desarj = data;
+      }
+    });
+  });
+  
+  
+  return desarj;
+}
+
+
+ 
+ 
 
   //SAATLİK VERİ SERVİCE
   async getAllSaatlikVeri() {
@@ -168,7 +383,7 @@ export default class AritmaService {
         }
       });
     });
-    console.log(saatlikVeri);
+   
     return saatlikVeri;
   }
   //TDU SERVİCE

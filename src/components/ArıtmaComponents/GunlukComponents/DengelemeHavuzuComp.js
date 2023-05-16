@@ -3,35 +3,41 @@ import { useFormik } from "formik";
 import { AuthFormCSS } from "@/styles";
 import { toast } from "react-toastify";
 import { AritmaService, UserService } from "@/services"
-import { RiDeleteBin5Line } from "react-icons/ri";
 import moment from "moment/moment";
 import { useRouter } from "next/navigation";
+import { RiDeleteBin5Line } from "react-icons/ri";
 
-export default function AtiksuAritmaGirisCikisComponent({ session }) {
-
+export default function DengelemeHavuzuComponent({ session }) {
     const [allData, setAllData] = useState([]);
     const [sessionUser, setSessionUser] = useState(null);
     const [isDataEntered, setIsDataEntered] = useState(false);
     const getToday = moment().startOf("day").format();
     const router = useRouter();
+
     const formik = useFormik({
         initialValues: {
-            girisAtiksuSayacDegeri: "",
-            cikisAtiksuSayacDegeri: "",
-            kimyasalCokeltimdenCekilenCamurMiktari_m3gun: "",
+            sicaklik: "",
+            ph: "",
+            koi: "",
+            akm: "",
+            sulfit: "",
+            fosfor: "",
+            azot: "",
+            renk: "",
+
         },
         onSubmit,
     });
-    const atiksuAritmaGirisCikis = new AritmaService();
+    const aritmaService = new AritmaService();
     const userService = new UserService();
     const employee_id = session.user.employeeId;
 
-
-    async function getAllAtiksuAritmaGirisCikisDataHandler() {
-        await atiksuAritmaGirisCikis.getAllAtiksuAritmaGirisCikis().then((result) => {
+    async function getAllDengelemeHavuzuDataHandler() {
+        await aritmaService.getAllDengelemeHavuzuVerileri().then((result) => {
             setAllData(result.data);
-            isAtiksuAritmaGirisCikisDatasEntered(result.data);
+            isDatasEntered(result.data);
         });
+
     }
     async function getSessionUserHandler() {
         if (session) {
@@ -41,42 +47,39 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
         }
     }
     // veri girildi mi kontrolü yapılır.
-    async function isAtiksuAritmaGirisCikisDatasEntered(atiksuDatas) {
-        const result = atiksuDatas.find(
+    async function isDatasEntered(datas) {
+        const result = datas.find(
             (item) =>
                 moment(item.dateAndTime).format("YYYY-MM-DD") ===
                 moment(getToday).format("YYYY-MM-DD")
-        );
 
+        );
         if (result) {
             setIsDataEntered(true);
-
         } else {
             setIsDataEntered(false);
         }
     }
     useEffect(() => {
-        getAllAtiksuAritmaGirisCikisDataHandler();
+        getAllDengelemeHavuzuDataHandler();
         getSessionUserHandler();
 
     }, []);
-
     async function onSubmit(values) {
-
         const employeeId = {
             employeeId: `${employee_id}`,
         };
         const today = {
-            today :`${getToday}`,
+            today: `${getToday}`,
         }
-        values = Object.assign(values, employeeId,today);
-       
+        values = Object.assign(values, employeeId, today);
+        console.log(values);
         const options = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(values),
         };
-        await fetch("/api/controller/post/addAtiksuAritmaGirisCikis", options)
+        await fetch("/api/controller/post/addDengelemeHavuzuVerileri", options)
             .then((res) => res.json())
             .then((data) => {
                 if (data) {
@@ -85,9 +88,50 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                     });
                 }
             });
-        transferDataToSameForm();
+            getValuesFromAnotherForms();
+
+        
+
+
+
     }
-    async function deleteAtiksuAritmaGirisCikisandCamur(id) {
+    async function getValuesFromAnotherForms(){
+        const date = moment(getToday).format("YYYY-MM-DD");
+        await aritmaService.getValuesFromAnotherForms(date)   
+        .then((result) => {
+            sendDataHandler(result);
+        });
+
+
+    }
+    async function sendDataHandler(result) {
+        const today = {
+            today :`${getToday}`,
+        }
+        result = Object.assign(result,today);
+        console.log(result);
+        const options = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(result),
+        };
+       
+        
+        await fetch("/api/controller/post/updateTransferDengelemeHavuzuForm", options)
+          .then((res) => res.json())
+          .then((data) => {
+            if (data) {
+              toast.success(
+                "Veriler başarıyla transfer edildi.",
+                {
+                  position: toast.POSITION.BOTTOM_RIGHT,
+                }
+              );
+            }
+          });   
+          router.refresh();     
+    }
+    async function deleteDengelemeHavuzuVerileri(id) {
         const dataId = {
             dataId: `${id}`,
         };
@@ -97,7 +141,7 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
             body: JSON.stringify(dataId),
         };
 
-        await fetch("/api/controller/post/deleteAtiksuAritmaGirisCikis", options)
+        await fetch("/api/controller/post/deleteDengelemeHavuzuVerileri", options)
             .then((res) => res.json())
             .then((data) => {
                 if (data) {
@@ -107,146 +151,20 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                 }
             });
 
-       
-            
-           
-    }
+        router.refresh();
 
-    // hesaplanan veriler camur yogunlastırma formuna aktarılıyor.
-    async function transferDataToCamurYogunlastirmaForm() {
-        const date = moment(getToday).format("YYYY-MM-DD");
-        await atiksuAritmaGirisCikis.getTransferDataToCamurYogunlastirmaFromAtiksuAritmaGirisCikis(date)   
-            .then((result) => {
-                sendDataHandlerSecond(result);
-            });
-    }
-    //camur yogunlastirma data handler
-    async function sendDataHandlerSecond(result) {
-        const employeeId = {
-            employeeId: `${employee_id}`,
-        };
-        const today = {
-            today :`${getToday}`,
-        }
-        result = Object.assign(result, employeeId,today);
-        console.log(result);
-        const options = {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(result),
-        };
-       
-        
-        await fetch("/api/controller/post/addCamurYogunlastirma", options)
-          .then((res) => res.json())
-          .then((data) => {
-            if (data) {
-              toast.success(
-                "Veriler Camur Yogunlastırma formuna başarıyla gönderildi",
-                {
-                  position: toast.POSITION.BOTTOM_RIGHT,
-                }
-              );
-            }
-          });  
-          //router.refresh();
-          
-         
-    }
- 
-
-
-
-      //TRANSFER TO SAME FORM (UPDATE)
-    async function transferDataToSameForm() {
-        const date = moment(getToday).format("YYYY-MM-DD");
-        await atiksuAritmaGirisCikis
-            .getCalculationDeneme(date)
-            .then((result) => {
-                sendDataHandler(result);
-            });
 
     }
-        // hesaplanan veriler camur yogunlastırma formuna aktarılıyor.
-    async function transferDataToCamurYogunlastirmaForm() {
-        const date = moment(getToday).format("YYYY-MM-DD");
-        await atiksuAritmaGirisCikis.getTransferDataToCamurYogunlastirmaFromAtiksuAritmaGirisCikis(date)   
-            .then((result) => {
-                sendDataHandlerSecond(result);
-            });
-    }
-    //camur yogunlastirma data handler
-    async function sendDataHandlerSecond(result) {
-        const employeeId = {
-            employeeId: `${employee_id}`,
-        };
-        const today = {
-            today :`${getToday}`,
-        }
-        result = Object.assign(result, employeeId,today);
-        console.log(result);
-        const options = {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(result),
-        };
-       
-        
-        await fetch("/api/controller/post/addCamurYogunlastirma", options)
-          .then((res) => res.json())
-          .then((data) => {
-            if (data) {
-              toast.success(
-                "Veriler Camur Yogunlastırma formuna başarıyla gönderildi",
-                {
-                  position: toast.POSITION.BOTTOM_RIGHT,
-                }
-              );
-            }
-          });  
-          
-          
-         
-    }
-    //adding operation update
-    async function sendDataHandler(result) {
-        const options = {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(result),
-        };
-
-        await fetch("/api/controller/post/updateAtiksuAritmaGirisCikis", options)
-            .then((res) => res.json())
-            .then((data) => {
-                if (data) {
-                    toast.success(
-                        "Hesaplamalar başarıyla yapıldı.",
-                        {
-                            position: toast.POSITION.BOTTOM_RIGHT,
-                        }
-                    );
-                }
-            });
-            transferDataToCamurYogunlastirmaForm();
-            
-           
-    }
-
-   
-
     if (sessionUser === null) {
         return <div className="text-center">Yükleniyor...</div>;
     }
-
-
 
 
     return (
         <div className="container p-2">
             <div className="d-flex  flex-column mx-auto w-50">
                 <p className="text-muted text-center fs-5 fw-bolder pb-3 mt-3">
-                    ATIKSU ARITMA TESİSİ GİRİŞ VE ÇIKIŞ ATIKSU MİKTARLARI KAYIT FORMU
+                    DENGELEME HAVUZU FORMU
                 </p>
                 <span className="text-center text-muted">
                     {moment().format("DD/MM/YYYY")}
@@ -258,33 +176,78 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                         <p className="text-danger">Günlük veri girişi gerçekleşmedi!</p>
                     )}
                 </div>
+
                 <section>
                     <form onSubmit={formik.handleSubmit} className="d-flex flex-column gap-3 ">
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
                                 type="number"
                                 step="0.01"
-                                name="girisAtiksuSayacDegeri"
-                                placeholder="Giriş Atık Su Sayaç Değeri"
-                                {...formik.getFieldProps("girisAtiksuSayacDegeri")}
+                                name="sicaklik"
+                                placeholder="sicaklik"
+                                {...formik.getFieldProps("sicaklik")}
                             />
                         </div>
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
                                 type="number"
                                 step="0.01"
-                                name="cikisAtiksuSayacDegeri"
-                                placeholder="Çıkış Atık Su Sayaç Değeri"
-                                {...formik.getFieldProps("cikisAtiksuSayacDegeri")}
+                                name="ph"
+                                placeholder="ph"
+                                {...formik.getFieldProps("ph")}
                             />
                         </div>
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
                                 type="number"
                                 step="0.01"
-                                name="kimyasalCokeltimdenCekilenCamurMiktari_m3gun"
-                                placeholder=" Kimyasal Çökeltimden Çekilen Çamur Miktari (m3/gun)"
-                                {...formik.getFieldProps("kimyasalCokeltimdenCekilenCamurMiktari_m3gun")}
+                                name="koi"
+                                placeholder="koi"
+                                {...formik.getFieldProps("koi")}
+                            />
+                        </div>
+                        <div className={AuthFormCSS.input_group}>
+                            <input className="form-control"
+                                type="number"
+                                step="0.01"
+                                name="akm"
+                                placeholder="akm"
+                                {...formik.getFieldProps("akm")}
+                            />
+                        </div>
+                        <div className={AuthFormCSS.input_group}>
+                            <input className="form-control"
+                                type="number"
+                                step="0.01"
+                                name="sulfit"
+                                placeholder="sulfit"
+                                {...formik.getFieldProps("sulfit")}
+                            />
+                        </div>
+                        <div className={AuthFormCSS.input_group}>
+                            <input className="form-control"
+                                type="number"
+                                step="0.01"
+                                name="fosfor"
+                                placeholder="fosfor"
+                                {...formik.getFieldProps("fosfor")}
+                            />
+                        </div>
+                        <div className={AuthFormCSS.input_group}>
+                            <input className="form-control"
+                                type="number"
+                                step="0.01"
+                                name="azot"
+                                placeholder="azot"
+                                {...formik.getFieldProps("azot")}
+                            />
+                        </div>
+                        <div className={AuthFormCSS.input_group}>
+                            <input className="form-control"
+                                type="text"
+                                name="renk"
+                                placeholder="renk"
+                                {...formik.getFieldProps("renk")}
                             />
                         </div>
                         <div className="input-button mx-auto">
@@ -302,8 +265,9 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
             <hr />
             <section>
                 <p className="text-muted text-center fs-5 fw-bolder pb-3">
-                    ATIKSU ARITMA TESİSİ GİRİŞ VE ÇIKIŞ ATIKSU MİKTARLARI FORMU
+                    DENGELEME HAVUZU ANALİZ VERİLERİ
                 </p>
+
                 <div className="row">
                     <div className="col-sm-12 table-responsive">
                         <table className="table text-dark table-bordered mt-2">
@@ -312,13 +276,16 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                                     <th scope="col">Sr. No.</th>
                                     <th scope="col">Tarih</th>
                                     <th scope="col">Çalışan ID</th>
-                                    <th scope="col">Giriş Atık Su Sayaç Değeri</th>
-                                    <th scope="col">Giriş Atıksu Miktarı (m3/gün)</th>
-                                    <th scope="col">Çıkış Atık Su Sayaç Değeri</th>
-                                    <th scope="col">Çıkış Atıksu Miktarı (m3/gün)</th>
-                                    <th scope="col">Fark(Çekilen Çamur Miktarı) (m3/gün)</th>
-                                    <th scope="col">Kimyasal Çökeltimden Çekilen Çamur Miktari (m3/gun)</th>
-                                    <th scope="col">Aerobikten Çekilen Çamur Miktarı m3/gün</th>
+                                    <th scope="col">sicaklik</th>
+                                    <th scope="col">ph</th>
+                                    <th scope="col">koi</th>
+                                    <th scope="col">akm</th>
+                                    <th scope="col">sulfit</th>
+                                    <th scope="col">amonyumAzot</th>
+                                    <th scope="col">fosfor</th>
+                                    <th scope="col">azot</th>
+                                    <th scope="col">renk</th>
+                                    <th scope="col">debi</th>
                                     <th scope="col">.</th>
 
                                 </tr>
@@ -329,27 +296,28 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                                         <th scope="row">{index + 1}</th>
                                         <td>{moment(data.dateAndTime).format("DD/MM/YY")}</td>
                                         <td>@{data.createdBy.employeeId}</td>
-                                        <td>{parseFloat(data.girisAtiksuSayacDegeri).toFixed(2)}</td>
-                                        <td>{parseFloat(data.girisAtiksuMiktariM3Gun).toFixed(2)}</td>
-                                        <td>{parseFloat(data.cikisAtiksuSayacDegeri).toFixed(2)}</td>
-                                        <td>{parseFloat(data.cikisAtiksuMiktariM3Gun).toFixed(2)}</td>
-                                        <td>{parseFloat(data.farkCekilenCamurMiktari).toFixed(2)}</td>
-                                        <td>{parseFloat(data.kimyasalCokeltimdenCekilenCamurMiktari_m3gun).toFixed(2)}</td>
-                                        <td>{parseFloat(data.aerobiktenCekilenCamurMiktari).toFixed(2)}</td>
+                                        <td>{parseFloat(data.sicaklik).toFixed(2)}</td>
+                                        <td>{parseFloat(data.ph).toFixed(2)}</td>
+                                        <td>{parseFloat(data.koi).toFixed(1)}</td>
+                                        <td>{parseFloat(data.akm).toFixed(2)}</td>
+                                        <td>{parseFloat(data.sulfit).toFixed(2)}</td>
+                                        <td>{parseFloat(data.amonyumAzot).toFixed(2)}</td>
+                                        <td>{parseFloat(data.fosfor).toFixed(2)}</td>
+                                        <td>{parseFloat(data.azot).toFixed(2)}</td>
+                                        <td>{data.renk}</td>
+                                        <td>{parseFloat(data.debi).toFixed(2)}</td>
                                         {sessionUser.role.roleName === "admin" ? (
                                             <td>
                                                 <span className="me-2">
                                                     <span
                                                         className="fs-4"
                                                         style={{ cursor: "pointer" }}
-                                                        onClick={() => deleteAtiksuAritmaGirisCikisandCamur(data.id)}
+                                                        onClick={() => deleteDengelemeHavuzuVerileri(data.id)}
                                                     >
                                                         <RiDeleteBin5Line />
                                                     </span>
                                                 </span>
-                                                {/* <span>
-                                                    <CikisAtiksuSayacUpdateModal dataId={data.id} />
-                                                </span> */}
+
 
                                             </td>
                                         ) : (
@@ -361,6 +329,7 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                         </table>
                     </div>
                 </div>
+
             </section>
         </div>
     )
