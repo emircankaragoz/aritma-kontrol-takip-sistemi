@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
-import { TuzService, UserService } from "@/services"
+import { TuzService, UserService, SystemMessageService } from "@/services";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { AuthFormCSS } from "@/styles";
 import { SodyumKlorurKontrolFormUpdateModal } from "..";
 import moment from "moment/moment";
 import { sodyumKlorurKontrolFormu_validate } from "lib/validate";
+import { useRouter } from "next/navigation";
+import { SYSTEM_MESSAGES } from "../../../environment";
+
 export default function SodyumKlorurKontrolFormuComponent({ session }) {
+  const router = useRouter();
+
+  const [isDataEntered, setIsDataEntered] = useState(null);
   const [allData, setAllData] = useState([]);
   const [sessionUser, setSessionUser] = useState(null);
   const formik = useFormik({
@@ -20,19 +26,25 @@ export default function SodyumKlorurKontrolFormuComponent({ session }) {
       firma: "",
       kabul: "",
       iade: "",
-      aciklama: ""
-
+      aciklama: "",
     },
     validate: sodyumKlorurKontrolFormu_validate,
     onSubmit,
   });
 
+  const getToday = moment().startOf("day").format();
+  const systemMessageService = new SystemMessageService();
   const sodyumKlorurService = new TuzService();
   const userService = new UserService();
   const employee_id = session.user.employeeId;
 
   async function getAllSodyumKlorurKontrolFormDataHandler() {
-    await sodyumKlorurService.getAllSodyumKlorurKontrolFormu().then((result) => setAllData(result.data));
+    await sodyumKlorurService
+      .getAllSodyumKlorurKontrolFormu()
+      .then((result) => {
+        setAllData(result.data);
+        isDatasEntered(result.data);
+      });
   }
   async function getSessionUserHandler() {
     if (session) {
@@ -41,6 +53,40 @@ export default function SodyumKlorurKontrolFormuComponent({ session }) {
         .then((result) => setSessionUser(result));
     }
   }
+
+  // veri girildi mi kontrolü yapılır.
+  async function isDatasEntered(datas) {
+    const result = datas.find(
+      (item) =>
+        moment(item.dateAndTime).format("YYYY-MM-DD") ===
+        moment(getToday).format("YYYY-MM-DD")
+    );
+
+    if (result) {
+      setIsDataEntered(true);
+      deleteSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
+    } else {
+      setIsDataEntered(false);
+      createdSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
+    }
+  }
+
+  async function deleteSystemMessageHandler(date) {
+    await systemMessageService.deleteSystemMessage(
+      SYSTEM_MESSAGES.T4.code,
+      date
+    );
+  }
+
+  async function createdSystemMessageHandler(date) {
+    await systemMessageService.addSystemMessage(
+      SYSTEM_MESSAGES.T4.content,
+      SYSTEM_MESSAGES.T4.title,
+      SYSTEM_MESSAGES.T4.code,
+      date
+    );
+  }
+
   useEffect(() => {
     getSessionUserHandler();
     getAllSodyumKlorurKontrolFormDataHandler();
@@ -62,13 +108,9 @@ export default function SodyumKlorurKontrolFormuComponent({ session }) {
       .then((res) => res.json())
       .then((data) => {
         if (data) {
-          toast.success("Form başarıyla oluşturuldu", {
-            position: toast.POSITION.BOTTOM_RIGHT,
-          });
+          router.refresh();
         }
       });
-    resetForm();
-
   }
 
   async function deleteSodyum(id) {
@@ -85,9 +127,7 @@ export default function SodyumKlorurKontrolFormuComponent({ session }) {
       .then((res) => res.json())
       .then((data) => {
         if (data) {
-          toast.success("Form başarıyla silindi", {
-            position: toast.POSITION.BOTTOM_RIGHT,
-          });
+          router.refresh();
         }
       });
   }
@@ -95,173 +135,174 @@ export default function SodyumKlorurKontrolFormuComponent({ session }) {
     return <div className="text-center">Yükleniyor...</div>;
   }
 
-
   return (
-
-
     <div className="container p-2">
       <div className="d-flex  flex-column mx-auto w-50">
+        <p className="text-muted text-center fs-5 fw-bolder pb-3 mt-3">
+          Sodyum Klorür Kontrol Formu
+        </p>
+        <span className="text-center text-muted">
+          {moment().format("DD/MM/YYYY")}
+        </span>
+        <div className="text-center mb-2">
+          {isDataEntered ? (
+            <p className="text-success">Günlük veri girişi gerçekleşti</p>
+          ) : (
+            <p className="text-danger">Günlük veri girişi gerçekleşmedi!</p>
+          )}
+        </div>
         <section>
-          <form onSubmit={formik.handleSubmit} className="d-flex flex-column gap-3 ">
+          <form
+            onSubmit={formik.handleSubmit}
+            className="d-flex flex-column gap-3 "
+          >
             <div className={AuthFormCSS.input_group}>
-              <input className="form-control"
+              <input
+                className="form-control"
                 type="text"
                 name="gorunum"
                 placeholder="Görünüm"
                 {...formik.getFieldProps("gorunum")}
               />
-              {formik.errors.gorunum &&
-                formik.touched.gorunum ? (
+              {formik.errors.gorunum && formik.touched.gorunum ? (
                 <span className="text-danger opacity-75">
                   {formik.errors.gorunum}
                 </span>
               ) : (
                 <></>
               )}
-
             </div>
             <div className={AuthFormCSS.input_group}>
-
-             
-              <input className="form-control"
+              <input
+                className="form-control"
                 type="number"
                 step="0.01"
                 name="sertlik"
                 placeholder="Sertlik"
                 {...formik.getFieldProps("sertlik")}
               />
-              {formik.errors.sertlik &&
-                formik.touched.sertlik ? (
+              {formik.errors.sertlik && formik.touched.sertlik ? (
                 <span className="text-danger opacity-75">
                   {formik.errors.sertlik}
                 </span>
               ) : (
                 <></>
               )}
-
             </div>
             <div className={AuthFormCSS.input_group}>
-            
-              <input className="form-control"
+              <input
+                className="form-control"
                 type="number"
                 step="0.01"
                 name="demir"
                 placeholder="Demir"
                 {...formik.getFieldProps("demir")}
               />
-              {formik.errors.demir &&
-                formik.touched.demir ? (
+              {formik.errors.demir && formik.touched.demir ? (
                 <span className="text-danger opacity-75">
                   {formik.errors.demir}
                 </span>
               ) : (
                 <></>
               )}
-
             </div>
             <div className={AuthFormCSS.input_group}>
-              <input className="form-control"
+              <input
+                className="form-control"
                 type="number"
                 step="1"
                 name="irsaliyeNo"
                 placeholder="İrsaliye No"
                 {...formik.getFieldProps("irsaliyeNo")}
               />
-              {formik.errors.irsaliyeNo &&
-                formik.touched.irsaliyeNo ? (
+              {formik.errors.irsaliyeNo && formik.touched.irsaliyeNo ? (
                 <span className="text-danger opacity-75">
                   {formik.errors.irsaliyeNo}
                 </span>
               ) : (
                 <></>
               )}
-
             </div>
             <div className={AuthFormCSS.input_group}>
-              <input className="form-control"
+              <input
+                className="form-control"
                 type="number"
                 step="0.01"
                 name="miktarKg"
                 placeholder="Miktar Kg"
                 {...formik.getFieldProps("miktarKg")}
               />
-              {formik.errors.miktarKg &&
-                formik.touched.miktarKg ? (
+              {formik.errors.miktarKg && formik.touched.miktarKg ? (
                 <span className="text-danger opacity-75">
                   {formik.errors.miktarKg}
                 </span>
               ) : (
                 <></>
               )}
-
             </div>
             <div className={AuthFormCSS.input_group}>
-              <input className="form-control"
+              <input
+                className="form-control"
                 type="text"
                 name="firma"
                 placeholder="Firma"
                 {...formik.getFieldProps("firma")}
               />
-              {formik.errors.firma &&
-                formik.touched.firma ? (
+              {formik.errors.firma && formik.touched.firma ? (
                 <span className="text-danger opacity-75">
                   {formik.errors.firma}
                 </span>
               ) : (
                 <></>
               )}
-
             </div>
             <div className={AuthFormCSS.input_group}>
-              <input className="form-control"
+              <input
+                className="form-control"
                 type="text"
                 name="kabul"
                 placeholder="Kabul"
                 {...formik.getFieldProps("kabul")}
               />
-              {formik.errors.kabul &&
-                formik.touched.kabul ? (
+              {formik.errors.kabul && formik.touched.kabul ? (
                 <span className="text-danger opacity-75">
                   {formik.errors.kabul}
                 </span>
               ) : (
                 <></>
               )}
-
             </div>
             <div className={AuthFormCSS.input_group}>
-              <input className="form-control"
+              <input
+                className="form-control"
                 type="text"
                 name="iade"
                 placeholder="İade"
                 {...formik.getFieldProps("iade")}
               />
-              {formik.errors.iade &&
-                formik.touched.iade ? (
+              {formik.errors.iade && formik.touched.iade ? (
                 <span className="text-danger opacity-75">
                   {formik.errors.iade}
                 </span>
               ) : (
                 <></>
               )}
-
             </div>
             <div className={AuthFormCSS.input_group}>
-              <input className="form-control"
+              <input
+                className="form-control"
                 type="text"
                 name="aciklama"
                 placeholder="Açıklama"
                 {...formik.getFieldProps("aciklama")}
               />
-              {formik.errors.aciklama &&
-                formik.touched.aciklama ? (
+              {formik.errors.aciklama && formik.touched.aciklama ? (
                 <span className="text-danger opacity-75">
                   {formik.errors.aciklama}
                 </span>
               ) : (
                 <></>
               )}
-
             </div>
 
             <div className="input-button mx-auto">
@@ -287,8 +328,16 @@ export default function SodyumKlorurKontrolFormuComponent({ session }) {
                   <th scope="col">Tarih</th>
                   <th scope="col">Çalışan ID</th>
                   <th scope="col">Görünüm</th>
-                  <th scope="col">Sertlik<br/>Max 40AS </th>
-                  <th scope="col">Demir<br/>Max 1ppm</th>
+                  <th scope="col">
+                    Sertlik
+                    <br />
+                    Max 40AS{" "}
+                  </th>
+                  <th scope="col">
+                    Demir
+                    <br />
+                    Max 1ppm
+                  </th>
                   <th scope="col">İrsaliye No</th>
                   <th scope="col">Miktar Kg</th>
                   <th scope="col">Firma</th>
@@ -328,18 +377,14 @@ export default function SodyumKlorurKontrolFormuComponent({ session }) {
                           </span>
                         </div>
                         <span>
-                          <SodyumKlorurKontrolFormUpdateModal dataId={data.id} />
+                          <SodyumKlorurKontrolFormUpdateModal
+                            dataId={data.id}
+                          />
                         </span>
-
                       </td>
                     ) : (
                       <></>
                     )}
-
-
-
-
-
                   </tr>
                 ))}
               </tbody>
@@ -347,16 +392,6 @@ export default function SodyumKlorurKontrolFormuComponent({ session }) {
           </div>
         </div>
       </section>
-
-
-
     </div>
-
-
-
-
-
-  )
+  );
 }
-
-

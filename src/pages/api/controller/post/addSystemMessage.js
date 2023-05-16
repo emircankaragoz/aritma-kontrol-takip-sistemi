@@ -7,11 +7,14 @@ export default async function handler(req, res) {
     try {
       const { messageCode, title, content } = req.body;
 
+      const getToday = moment().startOf("day").format();
+
       const data = await prisma.systemMessage.create({
         data: {
           content: content,
           title: title,
           messageCode: messageCode,
+          createdAt: getToday
         },
       });
 

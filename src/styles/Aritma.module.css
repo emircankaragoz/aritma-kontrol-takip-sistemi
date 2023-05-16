@@ -1,0 +1,12 @@
+.deleteButton:hover {
+    opacity: 50%;
+}
+
+.updateButton:hover {
+    opacity: 50%;
+}
+
+.input_group {
+    position: relative; 
+    flex: auto;
+}

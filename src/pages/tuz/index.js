@@ -6,7 +6,7 @@ export default function TuzPage({ session }) {
   const [key, setKey] = useState("home");
   return (
     <Layout session={session}>
-      <h2 className="mt-4 mb-4 fw-bold text-center">Tuz Page</h2>
+      <h2 className="mt-4 mb-4 fw-bold text-center">Tuz</h2>
 
       <Tabs
         id="controlled-tab-example"

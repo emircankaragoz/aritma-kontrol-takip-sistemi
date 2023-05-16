@@ -6,8 +6,7 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import moment from "moment/moment";
 import { TuzCSS } from "@/styles";
 import { TuzSodaSayacUpdateModal } from "..";
-import { tuzSodaSayacToplama_validate } from "lib/validate";
-import { TUZSODASAYAC_MESSAGE } from "../../../environment";
+import { SYSTEM_MESSAGES } from "../../../environment";
 import { useRouter } from "next/navigation";
 
 export default function TuzSodaSayacToplamaComponent({ session }) {
@@ -32,7 +31,6 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
       katiSodaKg: "",
       aritmaTesisineAtilanAtikSiviTuzuLt: "",
     },
-    validate: tuzSodaSayacToplama_validate,
     onSubmit,
   });
 
@@ -66,22 +64,26 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
 
     if (result) {
       setIsDataEntered(true);
-      deleteSystemMessageHandler();
+      deleteSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
     } else {
       setIsDataEntered(false);
-      createdSystemMessageHandler();
+      createdSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
     }
   }
 
-  async function deleteSystemMessageHandler() {
-    await systemMessageService.deleteSystemMessage(TUZSODASAYAC_MESSAGE.code);
+  async function deleteSystemMessageHandler(date) {
+    await systemMessageService.deleteSystemMessage(
+      SYSTEM_MESSAGES.T1.code,
+      date
+    );
   }
 
-  async function createdSystemMessageHandler() {
+  async function createdSystemMessageHandler(date) {
     await systemMessageService.addSystemMessage(
-      TUZSODASAYAC_MESSAGE.content,
-      TUZSODASAYAC_MESSAGE.title,
-      TUZSODASAYAC_MESSAGE.code
+      SYSTEM_MESSAGES.T1.content,
+      SYSTEM_MESSAGES.T1.title,
+      SYSTEM_MESSAGES.T1.code,
+      date
     );
   }
 
@@ -128,7 +130,10 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
       body: JSON.stringify(tuzId),
     };
 
-    await fetch("/api/controller/post/deleteTuzSodaSayacToplamaAndGunlukTuketimMiktari", options)
+    await fetch(
+      "/api/controller/post/deleteTuzSodaSayacToplamaAndGunlukTuketimMiktari",
+      options
+    )
       .then((res) => res.json())
       .then((data) => {
         if (data) {
@@ -202,15 +207,9 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
                 step="0.01"
                 name="uretilenSu"
                 placeholder="Üretilen Su"
+                required
                 {...formik.getFieldProps("uretilenSu")}
               />
-              {formik.errors.uretilenSu && formik.touched.uretilenSu ? (
-                <span className="text-danger opacity-75">
-                  {formik.errors.uretilenSu}
-                </span>
-              ) : (
-                <></>
-              )}
             </div>
 
             <div className={TuzCSS.input_group}>
@@ -220,16 +219,9 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
                 step="0.01"
                 name="tasviyedeKullanilanSiviTuzSayac"
                 placeholder="Tasviyede Kullanılan Sıvı Tuz Sayaç"
+                required
                 {...formik.getFieldProps("tasviyedeKullanilanSiviTuzSayac")}
               />
-              {formik.errors.tasviyedeKullanilanSiviTuzSayac &&
-              formik.touched.tasviyedeKullanilanSiviTuzSayac ? (
-                <span className="text-danger opacity-75">
-                  {formik.errors.tasviyedeKullanilanSiviTuzSayac}
-                </span>
-              ) : (
-                <></>
-              )}
             </div>
 
             <div className={TuzCSS.input_group}>
@@ -239,16 +231,9 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
                 step="0.01"
                 name="tuzVeSodaTesisiKullanilanSuSayac"
                 placeholder="Tuz ve Soda Tesisi Kullanılan Su Sayaç"
+                required
                 {...formik.getFieldProps("tuzVeSodaTesisiKullanilanSuSayac")}
               />
-              {formik.errors.tuzVeSodaTesisiKullanilanSuSayac &&
-              formik.touched.tuzVeSodaTesisiKullanilanSuSayac ? (
-                <span className="text-danger opacity-75">
-                  {formik.errors.tuzVeSodaTesisiKullanilanSuSayac}
-                </span>
-              ) : (
-                <></>
-              )}
             </div>
 
             <div className={TuzCSS.input_group}>
@@ -258,16 +243,9 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
                 step="0.01"
                 name="isletmeyeVerilenSiviTuzSayac"
                 placeholder="İşletmeye Verilen Sıvı Tuz Sayaç"
+                required
                 {...formik.getFieldProps("isletmeyeVerilenSiviTuzSayac")}
               />
-              {formik.errors.isletmeyeVerilenSiviTuzSayac &&
-              formik.touched.isletmeyeVerilenSiviTuzSayac ? (
-                <span className="text-danger opacity-75">
-                  {formik.errors.isletmeyeVerilenSiviTuzSayac}
-                </span>
-              ) : (
-                <></>
-              )}
             </div>
 
             <div className={TuzCSS.input_group}>
@@ -277,18 +255,11 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
                 step="0.01"
                 name="isletmeyeVerilenSiviTuzHazirlananTankSayisi"
                 placeholder="İşletmeye Verilen Sıvı Tuz Hazırlanan Tank Sayısı"
+                required
                 {...formik.getFieldProps(
                   "isletmeyeVerilenSiviTuzHazirlananTankSayisi"
                 )}
               />
-              {formik.errors.isletmeyeVerilenSiviTuzHazirlananTankSayisi &&
-              formik.touched.isletmeyeVerilenSiviTuzHazirlananTankSayisi ? (
-                <span className="text-danger opacity-75">
-                  {formik.errors.isletmeyeVerilenSiviTuzHazirlananTankSayisi}
-                </span>
-              ) : (
-                <></>
-              )}
             </div>
 
             <div className={TuzCSS.input_group}>
@@ -298,16 +269,9 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
                 step="0.01"
                 name="hazirlananSiviSodaSayac"
                 placeholder="Hazırlanan Sıvı Soda Sayaç"
+                required
                 {...formik.getFieldProps("hazirlananSiviSodaSayac")}
               />
-              {formik.errors.hazirlananSiviSodaSayac &&
-              formik.touched.hazirlananSiviSodaSayac ? (
-                <span className="text-danger opacity-75">
-                  {formik.errors.hazirlananSiviSodaSayac}
-                </span>
-              ) : (
-                <></>
-              )}
             </div>
 
             <div className={TuzCSS.input_group}>
@@ -317,16 +281,9 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
                 step="0.01"
                 name="siviSodaHattiYikamaSuyuSayac"
                 placeholder="Sıvı Sıda Hattı Yıkama Suyu Sayaç"
+                required
                 {...formik.getFieldProps("siviSodaHattiYikamaSuyuSayac")}
               />
-              {formik.errors.siviSodaHattiYikamaSuyuSayac &&
-              formik.touched.siviSodaHattiYikamaSuyuSayac ? (
-                <span className="text-danger opacity-75">
-                  {formik.errors.siviSodaHattiYikamaSuyuSayac}
-                </span>
-              ) : (
-                <></>
-              )}
             </div>
 
             <div className={TuzCSS.input_group}>
@@ -336,15 +293,9 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
                 step="0.01"
                 name="kayiSodaKg"
                 placeholder="Katı Soda Kg"
+                required
                 {...formik.getFieldProps("katiSodaKg")}
               />
-              {formik.errors.katiSodaKg && formik.touched.katiSodaKg ? (
-                <span className="text-danger opacity-75">
-                  {formik.errors.katiSodaKg}
-                </span>
-              ) : (
-                <></>
-              )}
             </div>
 
             <div className={TuzCSS.input_group}>
@@ -354,16 +305,9 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
                 step="0.01"
                 name="aritmaTesisineAtilanAtikSiviTuzuLt"
                 placeholder="Arıtma Tesisine Atılan Atık Sıvı Tuzu LT"
+                required
                 {...formik.getFieldProps("aritmaTesisineAtilanAtikSiviTuzuLt")}
               />
-              {formik.errors.aritmaTesisineAtilanAtikSiviTuzuLt &&
-              formik.touched.aritmaTesisineAtilanAtikSiviTuzuLt ? (
-                <span className="text-danger opacity-75">
-                  {formik.errors.aritmaTesisineAtilanAtikSiviTuzuLt}
-                </span>
-              ) : (
-                <></>
-              )}
             </div>
 
             <div className="input-button mx-auto">
@@ -421,7 +365,8 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
                     <td>{tuz.siviSodaHattiYikamaSuyuSayac}</td>
                     <td>{tuz.katiSodaKg}</td>
                     <td>{tuz.aritmaTesisineAtilanAtikSiviTuzuLt}</td>
-                    {(index === allTuzSodaSayacToplama.length - 1 && sessionUser.role.roleName === "admin") ? (
+                    {index === allTuzSodaSayacToplama.length - 1 &&
+                    sessionUser.role.roleName === "admin" ? (
                       <td>
                         <div>
                           <span

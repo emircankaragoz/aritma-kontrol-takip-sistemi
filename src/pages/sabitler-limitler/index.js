@@ -1,15 +1,17 @@
 import React from "react";
-import { Layout} from "@/components";
+import { Layout } from "@/components";
 import { getSession } from "next-auth/react";
-
+import { Sbt_TuzTesisiKontrolCizelgesi } from "@/components/SabitlerVeLimitlerComponents";
 
 export default function SabitlerLimitlerPage({ session }) {
   return (
     <>
       <Layout session={session}>
-        <div>
-          <h3 className="fs-3 font-bold">Sabitler ve Limitler Page</h3>
-          
+        <div className="container p-2">
+          <div className="d-flex  flex-column mx-auto w-75">
+            <p className="fs-2 fw-semibold text-center mt-4">Sabitler ve Limitler</p>
+              <Sbt_TuzTesisiKontrolCizelgesi/>
+          </div>
         </div>
       </Layout>
     </>

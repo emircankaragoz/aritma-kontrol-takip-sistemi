@@ -190,4 +190,62 @@ export default class AritmaService {
   }
 
 
+  // ARITMA MADDE KULLANIM
+
+  // SULFIRIK ASIT
+  async getAllSulfirikAsitKullanim(){
+    return await axios.get(`${URL}/api/controller/get/sulfirikAsitKullanim`);
+  }
+
+  async getSulfirikAsitKullanimById(id) {
+    let aritma;
+    await axios
+      .get(`${URL}/api/controller/get/sulfirikAsitKullanim`)
+      .then((result) => {
+        result.data.map((data) => {
+          if (data.id === id) {
+            aritma = data;
+          }
+        });
+      });
+    return aritma;
+  }
+
+  // DEMIR UC KLORUR
+  async getAllDemirUcKlorurKullanim(){
+    return await axios.get(`${URL}/api/controller/get/demirUcKlorurKullanim`);
+  }
+
+  async getDemirUcKlorurById(id) {
+    let aritma;
+    await axios
+      .get(`${URL}/api/controller/get/demirUcKlorurKullanim`)
+      .then((result) => {
+        result.data.map((data) => {
+          if (data.id === id) {
+            aritma = data;
+          }
+        });
+      });
+    return aritma;
+  }
+
+  // RENK GIDERICI
+  async getAllRenkGidericiKullanim(){
+    return await axios.get(`${URL}/api/controller/get/renkGidericiKullanim`);
+  }
+
+  async getRenkGidericiById(id) {
+    let aritma;
+    await axios
+      .get(`${URL}/api/controller/get/renkGidericiKullanim`)
+      .then((result) => {
+        result.data.map((data) => {
+          if (data.id === id) {
+            aritma = data;
+          }
+        });
+      });
+    return aritma;
+  }
 }

@@ -2,16 +2,21 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { IcmeUpdateModal } from "@/components";
 import { toast } from "react-toastify";
-import {SuService, UserService  } from "@/services"
+import { SuService, UserService, SystemMessageService } from "@/services";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { AuthFormCSS } from "@/styles";
-import { icme_validate } from "lib/validate";
 import moment from "moment/moment";
-export default function IcmeSuyuPageComponent({ session }) {
+import { SYSTEM_MESSAGES } from "../../../../environment";
 
+export default function IcmeSuyuPageComponent({ session }) {
   const [allData, setAllData] = useState([]);
   const [sessionUser, setSessionUser] = useState(null);
+  const [isDataEntered, setIsDataEntered] = useState(null);
+
   const refresh = () => window.location.reload(true);
+  const getToday = moment().startOf("day").format();
+  const systemMessageService = new SystemMessageService();
+
   const formik = useFormik({
     initialValues: {
       hamsusayac: "",
@@ -20,9 +25,8 @@ export default function IcmeSuyuPageComponent({ session }) {
       klorCozHazir: "",
       klorAnalizSonucuMgL: "",
       genelTemizlik: "",
-      aciklama: ""
+      aciklama: "",
     },
-    validate: icme_validate,
     onSubmit,
   });
   const icmeSuyuService = new SuService();
@@ -30,7 +34,10 @@ export default function IcmeSuyuPageComponent({ session }) {
   const employee_id = session.user.employeeId;
 
   async function getAllIcmeSuyuDataHandler() {
-    await icmeSuyuService.getAllIcmeSuyu().then((result) => setAllData(result.data));
+    await icmeSuyuService.getAllIcmeSuyu().then((result) => {
+      setAllData(result.data);
+      isDatasEntered(result.data);
+    });
   }
   async function getSessionUserHandler() {
     if (session) {
@@ -39,11 +46,45 @@ export default function IcmeSuyuPageComponent({ session }) {
         .then((result) => setSessionUser(result));
     }
   }
+
+  // veri girildi mi kontrolü yapılır.
+  async function isDatasEntered(datas) {
+    const result = datas.find(
+      (item) =>
+        moment(item.dateAndTime).format("YYYY-MM-DD") ===
+        moment(getToday).format("YYYY-MM-DD")
+    );
+
+    if (result) {
+      setIsDataEntered(true);
+      deleteSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
+    } else {
+      setIsDataEntered(false);
+      createdSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
+    }
+  }
+
+  async function deleteSystemMessageHandler(date) {
+    await systemMessageService.deleteSystemMessage(
+      SYSTEM_MESSAGES.S2.code,
+      date
+    );
+  }
+
+  async function createdSystemMessageHandler(date) {
+    await systemMessageService.addSystemMessage(
+      SYSTEM_MESSAGES.S2.content,
+      SYSTEM_MESSAGES.S2.title,
+      SYSTEM_MESSAGES.S2.code,
+      date
+    );
+  }
+
   useEffect(() => {
     getSessionUserHandler();
     getAllIcmeSuyuDataHandler();
   }, []);
-  async function onSubmit(values,{resetForm}) {
+  async function onSubmit(values, { resetForm }) {
     const employeeId = {
       employeeId: `${employee_id}`,
     };
@@ -59,15 +100,11 @@ export default function IcmeSuyuPageComponent({ session }) {
       .then((res) => res.json())
       .then((data) => {
         if (data) {
-          toast.success("Form başarıyla oluşturuldu", {
-            position: toast.POSITION.BOTTOM_RIGHT,
-          });
+          refresh();
         }
       });
     resetForm();
-
   }
-
 
   async function deleteIcme(id) {
     const dataId = {
@@ -93,64 +130,56 @@ export default function IcmeSuyuPageComponent({ session }) {
     return <div className="text-center">Yükleniyor...</div>;
   }
 
-  
- 
-
-
   return (
-
-
     <div className="container p-2">
       <div className="d-flex  flex-column mx-auto w-50">
+        <span className="text-center text-muted">
+          {moment().format("DD/MM/YYYY")}
+        </span>
+        <div className="text-center mb-2">
+          {isDataEntered ? (
+            <p className="text-success">Günlük veri girişi gerçekleşti</p>
+          ) : (
+            <p className="text-danger">Günlük veri girişi gerçekleşmedi!</p>
+          )}
+        </div>
         <section>
-          <form onSubmit={formik.handleSubmit} className="d-flex flex-column gap-3 ">
+          <form
+            onSubmit={formik.handleSubmit}
+            className="d-flex flex-column gap-3 "
+          >
             <div className={AuthFormCSS.input_group}>
-              <input className="form-control"
+              <input
+                className="form-control"
                 type="number"
                 step="0.01"
                 name="hamsusayac"
                 placeholder="Ham Su Sayac"
+                required
                 {...formik.getFieldProps("hamsusayac")}
               />
-              {formik.errors.hamsusayac && formik.touched.hamsusayac ? (
-                <span className="text-danger opacity-75">
-                  {formik.errors.hamsusayac}
-                </span>
-              ) : (
-                <></>
-              )}
             </div>
             <div className={AuthFormCSS.input_group}>
-              <input className="form-control"
+              <input
+                className="form-control"
                 type="number"
                 step="0.01"
                 name="hamsuTonGun"
                 placeholder="Ham Su (Ton/Gün)"
+                required
                 {...formik.getFieldProps("hamsuTonGun")}
               />
-              {formik.errors.hamsuTonGun && formik.touched.hamsuTonGun ? (
-                <span className="text-danger opacity-75">
-                  {formik.errors.hamsuTonGun}
-                </span>
-              ) : (
-                <></>
-              )}
             </div>
             <div className={AuthFormCSS.input_group}>
-              <input className="form-control"
+              <input
+                className="form-control"
                 type="number"
                 step="0.01"
                 name="uretilenSuTonGun"
                 placeholder="Üretilen Su (Ton/Gün)"
+                required
                 {...formik.getFieldProps("uretilenSuTonGun")}
               />
-              {formik.errors.uretilenSuTonGun && formik.touched.uretilenSuTonGun ? (
-                <span className="text-danger opacity-75">
-                  {formik.errors.uretilenSuTonGun}
-                </span>
-              ) : (
-                <></>
-              )}
             </div>
             <div className={AuthFormCSS.input_group}>
               <input
@@ -159,16 +188,9 @@ export default function IcmeSuyuPageComponent({ session }) {
                 step="0.01"
                 name="klorCozHazir"
                 placeholder="Klor Cözeltisi Hazirlama"
+                required
                 {...formik.getFieldProps("klorCozHazir")}
-
               />
-                {formik.errors.klorCozHazir && formik.touched.klorCozHazir ? (
-                <span className="text-danger opacity-75">
-                  {formik.errors.klorCozHazir}
-                </span>
-              ) : (
-                <></>
-              )}
             </div>
             <div className={AuthFormCSS.input_group}>
               <input
@@ -177,16 +199,9 @@ export default function IcmeSuyuPageComponent({ session }) {
                 step="0.01"
                 name="klorAnalizSonucuMgL"
                 placeholder="Klor Analiz Sonucu (Mg/L)"
+                required
                 {...formik.getFieldProps("klorAnalizSonucuMgL")}
               />
-               {formik.errors.klorAnalizSonucuMgL && formik.touched.klorAnalizSonucuMgL ? (
-                <span className="text-danger opacity-75">
-                  {formik.errors.klorAnalizSonucuMgL}
-                </span>
-              ) : (
-                <></>
-              )}
-
             </div>
             <div className={AuthFormCSS.input_group}>
               <input
@@ -194,16 +209,9 @@ export default function IcmeSuyuPageComponent({ session }) {
                 type="text"
                 name="genelTemizlik"
                 placeholder="Genel Temizlik"
+                required
                 {...formik.getFieldProps("genelTemizlik")}
               />
-              {formik.errors.genelTemizlik && formik.touched.genelTemizlik ? (
-                <span className="text-danger opacity-75">
-                  {formik.errors.genelTemizlik}
-                </span>
-              ) : (
-                <></>
-              )}
-
             </div>
             <div className={AuthFormCSS.input_group}>
               <input
@@ -211,19 +219,12 @@ export default function IcmeSuyuPageComponent({ session }) {
                 type="text"
                 name="aciklama"
                 placeholder="Açıklama"
+                required
                 {...formik.getFieldProps("aciklama")}
               />
-               {formik.errors.aciklama && formik.touched.aciklama ? (
-                <span className="text-danger opacity-75">
-                  {formik.errors.aciklama}
-                </span>
-              ) : (
-                <></>
-              )}
-
             </div>
             <div className="input-button mx-auto">
-              <button onClick={refresh} type="submit" className="btn btn-outline-dark mt-2">
+              <button type="submit" className="btn btn-outline-dark mt-2">
                 Ekle
               </button>
             </div>
@@ -244,12 +245,28 @@ export default function IcmeSuyuPageComponent({ session }) {
                   <th scope="col">Sr. No.</th>
                   <th scope="col">Tarih</th>
                   <th scope="col">Çalışan ID</th>
-                  <th scope="col">Hamsu <br /> Sayaç</th>
-                  <th scope="col">Hamsu <br />  Ton/Gün</th>
-                  <th scope="col">Üretilen Su<br />  Ton/Gün</th>
-                  <th scope="col">Klor Çözeltisi<br />  Hazırlama</th>
-                  <th scope="col">Klor Analiz<br />  Sonucu Mg/L</th>
-                  <th scope="col">Genel<br />  Temizlik</th>
+                  <th scope="col">
+                    Hamsu <br /> Sayaç
+                  </th>
+                  <th scope="col">
+                    Hamsu <br /> Ton/Gün
+                  </th>
+                  <th scope="col">
+                    Üretilen Su
+                    <br /> Ton/Gün
+                  </th>
+                  <th scope="col">
+                    Klor Çözeltisi
+                    <br /> Hazırlama
+                  </th>
+                  <th scope="col">
+                    Klor Analiz
+                    <br /> Sonucu Mg/L
+                  </th>
+                  <th scope="col">
+                    Genel
+                    <br /> Temizlik
+                  </th>
                   <th scope="col">Açıklama</th>
                   <th scope="col">.</th>
                 </tr>
@@ -271,24 +288,23 @@ export default function IcmeSuyuPageComponent({ session }) {
                     <td>{data.aciklama}</td>
 
                     {sessionUser.role.roleName === "admin" ? (
-                       <td>
-                       <span className="me-2">
-                         <span
-                           className="fs-4"
-                           style={{ cursor: "pointer" }}
-                           onClick={() => deleteIcme(data.id)}
-                         >
-                           <RiDeleteBin5Line />
-                         </span>
-                       </span>
-                       <span>
-                         <IcmeUpdateModal dataId={data.id} />
-                       </span>
-                     </td>
+                      <td>
+                        <span className="me-2">
+                          <span
+                            className="fs-4"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => deleteIcme(data.id)}
+                          >
+                            <RiDeleteBin5Line />
+                          </span>
+                        </span>
+                        <span>
+                          <IcmeUpdateModal dataId={data.id} />
+                        </span>
+                      </td>
                     ) : (
                       <></>
                     )}
-                   
                   </tr>
                 ))}
               </tbody>
@@ -296,14 +312,6 @@ export default function IcmeSuyuPageComponent({ session }) {
           </div>
         </div>
       </section>
-
     </div>
-
-
-
-
-
-  )
+  );
 }
-
-

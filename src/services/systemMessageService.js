@@ -8,12 +8,13 @@ export default class SystemMessageService {
     return await axios.get(`${URL}/api/controller/get/systemMessage`);
   }
 
-  async addSystemMessage(post, caption, code) {
+  async addSystemMessage(post, caption, code, date) {
     const response = await axios.get(`${URL}/api/controller/get/systemMessage`);
 
     const data = response.data.find(
       (item) =>
-        item.messageCode === code
+        item.messageCode === code &&
+        date === moment(item.createdAt).format("YYYY-MM-DD")
     );
 
     if (!data || data === undefined || data === null) {
@@ -44,13 +45,13 @@ export default class SystemMessageService {
     }
   }
 
-
-  async deleteSystemMessage(code) {
+  async deleteSystemMessage(code, date) {
     const response = await axios.get(`${URL}/api/controller/get/systemMessage`);
 
     const data = response.data.find(
       (item) =>
-        item.messageCode === code
+        item.messageCode === code &&
+        moment(item.createdAt).format("YYYY-MM-DD") === date
     );
 
     if (data) {
@@ -58,8 +59,11 @@ export default class SystemMessageService {
       const messageCode = {
         messageCode: `${code}`,
       };
+      const dateTime = {
+        dateTime: `${date}`,
+      }
 
-      values = Object.assign(values, messageCode);
+      values = Object.assign(values, messageCode, dateTime);
       const options = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -75,4 +79,6 @@ export default class SystemMessageService {
         });
     }
   }
+
+  async insertOldDatas(code) {}
 }

@@ -69,6 +69,16 @@ model User {
 
   createdAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms AtiksuAritmaTesisiGirisVeCikisAtiksuMiktari[] @relation("createdAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms")
   updatedAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms AtiksuAritmaTesisiGirisVeCikisAtiksuMiktari[] @relation("updatedAtiksuAritmaTesisiGirisVeCikisAtiksuMiktariForms")
+
+  // Madde Kullanım 
+  createdSulfurikAsitKullanimMiktarVeMaliyeti SulfurikAsitKullanimMiktarVeMaliyeti[] @relation("createdSulfurikAsitKullanimMiktarVeMaliyeti")
+  updatedSulfurikAsitKullanimMiktarVeMaliyeti SulfurikAsitKullanimMiktarVeMaliyeti[] @relation("updatedSulfurikAsitKullanimMiktarVeMaliyeti")
+
+  createdDemirUcKlorurKullanimMiktarlariVeMaliyeti DemirUcKlorurKullanimMiktarlariVeMaliyeti[] @relation("createdDemirUcKlorurKullanimMiktarlariVeMaliyeti")
+  updatedDemirUcKlorurKullanimMiktarlariVeMaliyeti DemirUcKlorurKullanimMiktarlariVeMaliyeti[] @relation("updatedDemirUcKlorurKullanimMiktarlariVeMaliyeti")
+
+  createdRenkGidericiKullanimMiktarlariVeMaliyeti RenkGidericiKullanimMiktarlariVeMaliyeti[] @relation("createdRenkGidericiKullanimMiktarlariVeMaliyeti")
+  updatedRenkGidericiKullanimMiktarlariVeMaliyeti RenkGidericiKullanimMiktarlariVeMaliyeti[] @relation("updatedRenkGidericiKullanimMiktarlariVeMaliyeti")
 }
 
 model Role {
@@ -246,7 +256,11 @@ model SulfurikAsitKullanimMiktarVeMaliyeti {
   kimyasalAdi       String   @db.VarChar(45)
   kimyasalYogunlugu String   @db.VarChar(45)
   bitisLt           String   @db.VarChar(45)
+  baslangicLt       String   @db.VarChar(45)
   birimFiyat_dolar  String   @db.VarChar(45)
+
+  createdBy User @relation("createdSulfurikAsitKullanimMiktarVeMaliyeti", fields: [createdById], references: [id])
+  updatedBy User @relation("updatedSulfurikAsitKullanimMiktarVeMaliyeti", fields: [updatedById], references: [id])
 }
 
 model DemirUcKlorurKullanimMiktarlariVeMaliyeti {
@@ -259,8 +273,12 @@ model DemirUcKlorurKullanimMiktarlariVeMaliyeti {
   updatedById      Int
   kimyasalAd       String   @db.VarChar(45)
   kimyasalYogunluk String   @db.VarChar(45)
+  baslangicLt      String   @db.VarChar(45)
   bitisLt          String   @db.VarChar(45)
   birimFiyatTL     String   @db.VarChar(45)
+
+  createdBy User @relation("createdDemirUcKlorurKullanimMiktarlariVeMaliyeti", fields: [createdById], references: [id])
+  updatedBy User @relation("updatedDemirUcKlorurKullanimMiktarlariVeMaliyeti", fields: [updatedById], references: [id])
 }
 
 model RenkGidericiKullanimMiktarlariVeMaliyeti {
@@ -273,8 +291,12 @@ model RenkGidericiKullanimMiktarlariVeMaliyeti {
   updatedById      Int
   kimyasalAd       String   @db.VarChar(45)
   kimyasalYogunluk String   @db.VarChar(45)
+  baslangicLt      String   @db.VarChar(45)
   bitisLt          String   @db.VarChar(45)
   birimFiyatEuro   String   @db.VarChar(45)
+
+  createdBy User @relation("createdRenkGidericiKullanimMiktarlariVeMaliyeti", fields: [createdById], references: [id])
+  updatedBy User @relation("updatedRenkGidericiKullanimMiktarlariVeMaliyeti", fields: [updatedById], references: [id])
 }
 
 model FiltrepresKimyasalVeCamurPerformans {
@@ -632,5 +654,17 @@ model SystemMessage {
   title       String?  @db.VarChar(45)
   content     String?
   createdAt   DateTime @default(now()) @map(name: "created_at")
-  messageCode String   @unique @db.VarChar(30)
+  messageCode String   @db.VarChar(30)
+
+  @@unique([messageCode, createdAt])
+}
+
+model Sbt_TuzTesisiKontrolFormu {
+  id Int @id @default(autoincrement())
+  phMin String?  @db.VarChar(45)
+  phMax String? @db.VarChar(45)
+  yogunlukMax String? @db.VarChar(45)
+  yogunlukMin String? @db.VarChar(45)
+  bikarbonatMax String? @db.VarChar(45)
+  bikarbonatMin String? @db.VarChar(45)
 }

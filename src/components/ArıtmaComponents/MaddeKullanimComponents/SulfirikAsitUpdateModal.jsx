@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { RiMore2Fill } from "react-icons/ri";
 import Modal from "react-bootstrap/Modal";
-import { TuzCSS } from "@/styles";
-import { TuzSodaSayacUpdateModalForm } from "..";
+import { AritmaCSS } from "@/styles";
+import SulfirikAsitUpdateModalForm from "./SulfirikAsitUpdateModalForm";
 
-export default function TuzSodaSayacUpdateModalComponent({
+export default function SulfirikAsitUpdateModal({
   formIdToBeUpdated,
 }) {
   const [show, setShow] = useState(false);
@@ -19,7 +19,7 @@ export default function TuzSodaSayacUpdateModalComponent({
         className="fs-5"
         style={{ cursor: "pointer" }}
       >
-        <RiMore2Fill className={TuzCSS.updateButton} />
+        <RiMore2Fill className={AritmaCSS.updateButton} />
       </span>
 
       <Modal centered show={show} onHide={handleClose}>
@@ -27,7 +27,7 @@ export default function TuzSodaSayacUpdateModalComponent({
           <Modal.Title>Form Bilgilerini Güncelle</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <TuzSodaSayacUpdateModalForm formIdToBeUpdated={formIdToBeUpdated} />
+          <SulfirikAsitUpdateModalForm formIdToBeUpdated={formIdToBeUpdated} />
         </Modal.Body>
       </Modal>
     </>

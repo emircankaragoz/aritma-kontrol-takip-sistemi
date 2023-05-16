@@ -128,7 +128,7 @@ export default function ModalForm({ formIdToBeUpdated }) {
         }
       });
 
-   /*  router.refresh(); */
+    router.refresh();
   }
 
 
@@ -161,7 +161,6 @@ export default function ModalForm({ formIdToBeUpdated }) {
             className="form-control"
             type="text"
             name="tasviyedeKullanilanSiviTuzSayac"
-            placeholder="tasviyedeKullanilanSiviTuzSayac"
             {...formik.getFieldProps("tasviyedeKullanilanSiviTuzSayac")}
           />
           </div>
@@ -172,7 +171,6 @@ export default function ModalForm({ formIdToBeUpdated }) {
             className="form-control"
             type="text"
             name="tuzVeSodaTesisiKullanilanSuSayac"
-            placeholder="tuzVeSodaTesisiKullanilanSuSayac"
             {...formik.getFieldProps("tuzVeSodaTesisiKullanilanSuSayac")}
           />
           </div>
@@ -183,7 +181,6 @@ export default function ModalForm({ formIdToBeUpdated }) {
             className="form-control"
             type="text"
             name="isletmeyeVerilenSiviTuzSayac"
-            placeholder="isletmeyeVerilenSiviTuzSayac"
             {...formik.getFieldProps("isletmeyeVerilenSiviTuzSayac")}
           />
           </div>
@@ -194,7 +191,6 @@ export default function ModalForm({ formIdToBeUpdated }) {
             className="form-control"
             type="text"
             name="isletmeyeVerilenSiviTuzHazirlananTankSayisi"
-            placeholder="isletmeyeVerilenSiviTuzHazirlananTankSayisi"
             {...formik.getFieldProps(
               "isletmeyeVerilenSiviTuzHazirlananTankSayisi"
             )}
@@ -208,7 +204,6 @@ export default function ModalForm({ formIdToBeUpdated }) {
             className="form-control"
             type="text"
             name="hazirlananSiviSodaSayac"
-            placeholder="hazirlananSiviSodaSayac"
             {...formik.getFieldProps("hazirlananSiviSodaSayac")}
           />
           </div>
@@ -220,7 +215,6 @@ export default function ModalForm({ formIdToBeUpdated }) {
             className="form-control"
             type="text"
             name="siviSodaHattiYikamaSuyuSayac"
-            placeholder="siviSodaHattiYikamaSuyuSayac"
             {...formik.getFieldProps("siviSodaHattiYikamaSuyuSayac")}
           />
           </div>
@@ -231,7 +225,6 @@ export default function ModalForm({ formIdToBeUpdated }) {
             className="form-control"
             type="text"
             name="kayiSodaKg"
-            placeholder="katiSodaKg"
             {...formik.getFieldProps("katiSodaKg")}
           />
           </div>
@@ -243,7 +236,6 @@ export default function ModalForm({ formIdToBeUpdated }) {
             className="form-control"
             type="text"
             name="aritmaTesisineAtilanAtikSiviTuzuLt"
-            placeholder="aritmaTesisineAtilanAtikSiviTuzuLt"
             {...formik.getFieldProps("aritmaTesisineAtilanAtikSiviTuzuLt")}
           />
           </div>

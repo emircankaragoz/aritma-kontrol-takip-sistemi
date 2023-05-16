@@ -100,6 +100,11 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
 
 
     <div className="container p-2">
+      <div className="d-flex flex-column  mx-auto w-50">
+        <span className="text-center text-muted mb-3">
+          {moment().format("DD/MM/YYYY")}
+        </span>
+      </div>
       <div className="d-flex flex-column mx-auto w-50">
 
         <section>
