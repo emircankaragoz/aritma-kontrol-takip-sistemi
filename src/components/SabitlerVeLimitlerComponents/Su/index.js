@@ -1,0 +1,1 @@
+export { default as Sbt_IsletmeSuyu } from './Sbt_IsletmeSuyu/Sbt_IsletmeSuyu';

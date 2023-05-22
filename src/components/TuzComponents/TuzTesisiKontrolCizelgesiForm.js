@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
-import { TuzService, UserService, SystemMessageService } from "@/services";
+import {
+  TuzService,
+  UserService,
+  SystemMessageService,
+  SabitlerService,
+} from "@/services";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { TuzCSS } from "@/styles";
 import { TuzTesisiKontrolCizelgeUpdateModal } from "..";
@@ -13,9 +18,20 @@ import { useRouter } from "next/navigation";
 export default function TuzTesisiKontrolCizelgesiComponent({ session }) {
   const router = useRouter();
 
-  const [isDataEntered, setIsDataEntered] = useState(null);
   const [allData, setAllData] = useState([]);
   const [sessionUser, setSessionUser] = useState(null);
+  const [sbtTuzTesisiKontrolCizelgesi, setSbtTuzTesisiKontrolCizelgesi] =
+    useState();
+
+  const sabitlerService = new SabitlerService();
+
+  async function getTuzTesisiKontrolCizelgesi_SBT() {
+    await sabitlerService
+      .tuz_getAllTuzTesisiKontrolSabitler()
+      .then((result) => {
+        setSbtTuzTesisiKontrolCizelgesi(result);
+      });
+  }
 
   const formik = useFormik({
     initialValues: {
@@ -25,20 +41,26 @@ export default function TuzTesisiKontrolCizelgesiComponent({ session }) {
       bikarbonat: "",
       kontrolEden: "",
     },
-    validate: tuzTesisiKontrolCizelgesi_validate,
+    validate: (values) =>
+      tuzTesisiKontrolCizelgesi_validate(
+        values,
+        sbtTuzTesisiKontrolCizelgesi.phMin,
+        sbtTuzTesisiKontrolCizelgesi.phMax,
+        sbtTuzTesisiKontrolCizelgesi.bikarbonatMax,
+        sbtTuzTesisiKontrolCizelgesi.yogunlukMin,
+        sbtTuzTesisiKontrolCizelgesi.yogunlukMax
+      ),
     onSubmit,
   });
 
-  const getToday = moment().startOf("day").format();
+
   const tuzTesisiService = new TuzService();
   const userService = new UserService();
-  const systemMessageService = new SystemMessageService();
   const employee_id = session.user.employeeId;
 
   async function getAllTuzTesisiKontrolDataHandler() {
     await tuzTesisiService.getAllTuzTesisiKontrolCizelgesi().then((result) => {
       setAllData(result.data);
-      isDatasEntered(result.data);
     });
   }
   async function getSessionUserHandler() {
@@ -49,42 +71,10 @@ export default function TuzTesisiKontrolCizelgesiComponent({ session }) {
     }
   }
 
-  // veri girildi mi kontrolü yapılır.
-  async function isDatasEntered(datas) {
-    const result = datas.find(
-      (item) =>
-        moment(item.dateAndTime).format("YYYY-MM-DD") ===
-        moment(getToday).format("YYYY-MM-DD")
-    );
-
-    if (result) {
-      setIsDataEntered(true);
-      deleteSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
-    } else {
-      setIsDataEntered(false);
-      createdSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
-    }
-  }
-
-  async function deleteSystemMessageHandler(date) {
-    await systemMessageService.deleteSystemMessage(
-      SYSTEM_MESSAGES.T2.code,
-      date
-    );
-  }
-
-  async function createdSystemMessageHandler(date) {
-    await systemMessageService.addSystemMessage(
-      SYSTEM_MESSAGES.T2.content,
-      SYSTEM_MESSAGES.T2.title,
-      SYSTEM_MESSAGES.T2.code,
-      date
-    );
-  }
-
   useEffect(() => {
     getSessionUserHandler();
     getAllTuzTesisiKontrolDataHandler();
+    getTuzTesisiKontrolCizelgesi_SBT();
   }, []);
 
   async function onSubmit(values) {
@@ -92,7 +82,6 @@ export default function TuzTesisiKontrolCizelgesiComponent({ session }) {
       employeeId: `${employee_id}`,
     };
     values = Object.assign(values, employeeId);
-    console.log(values);
     const options = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -136,16 +125,10 @@ export default function TuzTesisiKontrolCizelgesiComponent({ session }) {
         <p className="text-muted text-center fs-5 fw-bolder pb-3 mt-3">
           Tuz Tesisi Kontrol Çizelgesi Formu
         </p>
-        <span className="text-center text-muted">
+        <span className="text-center text-muted mb-4">
           {moment().format("DD/MM/YYYY")}
         </span>
-        <div className="text-center mb-2">
-          {isDataEntered ? (
-            <p className="text-success">Günlük veri girişi gerçekleşti</p>
-          ) : (
-            <p className="text-danger">Günlük veri girişi gerçekleşmedi!</p>
-          )}
-        </div>
+
         <section>
           <form
             onSubmit={formik.handleSubmit}
@@ -240,7 +223,6 @@ export default function TuzTesisiKontrolCizelgesiComponent({ session }) {
               <button
                 type="submit"
                 className="btn btn-outline-dark mt-2"
-                disabled={isDataEntered}
               >
                 Ekle
               </button>

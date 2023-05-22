@@ -767,11 +767,36 @@ model SystemMessage {
 }
 
 model Sbt_TuzTesisiKontrolFormu {
-  id Int @id @default(autoincrement())
-  phMin String?  @db.VarChar(45)
-  phMax String? @db.VarChar(45)
-  yogunlukMax String? @db.VarChar(45)
-  yogunlukMin String? @db.VarChar(45)
+  id            Int     @id @default(autoincrement())
+  phMin         String? @db.VarChar(45)
+  phMax         String? @db.VarChar(45)
+  yogunlukMax   String? @db.VarChar(45)
+  yogunlukMin   String? @db.VarChar(45)
   bikarbonatMax String? @db.VarChar(45)
   bikarbonatMin String? @db.VarChar(45)
+}
+
+model Sbt_SodaTesisiKontrolFormu {
+  id                  Int     @id @default(autoincrement())
+  cozeltiYogunluguMin String? @db.VarChar(45)
+  cozeltiYogunluguMax String? @db.VarChar(45)
+}
+
+model Sbt_SodyumKlorurKontrolFormu {
+  id         Int     @id @default(autoincrement())
+  demirMin   String? @db.VarChar(45)
+  demirMax   String? @db.VarChar(45)
+  sertlikMin String? @db.VarChar(45)
+  sertlikMax String? @db.VarChar(45)
+}
+
+model Sbt_IsletmeSuyuKontrolFormu {
+  id            Int     @id @default(autoincrement())
+  phMin         String? @db.VarChar(45)
+  phMax         String? @db.VarChar(45)
+  sertlikMin    String? @db.VarChar(45)
+  sertlikMax    String? @db.VarChar(45)
+  bikarbonatMax String? @db.VarChar(45)
+  bikarbonatMin String? @db.VarChar(45)
+  subCategory   String? @db.VarChar(45)
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
-import { TuzService, UserService, SystemMessageService } from "@/services";
+import { TuzService, UserService, SabitlerService } from "@/services";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { AuthFormCSS } from "@/styles";
 import { SodaTesisiKontrolFormUpdateModal } from "..";
@@ -13,29 +13,42 @@ import { useRouter } from "next/navigation";
 export default function SodaTesisiKontrolFormuComponent({ session }) {
   const router = useRouter();
 
-  const [isDataEntered, setIsDataEntered] = useState(null);
   const [allData, setAllData] = useState([]);
   const [sessionUser, setSessionUser] = useState(null);
+  const [sbtSodaTesisiKontrolCizelgesi, setSbtSodaTesisiKontrolCizelgesi] =
+    useState();
+
+  const sabitlerService = new SabitlerService();
+
+  async function getSodaTesisiKontrolCizelgesi_SBT() {
+    await sabitlerService
+      .tuz_getAllSodaTesisiKontrolSabitler()
+      .then((result) => {
+        setSbtSodaTesisiKontrolCizelgesi(result);
+      });
+  }
 
   const formik = useFormik({
     initialValues: {
       cozeltiYogunlugu: "",
       kontrolEden: "",
     },
-    validate: sodaTesisiKontrolFormu_validate,
+    validate: (values) =>
+      sodaTesisiKontrolFormu_validate(
+        values,
+        sbtSodaTesisiKontrolCizelgesi.cozeltiYogunluguMin,
+        sbtSodaTesisiKontrolCizelgesi.cozeltiYogunluguMax
+      ),
     onSubmit,
   });
 
-  const getToday = moment().startOf("day").format();
   const tuzTesisiService = new TuzService();
   const userService = new UserService();
-  const systemMessageService = new SystemMessageService();
   const employee_id = session.user.employeeId;
 
   async function getAllSodaTesisiKontrolFormuDataHandler() {
     await tuzTesisiService.getAllSodaTesisiKontrolFormu().then((result) => {
       setAllData(result.data);
-      isDatasEntered(result.data);
     });
   }
   async function getSessionUserHandler() {
@@ -46,42 +59,10 @@ export default function SodaTesisiKontrolFormuComponent({ session }) {
     }
   }
 
-  // veri girildi mi kontrolü yapılır.
-  async function isDatasEntered(datas) {
-    const result = datas.find(
-      (item) =>
-        moment(item.dateAndTime).format("YYYY-MM-DD") ===
-        moment(getToday).format("YYYY-MM-DD")
-    );
-
-    if (result) {
-      setIsDataEntered(true);
-      deleteSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
-    } else {
-      setIsDataEntered(false);
-      createdSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
-    }
-  }
-
-  async function deleteSystemMessageHandler(date) {
-    await systemMessageService.deleteSystemMessage(
-      SYSTEM_MESSAGES.T3.code,
-      date
-    );
-  }
-
-  async function createdSystemMessageHandler(date) {
-    await systemMessageService.addSystemMessage(
-      SYSTEM_MESSAGES.T3.content,
-      SYSTEM_MESSAGES.T3.title,
-      SYSTEM_MESSAGES.T3.code,
-      date
-    );
-  }
-
   useEffect(() => {
     getSessionUserHandler();
     getAllSodaTesisiKontrolFormuDataHandler();
+    getSodaTesisiKontrolCizelgesi_SBT();
   }, []);
 
   async function onSubmit(values) {
@@ -133,16 +114,9 @@ export default function SodaTesisiKontrolFormuComponent({ session }) {
         <p className="text-muted text-center fs-5 fw-bolder pb-3 mt-3">
           Soda Tesisi Kontrol Formu
         </p>
-        <span className="text-center text-muted">
+        <span className="text-center text-muted mb-4">
           {moment().format("DD/MM/YYYY")}
         </span>
-        <div className="text-center mb-2">
-          {isDataEntered ? (
-            <p className="text-success">Günlük veri girişi gerçekleşti</p>
-          ) : (
-            <p className="text-danger">Günlük veri girişi gerçekleşmedi!</p>
-          )}
-        </div>
         <section>
           <form
             onSubmit={formik.handleSubmit}

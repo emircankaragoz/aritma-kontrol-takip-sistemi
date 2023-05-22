@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
-import { SuService, UserService } from "@/services"
+import { SuService, UserService, SabitlerService } from "@/services";
 import { IsletmeUpdateModal } from "@/components";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { isletme_validate } from "lib/validate";
@@ -12,15 +12,39 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
   const [allData, setAllData] = useState([]);
   const [sessionUser, setSessionUser] = useState(null);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [sbtIsletmeSuyu, setSbtIsletmeSuyu] = useState();
   const refresh = () => window.location.reload(true);
   const myError = {};
+
+  const sabitlerService = new SabitlerService();
+
+  async function getAllIsletmeSuyu_SBT() {
+    await sabitlerService.su_getAllIsletmeSuyu().then((result) => {
+      result.map((data) => {
+        if (data.subCategory === subCategory) {
+          setSbtIsletmeSuyu(data);
+        }
+      });
+    });
+  }
+
   const formik = useFormik({
     initialValues: {
       ph: "",
       sertlik: "",
       bikarbonat: "",
     },
-    validate: (values) => isletme_validate(values, subCategory),
+    validate: (values) =>
+      isletme_validate(
+        values,
+        subCategory,
+        sbtIsletmeSuyu.phMin,
+        sbtIsletmeSuyu.phMax,
+        sbtIsletmeSuyu.sertlikMin,
+        sbtIsletmeSuyu.sertlikMax,
+        sbtIsletmeSuyu.bikarbonatMin,
+        sbtIsletmeSuyu.bikarbonatMax
+      ),
     onSubmit,
   });
   const isletmeSuyuService = new SuService();
@@ -28,7 +52,9 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
   const employee_id = session.user.employeeId;
 
   async function getAllIsletmeSuyuDataHandler() {
-    await isletmeSuyuService.getAllIsletmeSuyu().then((result) => setAllData(result.data));
+    await isletmeSuyuService
+      .getAllIsletmeSuyu()
+      .then((result) => setAllData(result.data));
   }
 
   async function getSessionUserHandler() {
@@ -41,9 +67,8 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
   useEffect(() => {
     getSessionUserHandler();
     getAllIsletmeSuyuDataHandler();
+    getAllIsletmeSuyu_SBT();
   }, []);
-
-
 
   async function onSubmit(values, { resetForm }) {
     const employeeId = {
@@ -97,8 +122,6 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
   }
 
   return (
-
-
     <div className="container p-2">
       <div className="d-flex flex-column  mx-auto w-50">
         <span className="text-center text-muted mb-3">
@@ -106,14 +129,14 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
         </span>
       </div>
       <div className="d-flex flex-column mx-auto w-50">
-
         <section>
-
           <form
             onSubmit={formik.handleSubmit}
-            className="d-flex flex-column gap-3 ">
+            className="d-flex flex-column gap-3 "
+          >
             <div className={AuthFormCSS.input_group}>
-              <input className="form-control"
+              <input
+                className="form-control"
                 type="number"
                 step="0.01"
                 name="ph"
@@ -129,26 +152,30 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
               )}
             </div>
 
-            <div className={AuthFormCSS.input_group}>  <input className="form-control"
-              type="number"
-              step="0.01"
-              name="sertlik"
-              placeholder="Sertlik"
-              {...formik.getFieldProps("sertlik")}
-            />
+            <div className={AuthFormCSS.input_group}>
+              {" "}
+              <input
+                className="form-control"
+                type="number"
+                step="0.01"
+                name="sertlik"
+                placeholder="Sertlik"
+                {...formik.getFieldProps("sertlik")}
+              />
               {formik.errors.sertlik && formik.touched.sertlik ? (
                 <span className="text-danger opacity-75">
                   {formik.errors.sertlik}
                 </span>
               ) : (
                 <></>
-              )}</div>
+              )}
+            </div>
             <div className={AuthFormCSS.input_group}>
-              <input className="form-control"
+              <input
+                className="form-control"
                 type="number"
                 step="0.01"
                 name="bikarbonat"
-
                 placeholder="Bikarbonat"
                 {...formik.getFieldProps("bikarbonat")}
               />
@@ -168,8 +195,6 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
             </div>
           </form>
         </section>
-
-
       </div>
       <hr />
       <section>
@@ -223,9 +248,6 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
                     ) : (
                       <></>
                     )}
-
-
-
                   </tr>
                 ))}
               </tbody>
@@ -233,12 +255,6 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
           </div>
         </div>
       </section>
-
-
     </div>
-
-
-
-
-  )
+  );
 }

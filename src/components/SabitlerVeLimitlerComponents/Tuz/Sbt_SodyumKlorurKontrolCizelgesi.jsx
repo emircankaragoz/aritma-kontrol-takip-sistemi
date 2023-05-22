@@ -4,42 +4,40 @@ import { useFormik } from "formik";
 import { SabitlerCSS } from "@/styles";
 import { useRouter } from "next/navigation";
 
-export default function Sbt_TuzTesisiKontrolCizelgesi() {
+export default function Sbt_SodyumKlorurKontrolCizelgesi() {
   const router = useRouter();
-  const [sbtTuzTesisiKontrolCizelgesi, setSbtTuzTesisiKontrolCizelgesi] =
+  const [sbtSodyumKlorurKontrolCizelgesi, setSbtSodyumKlorurKontrolCizelgesi] =
     useState();
 
   const formik = useFormik({
     initialValues: {
-      phMin: "",
-      phMin: "",
-      yogunlukMin: "",
-      yogunlukMax: "",
-      bikarbonatMin: "",
-      bikarbonatMax: "",
+      demirMin: "",
+      demirMax: "",
+      sertlikMin: "",
+      sertlikMax: "",
     },
     onSubmit,
   });
 
   const sabitlerService = new SabitlerService();
 
-  async function getTuzTesisiKontrolCizelgesi_SBT() {
+  async function getSodyumKlorurKontrolCizelgesi_SBT() {
     await sabitlerService
-      .tuz_getAllTuzTesisiKontrolSabitler()
+      .tuz_getAllSodyumKlorurKontrolSabitler()
       .then((result) => {
-        setSbtTuzTesisiKontrolCizelgesi(result);
+        setSbtSodyumKlorurKontrolCizelgesi(result);
       });
   }
 
   useEffect(() => {
     return () => {
-      getTuzTesisiKontrolCizelgesi_SBT();
+      getSodyumKlorurKontrolCizelgesi_SBT();
     };
   }, []);
 
   async function onSubmit(values) {
     const sbt_TuzId = {
-      sbt_TuzId: `${sbtTuzTesisiKontrolCizelgesi !== null ? sbtTuzTesisiKontrolCizelgesi.id : null}`,
+      sbt_TuzId: `${sbtSodyumKlorurKontrolCizelgesi !== null ? sbtSodyumKlorurKontrolCizelgesi.id : null}`,
     };
     values = Object.assign(values, sbt_TuzId);
     console.log(values)
@@ -50,7 +48,7 @@ export default function Sbt_TuzTesisiKontrolCizelgesi() {
     };
 
     await fetch(
-      "/api/controller/post/update_sbt_TuzTesisiKontrolCizelgesi",
+      "/api/controller/post/update_sbt_SodyumKlorurKontrolCizelgesi",
       options
     )
       .then((res) => res.json())
@@ -62,8 +60,8 @@ export default function Sbt_TuzTesisiKontrolCizelgesi() {
   }
 
   if (
-    sbtTuzTesisiKontrolCizelgesi === null ||
-    sbtTuzTesisiKontrolCizelgesi === undefined
+    sbtSodyumKlorurKontrolCizelgesi === null ||
+    sbtSodyumKlorurKontrolCizelgesi === undefined
   ) {
     return <div className="text-center">Yükleniyor...</div>;
   }
@@ -73,37 +71,27 @@ export default function Sbt_TuzTesisiKontrolCizelgesi() {
     <div className="p-2 border rounded">
       <section>
         <p className="mb-2 mt-2 fs-4 fw-semibold text-center">
-          Tuz Tesisi Kontrol Çizelgesi Sabitler ve Limitler
+          Tuz Sodyum Klorür Çizelgesi Sabitler ve Limitler
         </p>
         <section className="mt-4 mb-4">
           <div className="text-center">
             <span className="fs-5 text-muted fw-semibold">
-              PH Alt/Üst Limit
+              Demir Alt/Üst Limit
             </span>{" "}
             <br />
             <span className="fw-bold">
-              {sbtTuzTesisiKontrolCizelgesi.phMin} -{" "}
-              {sbtTuzTesisiKontrolCizelgesi.phMax}
+              {sbtSodyumKlorurKontrolCizelgesi.demirMin} -{" "}
+              {sbtSodyumKlorurKontrolCizelgesi.demirMax}
             </span>
           </div>
           <div className="text-center">
             <span className="fs-5 text-muted fw-semibold">
-              Yoğunluk Alt/Üst Limit {"(gr/cm3)"}
+            Sertlik Alt/Üst Limit {"(gr/cm3)"}
             </span>{" "}
             <br />
             <span className="fw-bold">
-              {sbtTuzTesisiKontrolCizelgesi.yogunlukMin} -{" "}
-              {sbtTuzTesisiKontrolCizelgesi.yogunlukMax}
-            </span>
-          </div>
-          <div className="text-center">
-            <span className="fs-5 text-muted fw-semibold">
-              Bikarbonat Alt/Üst Limit {"(ppm)"}
-            </span>{" "}
-            <br />
-            <span className="fw-bold">
-              {sbtTuzTesisiKontrolCizelgesi.bikarbonatMin} -{" "}
-              {sbtTuzTesisiKontrolCizelgesi.bikarbonatMax}
+              {sbtSodyumKlorurKontrolCizelgesi.sertlikMin} -{" "}
+              {sbtSodyumKlorurKontrolCizelgesi.sertlikMax}
             </span>
           </div>
         </section>
@@ -117,6 +105,7 @@ export default function Sbt_TuzTesisiKontrolCizelgesi() {
           onSubmit={formik.handleSubmit}
           className="d-flex flex-column gap-3"
         >
+
           <div className={SabitlerCSS.input_group}>
             <div className="row">
               <div className="col">
@@ -124,11 +113,11 @@ export default function Sbt_TuzTesisiKontrolCizelgesi() {
                 <input
                   type="number"
                   step="0.01"
-                  name="phMin"
-                  placeholder="PH Alt Limit"
+                  name="demirMin"
+                  placeholder="Demir Alt Limit"
                   className="form-control"
                   required
-                  {...formik.getFieldProps("phMin")}
+                  {...formik.getFieldProps("demirMin")}
                 />
               </div>
               <div className="col">
@@ -136,11 +125,11 @@ export default function Sbt_TuzTesisiKontrolCizelgesi() {
                 <input
                   type="number"
                   step="0.01"
-                  name="phMax"
-                  placeholder="PH Üst Limit"
+                  name="demirMax"
+                  placeholder="Demir Üst Limit"
                   className="form-control"
                   required
-                  {...formik.getFieldProps("phMax")}
+                  {...formik.getFieldProps("demirMax")}
                 />
               </div>
             </div>
@@ -153,11 +142,11 @@ export default function Sbt_TuzTesisiKontrolCizelgesi() {
                 <input
                   type="number"
                   step="0.01"
-                  name="yogunlukMin"
-                  placeholder="Yoğunluk Alt Limit"
+                  name="sertlikMin"
+                  placeholder="Sertlik Alt Limit"
                   className="form-control"
                   required
-                  {...formik.getFieldProps("yogunlukMin")}
+                  {...formik.getFieldProps("sertlikMin")}
                 />
               </div>
               <div className="col">
@@ -165,40 +154,11 @@ export default function Sbt_TuzTesisiKontrolCizelgesi() {
                 <input
                   type="number"
                   step="0.01"
-                  name="yogunlukMax"
-                  placeholder="Yoğunluk Üst Limit"
+                  name="sertlikMax"
+                  placeholder="Sertlik Üst Limit"
                   className="form-control"
                   required
-                  {...formik.getFieldProps("yogunlukMax")}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className={SabitlerCSS.input_group}>
-            <div className="row">
-              <div className="col">
-                {" "}
-                <input
-                  type="number"
-                  step="0.01"
-                  name="bikarbonatMin"
-                  placeholder="Bikarbonat Alt Limit"
-                  className="form-control"
-                  required
-                  {...formik.getFieldProps("bikarbonatMin")}
-                />
-              </div>
-              <div className="col">
-                {" "}
-                <input
-                  type="number"
-                  step="0.01"
-                  name="bikarbonatMax"
-                  placeholder="Bikarbonat Üst Limit"
-                  className="form-control"
-                  required
-                  {...formik.getFieldProps("bikarbonatMax")}
+                  {...formik.getFieldProps("sertlikMax")}
                 />
               </div>
             </div>

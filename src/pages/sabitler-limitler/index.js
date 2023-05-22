@@ -1,18 +1,49 @@
-import React from "react";
+import React, { useState } from "react";
 import { Layout } from "@/components";
 import { getSession } from "next-auth/react";
-import { Sbt_TuzTesisiKontrolCizelgesi } from "@/components/SabitlerVeLimitlerComponents";
+import {
+  Sbt_SodaTesisiKontrolCizelgesi,
+  Sbt_SodyumKlorurKontrolCizelgesi,
+  Sbt_TuzTesisiKontrolCizelgesi,
+} from "@/components/SabitlerVeLimitlerComponents";
+import { Tabs, Tab } from "react-bootstrap";
+import { Sbt_IsletmeSuyu } from "@/components/SabitlerVeLimitlerComponents/Su";
 
 export default function SabitlerLimitlerPage({ session }) {
+  const [key, setKey] = useState("first");
   return (
     <>
       <Layout session={session}>
-        <div className="container p-2">
-          <div className="d-flex  flex-column mx-auto w-75">
-            <p className="fs-2 fw-semibold text-center mt-4">Sabitler ve Limitler</p>
-              <Sbt_TuzTesisiKontrolCizelgesi/>
-          </div>
+        <div className="d-flex  flex-column mx-auto w-75">
+          <p className="fs-2 fw-semibold text-center mt-4">
+            Sabitler ve Limitler
+          </p>
         </div>
+        <Tabs
+          id="controlled-tab-example"
+          activeKey={key}
+          onSelect={(k) => setKey(k)}
+          className="mb-3 justify-content-center"
+          variant="pills"
+        >
+          <Tab eventKey="first" title="Tuz">
+            <section>
+              <p className="mt-2 mb-2 text-center fs-3 fw-bold">Tuz</p>
+              <Sbt_TuzTesisiKontrolCizelgesi />
+              <hr />
+              <Sbt_SodaTesisiKontrolCizelgesi />
+              <hr />
+              <Sbt_SodyumKlorurKontrolCizelgesi />
+            </section>
+          </Tab>
+          <Tab eventKey="second" title="Su">
+            <p className="mt-2 mb-2 text-center fs-3 fw-bold">Su</p>
+            <Sbt_IsletmeSuyu />
+          </Tab>
+          <Tab eventKey="third" title="Arıtma">
+            <p className="mt-2 mb-2 text-center fs-3 fw-bold">Arıtma</p>
+          </Tab>
+        </Tabs>
       </Layout>
     </>
   );
