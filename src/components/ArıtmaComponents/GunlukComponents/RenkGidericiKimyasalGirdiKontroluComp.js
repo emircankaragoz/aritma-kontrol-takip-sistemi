@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { AuthFormCSS } from "@/styles";
 import { toast } from "react-toastify";
-import { AritmaService, UserService } from "@/services"
+import { AritmaService, UserService,SystemMessageService } from "@/services"
 import { RiDeleteBin5Line } from "react-icons/ri";
 import moment from "moment/moment";
 import { useRouter } from "next/navigation";
-
+import {RenkGidericiKimyasalGirdiKontroluUpdateModal} from "@/components";
+import { SYSTEM_MESSAGES } from "../../../../environment";
 export default function RenkGidericiKimyasalGirdiKontroluComponent({ session }) {
 
     const [allData, setAllData] = useState([]);
@@ -31,7 +32,7 @@ export default function RenkGidericiKimyasalGirdiKontroluComponent({ session }) 
     const atiksuAritmaGirisCikis = new AritmaService();
     const userService = new UserService();
     const employee_id = session.user.employeeId;
-
+    const systemMessageService = new SystemMessageService();
 
     async function getAllRenkGidericiKimyasalGirdiKontroluDataHandler() {
         await atiksuAritmaGirisCikis.getAllRenkGidericiKimyasalGirdiKontrolu().then((result) => {
@@ -57,10 +58,23 @@ export default function RenkGidericiKimyasalGirdiKontroluComponent({ session }) 
 
         if (result) {
             setIsDataEntered(true);
+            deleteSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
 
         } else {
             setIsDataEntered(false);
+            createdSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
         }
+    }
+    async function deleteSystemMessageHandler(date) {
+        await systemMessageService.deleteSystemMessage(SYSTEM_MESSAGES.A15.code, date);
+    }
+    async function createdSystemMessageHandler(date) {
+        await systemMessageService.addSystemMessage(
+            SYSTEM_MESSAGES.A15.content,
+            SYSTEM_MESSAGES.A15.title,
+            SYSTEM_MESSAGES.A15.code,
+            date
+        );
     }
     useEffect(() => {
         getAllRenkGidericiKimyasalGirdiKontroluDataHandler();
@@ -288,6 +302,9 @@ export default function RenkGidericiKimyasalGirdiKontroluComponent({ session }) 
                                                     >
                                                         <RiDeleteBin5Line />
                                                     </span>
+                                                </span>
+                                                <span>
+                                                    <RenkGidericiKimyasalGirdiKontroluUpdateModal dataId={data.id}/>
                                                 </span>
                                                
 

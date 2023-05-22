@@ -17,6 +17,7 @@ export default class SystemMessageService {
         date === moment(item.createdAt).format("YYYY-MM-DD")
     );
 
+
     if (!data || data === undefined || data === null) {
       let values = {};
       const content = {
@@ -28,6 +29,7 @@ export default class SystemMessageService {
       const messageCode = {
         messageCode: `${code}`,
       };
+
       values = Object.assign(values, content, title, messageCode);
       const options = {
         method: "POST",

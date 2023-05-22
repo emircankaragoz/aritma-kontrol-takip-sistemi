@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { AuthFormCSS } from "@/styles";
 import { toast } from "react-toastify";
-import { AritmaService, UserService } from "@/services"
+import { AritmaService, UserService,SystemMessageService } from "@/services"
 import moment from "moment/moment";
 import { useRouter } from "next/navigation";
 import { RiDeleteBin5Line } from "react-icons/ri";
-export default function AmontumAzotuAnalizBiyolojikComponent({ session, subCategory }) {
+import { AmonyumAzotuAnalizBiyolojikUpdateModal } from "@/components";
+import { SYSTEM_MESSAGES } from "../../../../environment";
+export default function AmonyumAzotuAnalizBiyolojikComponent({ session, subCategory }) {
     const [allData, setAllData] = useState([]);
     const [sessionUser, setSessionUser] = useState(null);
     const [isDataEntered, setIsDataEntered] = useState(false);
@@ -21,6 +23,7 @@ export default function AmontumAzotuAnalizBiyolojikComponent({ session, subCateg
     });
     const aritmaService = new AritmaService();
     const userService = new UserService();
+    const systemMessageService = new SystemMessageService();
     const employee_id = session.user.employeeId;
 
     async function getAllAmonyumAzotuAnalizBiyolojikDataHandler() {
@@ -40,17 +43,30 @@ export default function AmontumAzotuAnalizBiyolojikComponent({ session, subCateg
     // veri girildi mi kontrolü yapılır.
     async function isDatasEntered(datas) {
         const result = datas.find(
-          (item) =>
-            moment(item.dateAndTime).format("YYYY-MM-DD") ===
-              moment(getToday).format("YYYY-MM-DD") 
-           
+            (item) =>
+                moment(item.dateAndTime).format("YYYY-MM-DD") ===
+                moment(getToday).format("YYYY-MM-DD")
+
         );
         if (result) {
-          setIsDataEntered(true);
+            setIsDataEntered(true);
+            deleteSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
         } else {
-          setIsDataEntered(false);
+            setIsDataEntered(false);
+            createdSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
         }
-      }
+    }
+    async function deleteSystemMessageHandler(date) {
+        await systemMessageService.deleteSystemMessage(SYSTEM_MESSAGES.A3.code, date);
+    }
+    async function createdSystemMessageHandler(date) {
+        await systemMessageService.addSystemMessage(
+            SYSTEM_MESSAGES.A3.content,
+            SYSTEM_MESSAGES.A3.title,
+            SYSTEM_MESSAGES.A3.code,
+            date
+        );
+    }
     useEffect(() => {
         getAllAmonyumAzotuAnalizBiyolojikDataHandler();
         getSessionUserHandler();
@@ -67,7 +83,7 @@ export default function AmontumAzotuAnalizBiyolojikComponent({ session, subCateg
             subcategory: `${subCategory}`,
         };
         values = Object.assign(values, employeeId, today, subcategory);
-        
+
         const options = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -197,6 +213,10 @@ export default function AmontumAzotuAnalizBiyolojikComponent({ session, subCateg
                                                     >
                                                         <RiDeleteBin5Line />
                                                     </span>
+                                                </span>
+                                                <span>
+                                                    <AmonyumAzotuAnalizBiyolojikUpdateModal dataId={data.id} />
+
                                                 </span>
 
 

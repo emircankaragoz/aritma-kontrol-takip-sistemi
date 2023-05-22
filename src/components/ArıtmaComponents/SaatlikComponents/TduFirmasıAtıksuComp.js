@@ -7,11 +7,12 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import moment from "moment/moment";
 import { TduFirmasıUpdateModal } from "@/components";
 import { tdu_validate } from "lib/validate";
-
+import { useRouter } from "next/navigation";
 export default function TduFirmasıAtıksuComponent({ session }) {
 
     const [allData, setAllData] = useState([]);
     const [sessionUser, setSessionUser] = useState(null);
+    const router = useRouter();
     const formik = useFormik({
         initialValues: {
             geldigiFirma: "",
@@ -46,9 +47,9 @@ export default function TduFirmasıAtıksuComponent({ session }) {
 
     async function onSubmit(values, { resetForm }) {
         const employeeId = {
-            employeeId: `${employeeid}`,
+            employeeId: `${employee_id}`,
         };
-        values = Object.assign(values, employee_Id);
+        values = Object.assign(values, employeeId);
         console.log(values);
         const options = {
             method: "POST",
@@ -63,8 +64,10 @@ export default function TduFirmasıAtıksuComponent({ session }) {
                         position: toast.POSITION.BOTTOM_RIGHT,
                     });
                 }
-            });
+            });    
+        router.refresh();
         resetForm();
+        
     }
     async function deleteTdu(id) {
         const dataId = {

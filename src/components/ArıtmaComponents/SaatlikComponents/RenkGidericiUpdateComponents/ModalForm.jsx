@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
 import { AritmaService } from "@/services"
-
+import { useRouter } from "next/navigation";
+import moment from "moment/moment";
 export default function ModalForm({ dataId }) {
 
     const [allDataById, setAllDataById] = useState({});
     const renkGidericiTuketimi = new AritmaService();
+    const router = useRouter();
+    const getToday = moment().startOf("day").format();
     async function getAllRenkGidericiTuketimiDataHandler() {
         if (dataId !== undefined && dataId !== null) {
             await renkGidericiTuketimi.getRenkGidericiTuketimiById(dataId)
@@ -18,29 +21,28 @@ export default function ModalForm({ dataId }) {
     useEffect(() => {
         getAllRenkGidericiTuketimiDataHandler();
     }, [allDataById]);
-    
+
     const formik = useFormik({
         enableReinitialize: true,
         initialValues: {
             renkGidericiDozajiMlDak: `${allDataById != undefined ? allDataById.renkGidericiDozajiMlDak : ""}`,
             biyolojikCokHavCikisiKompozitRenk: `${allDataById != undefined ? allDataById.biyolojikCokHavCikisiKompozitRenk : ""}`,
             yavasKaristirmaHavCikisi: `${allDataById != undefined ? allDataById.yavasKaristirmaHavCikisi : ""}`,
-            kimyasalCokHavCikisiRenk: `${allDataById != undefined ? allDataById.kimyasalCokHavCikisiRenk: ""}`,
+            kimyasalCokHavCikisiRenk: `${allDataById != undefined ? allDataById.kimyasalCokHavCikisiRenk : ""}`,
             toplamRenkGidericiKgSaat: `${allDataById != undefined ? allDataById.toplamRenkGidericiKgSaat : ""}`,
             toplamRenkGidericiEuroSaat: `${allDataById != undefined ? allDataById.toplamRenkGidericiEuroSaat : ""}`,
-            atikSu_m3sa  :`${allDataById != undefined ? allDataById.atikSu_m3sa : ""}`,
+            atikSu_m3sa: `${allDataById != undefined ? allDataById.atikSu_m3sa : ""}`,
             kullanilanKimyasal: `${allDataById != undefined ? allDataById.kullanilanKimyasal : ""}`,
-          
+
         },
         onSubmit,
-      });
-   
+    });
+
     async function onSubmit(values) {
         const IdData = {
             IdData: `${dataId}`,
         };
         values = Object.assign(values, IdData);
-        console.log(values);
         const options = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -56,6 +58,38 @@ export default function ModalForm({ dataId }) {
                     });
                 }
             });
+        updateTransferDataToDesarjForm();
+    }
+    async function updateTransferDataToDesarjForm() {
+        await renkGidericiTuketimi.getValuesRenkGidericiTuketimiToDesarj()
+            .then((result) => {
+                sendDataHandler(result);
+            });
+
+    }
+    async function sendDataHandler(result) {
+        const today = {
+            today: `${getToday}`,
+        }
+        result = Object.assign(result, today);
+        const options = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(result),
+        };
+        await fetch("/api/controller/post/updateTransferDesarjRenk", options)
+            .then((res) => res.json())
+            .then((data) => {
+                if (data) {
+                    toast.success(
+                        "Veriler Desarja gönderildi.",
+                        {
+                            position: toast.POSITION.BOTTOM_RIGHT,
+                        }
+                    );
+                }
+            });
+            router.refresh();
     }
 
 
@@ -74,8 +108,8 @@ export default function ModalForm({ dataId }) {
                             name="renkGidericiDozajiMlDak"
                             placeholder="renkGidericiDozajiMlDak"
                             {...formik.getFieldProps("renkGidericiDozajiMlDak")}
-                            
-                            
+
+
                         />
                         <input className="form-control"
                             type="text"
@@ -83,7 +117,7 @@ export default function ModalForm({ dataId }) {
                             name="biyolojikCokHavCikisiKompozitRenk"
                             placeholder="biyolojikCokHavCikisiKompozitRenk"
                             {...formik.getFieldProps("biyolojikCokHavCikisiKompozitRenk")}
-                            
+
 
                         />
                         <input className="form-control"
@@ -92,7 +126,7 @@ export default function ModalForm({ dataId }) {
                             name="yavasKaristirmaHavCikisi"
                             placeholder="yavasKaristirmaHavCikisi"
                             {...formik.getFieldProps("yavasKaristirmaHavCikisi")}
-                            
+
 
 
                         />
@@ -103,7 +137,7 @@ export default function ModalForm({ dataId }) {
                             name="kimyasalCokHavCikisiRenk"
                             placeholder="kimyasalCokHavCikisiRenk"
                             {...formik.getFieldProps("kimyasalCokHavCikisiRenk")}
-                            
+
 
 
 
@@ -115,7 +149,7 @@ export default function ModalForm({ dataId }) {
                             name="toplamRenkGidericiKgSaat"
                             placeholder="toplamRenkGidericiKgSaat"
                             {...formik.getFieldProps("toplamRenkGidericiKgSaat")}
-                            
+
 
 
                         />
@@ -151,7 +185,7 @@ export default function ModalForm({ dataId }) {
                         />
                     </div>
                     <div className="mt-2 d-flex justify-content-end">
-                        <button  type="submit" className="btn btn-outline-dark">
+                        <button type="submit" className="btn btn-outline-dark">
                             Güncelle
                         </button>
                     </div>

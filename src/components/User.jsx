@@ -44,6 +44,7 @@ export default function User({ session }) {
     setOldMessages(oldMsgs);
     setTodayMessages(todayMsgs);
   }
+  console.log(todayMessages);
 
   if (messages === null) {
     return <div className="text-center">Yükleniyor...</div>;

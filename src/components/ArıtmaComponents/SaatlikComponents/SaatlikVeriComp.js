@@ -6,12 +6,16 @@ import { AritmaService, UserService } from "@/services";
 import { SaatlikVeriUpdateModal } from "@/components";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { saatlikVeri_validate } from "lib/validate";
+import { useRouter } from "next/navigation";
 import moment from "moment/moment";
 
 export default function SaatlikVeriComponent({ session }) {
 
     const [allData, setAllData] = useState([]);
     const [sessionUser, setSessionUser] = useState(null);
+    const getToday = moment().startOf("day").format();
+    const router = useRouter();
+
     const formik = useFormik({
         initialValues: {
             esanjorGirisSicakligi: "",
@@ -27,8 +31,8 @@ export default function SaatlikVeriComponent({ session }) {
     const employee_id = session.user.employeeId;
     async function getAllSaatlikVeriDataHandler() {
         await saatlikVeri.getAllSaatlikVeri().then((result) => setAllData(result.data));
-    } 
-    
+    }
+
     async function getSessionUserHandler() {
         if (session) {
             await userService
@@ -36,9 +40,10 @@ export default function SaatlikVeriComponent({ session }) {
                 .then((result) => setSessionUser(result));
         }
     }
-       
+
     useEffect(() => {
         getSessionUserHandler();
+        addDataNotrHavuzuAsZero();
         getAllSaatlikVeriDataHandler();
     }, []);
 
@@ -47,7 +52,6 @@ export default function SaatlikVeriComponent({ session }) {
             employeeId: `${employee_id}`,
         };
         values = Object.assign(values, employeeId);
-        console.log(values);
         const options = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -62,10 +66,83 @@ export default function SaatlikVeriComponent({ session }) {
                     });
                 }
             });
-        resetForm();
+        transferDataToNotralizasyonHavuzuForm();
+    }
+    async function addDataNotrHavuzuAsZero() {
+        const today = {
+            today: `${getToday}`,
+        }
+        const options = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(today),
+        };
+        await fetch("/api/controller/post/addNotralizasyonHavuzu", options)
+            .then((res) => res.json())
+
+    }    
+    async function transferDataToNotralizasyonHavuzuForm() {
+        await saatlikVeri.getTransferValuesSatlikVeriEsToNotrHavuzu()
+            .then((result) => {
+                sendDataHandler(result);
+            });
+    }
+     
+    async function sendDataHandler(result) {
+        const today = {
+            today: `${getToday}`,
+        }
+        result = Object.assign(result, today);
+        console.log(result);
+        const options = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(result),
+        };
+        await fetch("/api/controller/post/updateTransferNotrHavuzu", options)
+            .then((res) => res.json())
+            .then((data) => {
+                if (data) {
+
+                }
+            });
+        updateTransferAerobikHavuzuValues();
+
 
 
     }
+    async function updateTransferAerobikHavuzuValues() {
+        await saatlikVeri.getTransferValuesSatlikVeriEsToAerobikHavuzu()
+            .then((result) => {
+                sendDataHandlerSecond(result);
+            });
+    }
+    async function sendDataHandlerSecond(result) {
+        const today = {
+            today: `${getToday}`,
+        }
+        result = Object.assign(result, today);
+        const options = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(result),
+        };
+        await fetch("/api/controller/post/updateTransferAerobikHavuzu", options)
+            .then((res) => res.json())
+            .then((data) => {
+                if (data) {
+                    toast.success(
+                        "Veriler Aerobik Havuzu formunda başarıyla güncellendi.",
+                        {
+                            position: toast.POSITION.BOTTOM_RIGHT,
+                        }
+                    );
+                }
+            });
+        router.refresh();
+    }
+
+  
     async function deleteSaatlikVeri(id) {
         const dataId = {
             dataId: `${id}`,
@@ -85,10 +162,11 @@ export default function SaatlikVeriComponent({ session }) {
                     });
                 }
             });
-    } 
+        router.refresh();
+    }
     if (sessionUser === null) {
         return <div className="text-center">Yükleniyor...</div>;
-      }
+    }
 
     return (
 
@@ -100,8 +178,8 @@ export default function SaatlikVeriComponent({ session }) {
                         <div className={AuthFormCSS.input_group}>
                             <h3 className="text-muted  fs-5 fw-bolder pb-3">Isı Geri Kazanım</h3>
                             <input className="form-control"
-                                 type="number"
-                                 step="0.01"
+                                type="number"
+                                step="0.01"
                                 name="esanjorGirisSicakligi"
                                 placeholder="Eşanjor Giriş Sıcaklığı"
                                 {...formik.getFieldProps("esanjorGirisSicakligi")} />
@@ -117,8 +195,8 @@ export default function SaatlikVeriComponent({ session }) {
                         <div className={AuthFormCSS.input_group}>
 
                             <input className="form-control"
-                                 type="number"
-                                 step="0.01"
+                                type="number"
+                                step="0.01"
                                 name="esanjorCikisSicakligi"
                                 placeholder="Eşanjor Çıkış Sıcaklığı"
                                 {...formik.getFieldProps("esanjorCikisSicakligi")} />
@@ -134,8 +212,8 @@ export default function SaatlikVeriComponent({ session }) {
                         <div className={AuthFormCSS.input_group}>
                             <h3 className="text-muted  fs-5 fw-bolder pb-3">Aerobik</h3>
                             <input className="form-control"
-                                 type="number"
-                                 step="0.01"
+                                type="number"
+                                step="0.01"
                                 name="oksijen"
                                 placeholder="Oksijen"
                                 {...formik.getFieldProps("oksijen")} />
@@ -206,7 +284,7 @@ export default function SaatlikVeriComponent({ session }) {
                                         <td>
                                             {moment(data.dateAndTime).format("YYYY-MM-DD HH:mm")}
                                         </td>
-                                         <td>@{data.createdBy.employeeId}</td>
+                                        <td>@{data.createdBy.employeeId}</td>
                                         <td>{data.esanjorGirisSicakligi}</td>
                                         <td>{data.esanjorCikisSicakligi}</td>
                                         <td>{data.oksijen}</td>

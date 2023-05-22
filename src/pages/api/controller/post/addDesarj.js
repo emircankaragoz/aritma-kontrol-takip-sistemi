@@ -6,7 +6,8 @@ export default async function handler(req, res) {
         if (!req.body) return res.status(404).json({ error: "Do not have data" });
         try {
             const {debi,sicaklik,ph,koi,akm,serbestKlor,toplamKrom,sulfur,sulfit,fenol,yagVeGres,klorur,sulfat,demir,cinko,employeeId,today } = req.body;
-    
+            const amonyumAzotu = 0;
+            const renk = 0;
             const data = await prisma.desarj.create({
                 data: {
                     category: "Arıtma",
@@ -26,6 +27,7 @@ export default async function handler(req, res) {
                     ph: `${ph}`,
                     koi: `${koi}`,
                     akm: `${akm}`,
+                    amonyumAzotu: `${amonyumAzotu}`,
                     serbestKlor: `${serbestKlor}`,
                     toplamKrom: `${toplamKrom}`,
                     sulfur: `${sulfur}`,
@@ -36,6 +38,7 @@ export default async function handler(req, res) {
                     sulfat: `${sulfat}`,
                     demir: `${demir}`,
                     cinko: `${cinko}`,
+                    renk: `${renk}`,
                 },
             });
             res

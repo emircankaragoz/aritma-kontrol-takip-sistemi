@@ -1,6 +1,7 @@
 import axios from "axios";
 import { URL } from "../../environment";
 import moment from "moment";
+
 export default class AritmaService {
 
   //atiksu aritma giris cikis
@@ -21,7 +22,7 @@ export default class AritmaService {
     return atiksuAritma;
   }
 
-  async getCalculationDeneme(datetime) {
+  async getCalculationAtiksuAritmaGirisCikis(datetime) {
     let girisAtiksuMiktariM3Gun1, girisAtiksuMiktariM3Gun2, girisAtiksuMiktariM3Gun;
     let cikisAtiksuMiktariM3Gun1, cikisAtiksuMiktariM3Gun2, cikisAtiksuMiktariM3Gun;
     let farkCekilenCamurMiktari;
@@ -32,7 +33,7 @@ export default class AritmaService {
     const response = await axios.get(
       `${URL}/api/controller/get/atiksuAritmaGirisCikis`
     );
-   
+
     const data = response.data.find(
       (item) => moment(item.dateAndTime).format("YYYY-MM-DD") == datetime
     );
@@ -44,7 +45,7 @@ export default class AritmaService {
     const prevData = response.data.find(
       (item) => moment(item.dateAndTime).format("YYYY-MM-DD") == prevDatetime
     );
-    
+
 
     if (data && prevData) {
       girisAtiksuMiktariM3Gun1 = parseFloat(prevData.girisAtiksuSayacDegeri);
@@ -56,9 +57,9 @@ export default class AritmaService {
       cikisAtiksuMiktariM3Gun2 = parseFloat(data.cikisAtiksuSayacDegeri);
       cikisAtiksuMiktariM3Gun = cikisAtiksuMiktariM3Gun2 - cikisAtiksuMiktariM3Gun1;
 
-      farkCekilenCamurMiktari = girisAtiksuMiktariM3Gun-cikisAtiksuMiktariM3Gun;
+      farkCekilenCamurMiktari = girisAtiksuMiktariM3Gun - cikisAtiksuMiktariM3Gun;
       kimyasalCokeltimdenCekilenCamurMiktari = parseFloat(data.kimyasalCokeltimdenCekilenCamurMiktari_m3gun);
-      aerobiktenCekilenCamurMiktari = farkCekilenCamurMiktari-kimyasalCokeltimdenCekilenCamurMiktari;
+      aerobiktenCekilenCamurMiktari = farkCekilenCamurMiktari - kimyasalCokeltimdenCekilenCamurMiktari;
       const dateAndTime = prevDatetime;
       const id = data.id;
       girisAtiksuSayacDegeri = parseFloat(data.girisAtiksuSayacDegeri);
@@ -78,19 +79,19 @@ export default class AritmaService {
       };
     }
     else {
-      
-      
-        girisAtiksuMiktariM3Gun = parseFloat(data.girisAtiksuSayacDegeri);
-        cikisAtiksuMiktariM3Gun = parseFloat(data.cikisAtiksuSayacDegeri);
-        farkCekilenCamurMiktari = parseFloat(data.girisAtiksuSayacDegeri)-parseFloat(data.cikisAtiksuSayacDegeri) ;
-        kimyasalCokeltimdenCekilenCamurMiktari = parseFloat(data.kimyasalCokeltimdenCekilenCamurMiktari_m3gun);
-        aerobiktenCekilenCamurMiktari = farkCekilenCamurMiktari-kimyasalCokeltimdenCekilenCamurMiktari;
-        const dateAndTime = datetime;
-        const id = data.id;
-        
-        girisAtiksuSayacDegeri = parseFloat(data.girisAtiksuSayacDegeri);
-        cikisAtiksuSayacDegeri = parseFloat(data.cikisAtiksuSayacDegeri);
-      
+
+
+      girisAtiksuMiktariM3Gun = parseFloat(data.girisAtiksuSayacDegeri);
+      cikisAtiksuMiktariM3Gun = parseFloat(data.cikisAtiksuSayacDegeri);
+      farkCekilenCamurMiktari = parseFloat(data.girisAtiksuSayacDegeri) - parseFloat(data.cikisAtiksuSayacDegeri);
+      kimyasalCokeltimdenCekilenCamurMiktari = parseFloat(data.kimyasalCokeltimdenCekilenCamurMiktari_m3gun);
+      aerobiktenCekilenCamurMiktari = farkCekilenCamurMiktari - kimyasalCokeltimdenCekilenCamurMiktari;
+      const dateAndTime = datetime;
+      const id = data.id;
+
+      girisAtiksuSayacDegeri = parseFloat(data.girisAtiksuSayacDegeri);
+      cikisAtiksuSayacDegeri = parseFloat(data.cikisAtiksuSayacDegeri);
+
 
       return {
         girisAtiksuSayacDegeri,
@@ -102,8 +103,8 @@ export default class AritmaService {
         aerobiktenCekilenCamurMiktari,
         dateAndTime,
         id
-        
-       
+
+
       };
     }
 
@@ -128,7 +129,7 @@ export default class AritmaService {
   }
 
   //CAMUR YOGUNLASTİRMA
-  async getTransferDataToCamurYogunlastirmaFromAtiksuAritmaGirisCikis(datetime){
+  async getTransferDataToCamurYogunlastirmaFromAtiksuAritmaGirisCikis(datetime) {
 
     let kimyasalCokeltimdenCekilenCamurMiktari_m3gun;
     let aerobiktenCekilenCamurMiktari;
@@ -139,13 +140,12 @@ export default class AritmaService {
     const data = response.data.find(
       (item) => moment(item.dateAndTime).format("YYYY-MM-DD") == datetime
     );
-    console.log(data);
-    if(data){
+    if (data) {
       kimyasalCokeltimdenCekilenCamurMiktari_m3gun = data.kimyasalCokeltimdenCekilenCamurMiktari_m3gun
       aerobiktenCekilenCamurMiktari = data.aerobiktenCekilenCamurMiktari
 
     }
-    return{
+    return {
       kimyasalCokeltimdenCekilenCamurMiktari_m3gun,
       aerobiktenCekilenCamurMiktari,
 
@@ -158,7 +158,7 @@ export default class AritmaService {
 
   //Renk GİDERİCİ KİMYASAL GİRDİ KONTROLU
 
-   async getAllRenkGidericiKimyasalGirdiKontrolu() {
+  async getAllRenkGidericiKimyasalGirdiKontrolu() {
     return await axios.get(`${URL}/api/controller/get/renkGidericiKimyasalGirdiKontrol`);
   }
 
@@ -219,33 +219,58 @@ export default class AritmaService {
   async getAllAmonyumAzotuAnalizDengelemeVerileri() {
     return await axios.get(`${URL}/api/controller/get/amonyumAzotuAnalizDengeleme`);
   }
-
-  //AMONYUM AZOT DENGELEME DEN DENGELEME HAVUZUNA VERİ AKTARIMI
-  async getValuesFromAnotherForms(datetime){
-
+  async getAmonyumAzotuAnalizDengelemeById(id) {
     let amonyumAzot;
+    await axios.get(`${URL}/api/controller/get/amonyumAzotuAnalizDengeleme`).then((result) => {
+      result.data.map((data) => {
+        if (data.id === id) {
+          amonyumAzot = data;
+        }
+      });
+    });
+    return amonyumAzot;
+  }
+
+  //GÜNLÜK ATIKSU SAYACINDAN DENGELEME HAVUZUNA VERİ AKTARIMI
+  async getValuesGunlukAtıksuSayacıToDengelemeHavuzu(datetime) {
     let debi;
     const response = await axios.get(
-      `${URL}/api/controller/get/amonyumAzotuAnalizDengeleme`
-    );
-    const response2 = await axios.get(
       `${URL}/api/controller/get/atiksuAritmaGirisCikis`
     );
     const data = response.data.find(
       (item) => moment(item.dateAndTime).format("YYYY-MM-DD") == datetime
     );
-    const data2 = response2.data.find(
+    if (data) {
+      debi = data.girisAtiksuMiktariM3Gun;
+    }
+    else {
+      debi = 0;
+    }
+    return {
+      debi
+    };
+
+
+  }
+
+  //AMONYUM AZOT ANALİZ DENGELEMEDEN --> DENGELEME HAVUZUNA VERİ AKTARIMI
+  async getValuesAmonyumAzotToDengelemeHavuzu(datetime) {
+    let amonyumAzot;
+    const response = await axios.get(
+      `${URL}/api/controller/get/amonyumAzotuAnalizDengeleme`
+    );
+    const data = response.data.find(
       (item) => moment(item.dateAndTime).format("YYYY-MM-DD") == datetime
     );
-    
-    if(data && data2){
+    if (data) {
       amonyumAzot = data.seyreltme;
-      debi = data2.girisAtiksuMiktariM3Gun;
     }
-    return{
+    else {
+      amonyumAzot = 0;
+    }
+    return {
       amonyumAzot,
-      debi
-      
+
     };
   }
 
@@ -253,121 +278,359 @@ export default class AritmaService {
   async getAllAmonyumAzotuAnalizCikisVerileri() {
     return await axios.get(`${URL}/api/controller/get/amonyumAzotuAnalizCikis`);
   }
+  async getAmonyumAzotuAnalizCikisById(id) {
+    let Data;
+    await axios.get(`${URL}/api/controller/get/amonyumAzotuAnalizCikis`).then((result) => {
+      result.data.map((data) => {
+        if (data.id === id) {
+          Data = data;
+        }
+      });
+    });
+
+    return Data;
+  }
   //BİYOLOJİK
   async getAllAmonyumAzotuAnalizBiyolojikVerileri() {
     return await axios.get(`${URL}/api/controller/get/amonyumAzotuAnalizBiyolojik`);
+  }
+  async getAmonyumAzotuAnalizBiyolojikById(id) {
+    let Data;
+    await axios.get(`${URL}/api/controller/get/amonyumAzotuAnalizBiyolojik`).then((result) => {
+      result.data.map((data) => {
+        if (data.id === id) {
+          Data = data;
+        }
+      });
+    });
+
+    return Data;
   }
 
   //DENGELEME HAVUZU FORMU
   async getAllDengelemeHavuzuVerileri() {
     return await axios.get(`${URL}/api/controller/get/dengelemeHavuzuVerileri`);
   }
+  async getDengelemeHavuzuById(id) {
+    let dengelemeHavuzu;
+    await axios.get(`${URL}/api/controller/get/dengelemeHavuzuVerileri`).then((result) => {
+      result.data.map((data) => {
+        if (data.id === id) {
+          dengelemeHavuzu = data;
+        }
+      });
+    });
+
+    return dengelemeHavuzu;
+  }
 
   //ISI GERİ KAZANIM PH AND AMPER
- async getAllIsiGeriKazanimVerileri (){
-  return await axios.get(`${URL}/api/controller/get/isiGeriKazanim`);
- }
- async getIsiGeriKazanimById(id) {
-  let isiGeriKazanim;
-  await axios.get(`${URL}/api/controller/get/isiGeriKazanim`).then((result) => {
-    result.data.map((data) => {
-      if (data.id === id) {
-        isiGeriKazanim = data;
-      }
+  async getAllIsiGeriKazanimVerileri() {
+    return await axios.get(`${URL}/api/controller/get/isiGeriKazanim`);
+  }
+  async getIsiGeriKazanimById(id) {
+    let isiGeriKazanim;
+    await axios.get(`${URL}/api/controller/get/isiGeriKazanim`).then((result) => {
+      result.data.map((data) => {
+        if (data.id === id) {
+          isiGeriKazanim = data;
+        }
+      });
     });
-  });
-  
-  return isiGeriKazanim;
-}
-//ANAEROBİK HAVUZU 
-async getAllAnaerobikHavuzuVerileri (){
-  return await axios.get(`${URL}/api/controller/get/anaerobikHavuzu`);
- }
- async getAnaerobikHavuzuById(id) {
-  let anaerobik;
-  await axios.get(`${URL}/api/controller/get/anaerobikHavuzu`).then((result) => {
-    result.data.map((data) => {
-      if (data.id === id) {
-        anaerobik = data;
-      }
-    });
-  });
-  
-  return anaerobik;
-}
-//GERİ DEVİR HAZNESİ
-async getAllGeriDevirHaznesiVerileri (){
-  return await axios.get(`${URL}/api/controller/get/geriDevirHaznesi`);
- }
- async getGeriDevirHaznesiById(id) {
-  let devirHazne;
-  await axios.get(`${URL}/api/controller/get/geriDevirHaznesi`).then((result) => {
-    result.data.map((data) => {
-      if (data.id === id) {
-        devirHazne = data;
-      }
-    });
-  });
-  
-  
-  return devirHazne;
-}
-//BİYOLOJİK COKELTİM HAVUZU
-async getAllBiyolojikCokeltimHavuzuVerileri (){
-  return await axios.get(`${URL}/api/controller/get/biyolojikCokeltimHavuzu`);
- }
- async getBiyolojikCokeltimHavuzuById(id) {
-  let biyolojikCokeltimHavuzu;
-  await axios.get(`${URL}/api/controller/get/biyolojikCokeltimHavuzu`).then((result) => {
-    result.data.map((data) => {
-      if (data.id === id) {
-        biyolojikCokeltimHavuzu = data;
-      }
-    });
-  });
-  
-  
-  return biyolojikCokeltimHavuzu;
-}
-//FİLTREPRES
-async getAllFiltrepresVerileri (){
-  return await axios.get(`${URL}/api/controller/get/filtrepres`);
- }
- async getFiltrepresById(id) {
-  let filtrepres;
-  await axios.get(`${URL}/api/controller/get/filtrepres`).then((result) => {
-    result.data.map((data) => {
-      if (data.id === id) {
-        filtrepres = data;
-      }
-    });
-  });
-  
-  
-  return filtrepres;
-}
 
-//DEŞARJ
-async getAllDesarjVerileri (){
-  return await axios.get(`${URL}/api/controller/get/desarj`);
- }
- async getDesarjById(id) {
-  let desarj;
-  await axios.get(`${URL}/api/controller/get/desarj`).then((result) => {
-    result.data.map((data) => {
-      if (data.id === id) {
-        desarj = data;
-      }
+    return isiGeriKazanim;
+  }
+  //SUM OF ISI GERİ KAZANIM VERİLERİ
+  //kimyasal miktarı toplamı
+  async sumOfKimyasalMiktarıIsıGeriKazanim() {
+    const response = await axios.get(
+      `${URL}/api/controller/get/isiGeriKazanim`
+    );
+    let totalKimyasalMiktari = 0; 
+    response.data.forEach((item) => {
+      totalKimyasalMiktari += parseFloat(item.kimyasalMiktari); // Her bir verinin kimyasalMiktarı değerini toplama 
     });
-  });
-  
-  
-  return desarj;
-}
+
+    return totalKimyasalMiktari;
+  }
+  //ANAEROBİK HAVUZU 
+  async getAllAnaerobikHavuzuVerileri() {
+    return await axios.get(`${URL}/api/controller/get/anaerobikHavuzu`);
+  }
+  async getAnaerobikHavuzuById(id) {
+    let anaerobik;
+    await axios.get(`${URL}/api/controller/get/anaerobikHavuzu`).then((result) => {
+      result.data.map((data) => {
+        if (data.id === id) {
+          anaerobik = data;
+        }
+      });
+    });
+
+    return anaerobik;
+  }
+
+  //GERİ DEVİR HAZNESİ
+  async getAllGeriDevirHaznesiVerileri() {
+    return await axios.get(`${URL}/api/controller/get/geriDevirHaznesi`);
+  }
+  async getGeriDevirHaznesiById(id) {
+    let devirHazne;
+    await axios.get(`${URL}/api/controller/get/geriDevirHaznesi`).then((result) => {
+      result.data.map((data) => {
+        if (data.id === id) {
+          devirHazne = data;
+        }
+      });
+    });
 
 
- 
- 
+    return devirHazne;
+  }
+  //BİYOLOJİK COKELTİM HAVUZU
+  async getAllBiyolojikCokeltimHavuzuVerileri() {
+    return await axios.get(`${URL}/api/controller/get/biyolojikCokeltimHavuzu`);
+  }
+  async getBiyolojikCokeltimHavuzuById(id) {
+    let biyolojikCokeltimHavuzu;
+    await axios.get(`${URL}/api/controller/get/biyolojikCokeltimHavuzu`).then((result) => {
+      result.data.map((data) => {
+        if (data.id === id) {
+          biyolojikCokeltimHavuzu = data;
+        }
+      });
+    });
+
+
+    return biyolojikCokeltimHavuzu;
+  }
+  //FİLTREPRES
+  async getAllFiltrepresVerileri() {
+    return await axios.get(`${URL}/api/controller/get/filtrepres`);
+  }
+  async getFiltrepresById(id) {
+    let filtrepres;
+    await axios.get(`${URL}/api/controller/get/filtrepres`).then((result) => {
+      result.data.map((data) => {
+        if (data.id === id) {
+          filtrepres = data;
+        }
+      });
+    });
+
+
+    return filtrepres;
+  }
+
+  //DEŞARJ
+  async getAllDesarjVerileri() {
+    return await axios.get(`${URL}/api/controller/get/desarj`);
+  }
+  async getDesarjById(id) {
+    let desarj;
+    await axios.get(`${URL}/api/controller/get/desarj`).then((result) => {
+      result.data.map((data) => {
+        if (data.id === id) {
+          desarj = data;
+        }
+      });
+    });
+
+
+    return desarj;
+  }
+  //AMONYUM AZOT CİKİSDAN ve RENK GİDERİCİDEN DEŞARJA VERİ AKTARIMI
+  async getValuesCikisAndRenkGidericiToDesarj(datetime) {
+
+    let amonyumAzotu;
+    let renk;
+    let renkGidericiTuketimiTotal = 0;
+    let renkGidericiTuketimiCount = 0;
+
+    const response = await axios.get(
+      `${URL}/api/controller/get/amonyumAzotuAnalizCikis`
+    );
+    const response2 = await axios.get(
+      `${URL}/api/controller/get/renkGidericiTuketimi`
+    );
+    const data = response.data.find(
+      (item) => moment(item.dateAndTime).format("YYYY-MM-DD") == datetime
+    );
+    const data2 = response2.data.map(item => parseFloat(item.kimyasalCokHavCikisiRenk));
+    //Kimyasal  Çök Hav Çıkışı Renk Mak 280 Pt-co 
+    if (data && data2) {
+      console.log(data2);
+      amonyumAzotu = data.sonuc;
+      renkGidericiTuketimiTotal = data2.reduce((total, item) => {
+        const renkFloat = parseFloat(item);
+        if (!isNaN(renkFloat)) {
+          return total + renkFloat;
+        } else {
+          return total;
+        }
+      }, 0);
+      renkGidericiTuketimiCount = data2.length;
+      renk = renkGidericiTuketimiTotal / renkGidericiTuketimiCount;
+    }
+    else {
+      amonyumAzotu = 0;
+      renk = 0;
+    }
+    return {
+      amonyumAzotu,
+      renk
+    };
+  }
+  async getValuesRenkGidericiTuketimiToDesarj() {
+    let renk;
+    let renkGidericiTuketimiTotal = 0;
+    let renkGidericiTuketimiCount = 0;
+    const response2 = await axios.get(
+      `${URL}/api/controller/get/renkGidericiTuketimi`
+    );
+    const data2 = response2.data.map(item => parseFloat(item.kimyasalCokHavCikisiRenk));
+    if (data2) {
+      renkGidericiTuketimiTotal = data2.reduce((total, item) => {
+        const renkFloat = parseFloat(item);
+        if (!isNaN(renkFloat)) {
+          return total + renkFloat;
+        } else {
+          return total;
+        }
+      }, 0);
+      renkGidericiTuketimiCount = data2.length;
+      renk = renkGidericiTuketimiTotal / renkGidericiTuketimiCount;
+    }
+    else {
+      renk = 0;
+    }
+    return {
+      renk
+    };
+
+  }
+  async getValuesCikisToDesarj(datetime) {
+    let amonyumAzotu;
+    const response = await axios.get(
+      `${URL}/api/controller/get/amonyumAzotuAnalizCikis`
+    );
+    const data = response.data.find(
+      (item) => moment(item.dateAndTime).format("YYYY-MM-DD") == datetime
+    );
+    if (data) {
+      amonyumAzotu = data.sonuc;
+    }
+    else {
+      amonyumAzotu = 0;
+    }
+    return {
+      amonyumAzotu
+    };
+  }
+  //NOTRALİZASYON HAVUZU 
+
+  async getAllNotrHavuzu() {
+    return await axios.get(`${URL}/api/controller/get/notralizasyonHavuzu`);
+  }
+  //ortalama gönderme SATLİK VERİ EŞ,NÖT PH, OKSİJEN'!F28 'den NOTR HAVUZUNA
+  async getTransferValuesSatlikVeriEsToNotrHavuzu() {
+    let ph;
+    let phTotal = 0;
+    let phCount = 0;
+
+    const response = await axios.get(
+      `${URL}/api/controller/get/saatlikVeri`
+    );
+    const data = response.data.map(item => parseFloat(item.ph));
+    //ph
+    if (data.length > 0) {
+      phTotal = data.reduce((total, item) => {
+        const phFloat = parseFloat(item);
+        if (!isNaN(phFloat)) {
+          return total + phFloat;
+        } else {
+          return total;
+        }
+      }, 0);
+      phCount = data.length;
+      ph = phTotal / phCount;
+    }
+    else {
+      ph = 0;
+    }
+
+
+
+    return {
+      ph
+    };
+  }
+
+
+  //AEROBİK HAVUZU 
+  async getAllAerobikHavuzuVerileri() {
+    return await axios.get(`${URL}/api/controller/get/aerobikHavuzu`);
+  }
+  async getAerobikHavuzuById(id) {
+    let dataUpdate;
+    await axios.get(`${URL}/api/controller/get/aerobikHavuzu`).then((result) => {
+      result.data.map((data) => {
+        if (data.id === id) {
+          dataUpdate = data;
+        }
+      });
+    });
+    return dataUpdate;
+  }
+  //ortalama gönderme SATLİK VERİ EŞ,NÖT PH, OKSİJEN'!F28 'den AEROBİK HAVUZUNA
+  async getTransferValuesSatlikVeriEsToAerobikHavuzu() {
+    let oksijen;
+    let oksijenTotal = 0;
+    let oksijenCount = 0;
+
+    const response = await axios.get(
+      `${URL}/api/controller/get/saatlikVeri`
+    );
+    const data = response.data.map(item => parseFloat(item.oksijen));
+    //ph
+    if (data.length > 0) {
+      oksijenTotal = data.reduce((total, item) => {
+        const oksijenFloat = parseFloat(item);
+        if (!isNaN(oksijenFloat)) {
+          return total + oksijenFloat;
+        } else {
+          return total;
+        }
+      }, 0);
+      oksijenCount = data.length;
+      oksijen = oksijenTotal / oksijenCount;
+    }
+    else {
+      oksijen = 0;
+    }
+
+    return {
+      oksijen
+    };
+  }
+
+
+  //AKM ANALİZİ FORMU
+  async getAllAkmAnaliz() {
+    return await axios.get(`${URL}/api/controller/get/akmAnalizi`);
+  }
+  async getAkmAnaliziById(id) {
+    let dataUpdate;
+    await axios.get(`${URL}/api/controller/get/akmAnalizi`).then((result) => {
+      result.data.map((data) => {
+        if (data.id === id) {
+          dataUpdate = data;
+        }
+      });
+    });
+    return dataUpdate;
+  }
+
 
   //SAATLİK VERİ SERVİCE
   async getAllSaatlikVeri() {
@@ -383,7 +646,7 @@ async getAllDesarjVerileri (){
         }
       });
     });
-   
+
     return saatlikVeri;
   }
   //TDU SERVİCE
@@ -408,7 +671,7 @@ async getAllDesarjVerileri (){
   // ARITMA MADDE KULLANIM
 
   // SULFIRIK ASIT
-  async getAllSulfirikAsitKullanim(){
+  async getAllSulfirikAsitKullanim() {
     return await axios.get(`${URL}/api/controller/get/sulfirikAsitKullanim`);
   }
 
@@ -427,7 +690,7 @@ async getAllDesarjVerileri (){
   }
 
   // DEMIR UC KLORUR
-  async getAllDemirUcKlorurKullanim(){
+  async getAllDemirUcKlorurKullanim() {
     return await axios.get(`${URL}/api/controller/get/demirUcKlorurKullanim`);
   }
 
@@ -446,7 +709,7 @@ async getAllDesarjVerileri (){
   }
 
   // RENK GIDERICI
-  async getAllRenkGidericiKullanim(){
+  async getAllRenkGidericiKullanim() {
     return await axios.get(`${URL}/api/controller/get/renkGidericiKullanim`);
   }
 
@@ -463,4 +726,7 @@ async getAllDesarjVerileri (){
       });
     return aritma;
   }
+
+
+
 }

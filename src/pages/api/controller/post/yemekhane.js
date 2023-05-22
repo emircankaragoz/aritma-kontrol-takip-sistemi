@@ -34,7 +34,6 @@ export default async function handler(req, res) {
                                 
                 },
             });
-            console.log(data);
             res.status(201).json({ status: true, yemekhaneVeKullanmaSuyu: data });
         } catch (err) {
             if (err) return res.status(404).json(err);

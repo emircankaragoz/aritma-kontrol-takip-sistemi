@@ -13,7 +13,7 @@ export default function IcmeSuyuPageComponent({ session }) {
   const [sessionUser, setSessionUser] = useState(null);
   const [isDataEntered, setIsDataEntered] = useState(null);
 
-  const refresh = () => window.location.reload(true);
+
   const getToday = moment().startOf("day").format();
   const systemMessageService = new SystemMessageService();
 

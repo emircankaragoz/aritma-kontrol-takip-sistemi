@@ -2,10 +2,8 @@ import React, { useState } from "react";
 import { Layout } from "@/components";
 import { getSession } from "next-auth/react";
 import { Tabs, Tab } from "react-bootstrap";
-import IcmeSuyuKontrolFormu from "../../components/SuComponents/Forms/icmeSuyuComp";
-import IsletmeSuyuKontrolForm from "../../components/SuComponents/Forms/isletmeSuyuComp";
-import YemekhaneSuyuKontrolForm from "../../components/SuComponents/Forms/yemekhaneSuyuComp";
-import styles from "../../styles/Tab.module.css";
+import {IcmeSuyuKontrolForm,IsletmeSuyuKontrolForm,YemekhaneSuyuKontrolForm,WcSuyuKontrolForm} from '@/components' 
+
 
 
 export default function SuPage({ session }) {
@@ -44,15 +42,13 @@ export default function SuPage({ session }) {
           <p className="text-muted fw-semibold fs-5 text-center mt-4 pt-2">
             İçme Suyu Kontrol Formu
           </p>
-          <IcmeSuyuKontrolFormu session={session} />
+          <IcmeSuyuKontrolForm session={session} />
         </Tab>
         <Tab
           eventKey="yemekhaneKullanmaSuyuKontrolü"
           title="Yemekhane ve Kullanma Suyu Tesisi"
         >
-          <p className="text-muted fw-semibold fs-5 text-center mt-4 pt-2">
-            Yemekhane ve Kullanma Suyu Tesisi Kontrol Formu
-          </p>
+
           <Tabs
             activeKey={keySecond}
             onSelect={(k) => setKeySecond(k)}
@@ -69,7 +65,7 @@ export default function SuPage({ session }) {
               />
             </Tab>
             <Tab eventKey="WC 2.Tank" title="WC Kullanım Suyu 2. Tank">
-              <YemekhaneSuyuKontrolForm
+              <WcSuyuKontrolForm
                 session={session}
                 subCategory={keySecond}
               />

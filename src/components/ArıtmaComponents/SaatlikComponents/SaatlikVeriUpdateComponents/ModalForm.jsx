@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
 import { AritmaService } from "@/services"
-
+import moment from "moment/moment";
+import { useRouter } from "next/navigation";
 export default function ModalForm({ dataId }) {
 
     const [allDataById, setAllDataById] = useState({});
     const saatlikVeri = new AritmaService();
-
+    const getToday = moment().startOf("day").format();
+    const router = useRouter();
     async function getAllSaatlikVeriDataHandler() {
         if (dataId !== undefined && dataId !== null) {
             await saatlikVeri.getSaatlikVeriById(dataId)
@@ -50,6 +52,75 @@ export default function ModalForm({ dataId }) {
                     toast.success("Bilgiler başarıyla güncellendi", {
                         position: toast.POSITION.BOTTOM_RIGHT,
                     });
+                }
+            });
+        updateTransferDataToNotralizasyonHavuzuForm();
+        
+    }
+    async function updateTransferDataToNotralizasyonHavuzuForm() {
+        await saatlikVeri.getTransferValuesSatlikVeriEsToNotrHavuzu()
+            .then((result) => {
+                sendDataHandler(result);
+            });
+
+    }
+     
+    async function sendDataHandler(result) {
+        const today = {
+            today: `${getToday}`,
+        }
+        result = Object.assign(result, today);
+        console.log(result);
+        const options = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(result),
+        };
+        await fetch("/api/controller/post/updateTransferNotrHavuzu", options)
+            .then((res) => res.json())
+            .then((data) => {
+                if (data) {
+                    toast.success(
+                        "Veriler Nötralizasyon Havuzu formuna başarıyla gönderildi",
+                        {
+                            position: toast.POSITION.BOTTOM_RIGHT,
+                        }
+                    );
+                }
+            });
+        updateTransferDataToAerobikHavuzuForm();
+        
+
+
+
+    }
+    async function updateTransferDataToAerobikHavuzuForm() {
+        await saatlikVeri.getTransferValuesSatlikVeriEsToAerobikHavuzu()
+            .then((result) => {
+                sendDataHandlerSecond(result);
+            });
+
+    }
+    async function sendDataHandlerSecond(result) {
+        const today = {
+            today: `${getToday}`,
+        }
+        result = Object.assign(result, today);
+        const options = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(result),
+        };
+        await fetch("/api/controller/post/updateTransferAerobikHavuzu", options)
+            .then((res) => res.json())
+            .then((data) => {
+                if (data) {
+                    toast.success(
+                        "Veriler Aerobik Havuzu formuna başarıyla gönderildi",
+                        {
+                            position: toast.POSITION.BOTTOM_RIGHT,
+                        }
+                    );
                 }
             });
     }

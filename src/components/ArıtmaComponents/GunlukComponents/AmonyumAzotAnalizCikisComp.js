@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { AuthFormCSS } from "@/styles";
 import { toast } from "react-toastify";
-import { AritmaService, UserService } from "@/services"
+import { AritmaService, UserService, SystemMessageService } from "@/services"
 import moment from "moment/moment";
 import { useRouter } from "next/navigation";
 import { RiDeleteBin5Line } from "react-icons/ri";
-export default function AmontumAzotuAnalizCikisComponent({ session, subCategory }) {
+import { AmonyumAzotuAnalizCikisUpdateModal } from "@/components";
+import { SYSTEM_MESSAGES } from "../../../../environment";
+export default function AmonyumAzotuAnalizCikisComponent({ session, subCategory }) {
     const [allData, setAllData] = useState([]);
     const [sessionUser, setSessionUser] = useState(null);
     const [isDataEntered, setIsDataEntered] = useState(false);
@@ -21,6 +23,7 @@ export default function AmontumAzotuAnalizCikisComponent({ session, subCategory 
     });
     const aritmaService = new AritmaService();
     const userService = new UserService();
+    const systemMessageService = new SystemMessageService();
     const employee_id = session.user.employeeId;
 
     async function getAllAmonyumAzotuAnalizCikisDataHandler() {
@@ -40,17 +43,30 @@ export default function AmontumAzotuAnalizCikisComponent({ session, subCategory 
     // veri girildi mi kontrolü yapılır.
     async function isDatasEntered(datas) {
         const result = datas.find(
-          (item) =>
-            moment(item.dateAndTime).format("YYYY-MM-DD") ===
-              moment(getToday).format("YYYY-MM-DD")
-           
+            (item) =>
+                moment(item.dateAndTime).format("YYYY-MM-DD") ===
+                moment(getToday).format("YYYY-MM-DD")
+
         );
         if (result) {
-          setIsDataEntered(true);
+            setIsDataEntered(true);
+            deleteSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
         } else {
-          setIsDataEntered(false);
+            setIsDataEntered(false);
+            createdSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
         }
-      }
+    }
+    async function deleteSystemMessageHandler(date) {
+        await systemMessageService.deleteSystemMessage(SYSTEM_MESSAGES.A4.code, date);
+    }
+    async function createdSystemMessageHandler(date) {
+        await systemMessageService.addSystemMessage(
+            SYSTEM_MESSAGES.A4.content,
+            SYSTEM_MESSAGES.A4.title,
+            SYSTEM_MESSAGES.A4.code,
+            date
+        );
+    }
     useEffect(() => {
         getAllAmonyumAzotuAnalizCikisDataHandler();
         getSessionUserHandler();
@@ -67,7 +83,7 @@ export default function AmontumAzotuAnalizCikisComponent({ session, subCategory 
             subcategory: `${subCategory}`,
         };
         values = Object.assign(values, employeeId, today, subcategory);
-        
+
         const options = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -82,8 +98,36 @@ export default function AmontumAzotuAnalizCikisComponent({ session, subCategory 
                     });
                 }
             });
-            router.refresh();
-            resetForm();
+        updateTransferDataToDesarj();
+    }
+    async function updateTransferDataToDesarj() {
+        const date = moment(getToday).format("YYYY-MM-DD");
+        await aritmaService.getValuesCikisToDesarj(date)
+            .then((result) => {
+                sendDataHandler(result);
+            });
+
+    }
+    async function sendDataHandler(result) {
+        const employeeId = {
+            employeeId: `${employee_id}`,
+        };
+        const today = {
+            today: `${getToday}`,
+        }
+        result = Object.assign(result, employeeId, today);
+        const options = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(result),
+        };
+        await fetch("/api/controller/post/updateTransferDesarjAmonyumAzot", options)
+            .then((res) => res.json())
+            .then((data) => {
+                if (data) {
+                }
+            });
+        router.refresh();
 
 
     }
@@ -132,7 +176,7 @@ export default function AmontumAzotuAnalizCikisComponent({ session, subCategory 
                         <p className="text-danger">Günlük veri girişi gerçekleşmedi!</p>
                     )}
                 </div>
-                
+
                 <section>
                     <form onSubmit={formik.handleSubmit} className="d-flex flex-column gap-3 ">
                         <div className={AuthFormCSS.input_group}>
@@ -186,7 +230,7 @@ export default function AmontumAzotuAnalizCikisComponent({ session, subCategory 
                                         <td>@{data.createdBy.employeeId}</td>
                                         <td>{subCategory}</td>
                                         <td>{parseFloat(data.veriGirisiAbzorbans).toFixed(2)}</td>
-                                        <td>{parseFloat(data.seyreltme).toFixed(1)}</td>
+                                        <td>{parseFloat(data.seyreltme).toFixed(2)}</td>
                                         <td>{parseFloat(data.sonuc).toFixed(2)}</td>
                                         {sessionUser.role.roleName === "admin" ? (
                                             <td>
@@ -198,6 +242,9 @@ export default function AmontumAzotuAnalizCikisComponent({ session, subCategory 
                                                     >
                                                         <RiDeleteBin5Line />
                                                     </span>
+                                                </span>
+                                                <span>
+                                                    <AmonyumAzotuAnalizCikisUpdateModal dataId={data.id} />
                                                 </span>
 
 

@@ -6,8 +6,8 @@ export default async function handler(req, res) {
         if (!req.body) return res.status(404).json({ error: "Do not have data" });
         try {
             const {veriGirisiAbzorbans,employeeId,today} = req.body;
-            const seyreltme = parseFloat(((veriGirisiAbzorbans + 0.0726) / 0.9175) * 0.777).toFixed(1);
-            const sonuc = parseFloat(seyreltme).toFixed(2);
+            const seyreltme = ((veriGirisiAbzorbans + 0.0726) / 0.9175) * 0.777
+            const sonuc =seyreltme;
  
             const data = await prisma.amonyumAzotuAnalizCikis.create({
                 data: {

@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
 import { AritmaService } from "@/services"
-
+import { useRouter } from "next/navigation";
 export default function ModalForm({ dataId }) {
 
     const [allDataById, setAllDataById] = useState({});
     const tduService = new AritmaService();
-
+    const router = useRouter();
     async function getAllTduDataHandler() {
         if (dataId !== undefined && dataId !== null) {
             await tduService.getTduById(dataId)
@@ -53,6 +53,7 @@ export default function ModalForm({ dataId }) {
                     });
                 }
             });
+            router.refresh();
     }
 
 

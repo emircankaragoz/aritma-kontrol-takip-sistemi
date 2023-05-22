@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { AuthFormCSS } from "@/styles";
 import { toast } from "react-toastify";
-import { AritmaService, UserService } from "@/services"
+import { AritmaService, UserService, SystemMessageService } from "@/services"
 import moment from "moment/moment";
 import { useRouter } from "next/navigation";
 import { RiDeleteBin5Line } from "react-icons/ri";
-export default function AmontumAzotuAnalizDengelemeComponent({ session, subCategory }) {
+import { AmonyumAzotuAnalizDengelemeUpdateModal } from "@/components"
+import { SYSTEM_MESSAGES } from "../../../../environment";
+export default function AmonyumAzotuAnalizDengelemeComponent({ session, subCategory }) {
     const [allData, setAllData] = useState([]);
     const [sessionUser, setSessionUser] = useState(null);
     const [isDataEntered, setIsDataEntered] = useState(false);
@@ -21,6 +23,7 @@ export default function AmontumAzotuAnalizDengelemeComponent({ session, subCateg
     });
     const aritmaService = new AritmaService();
     const userService = new UserService();
+    const systemMessageService = new SystemMessageService();
     const employee_id = session.user.employeeId;
 
     async function getAllAmonyumAzotuAnalizDengelemeDataHandler() {
@@ -40,17 +43,30 @@ export default function AmontumAzotuAnalizDengelemeComponent({ session, subCateg
     // veri girildi mi kontrolü yapılır.
     async function isDatasEntered(datas) {
         const result = datas.find(
-          (item) =>
-            moment(item.dateAndTime).format("YYYY-MM-DD") ===
-              moment(getToday).format("YYYY-MM-DD")
-           
+            (item) =>
+                moment(item.dateAndTime).format("YYYY-MM-DD") ===
+                moment(getToday).format("YYYY-MM-DD")
+
         );
         if (result) {
-          setIsDataEntered(true);
+            setIsDataEntered(true);
+            deleteSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
         } else {
-          setIsDataEntered(false);
+            setIsDataEntered(false);
+            createdSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
         }
-      }
+    }
+    async function deleteSystemMessageHandler(date) {
+        await systemMessageService.deleteSystemMessage(SYSTEM_MESSAGES.A5.code, date);
+    }
+    async function createdSystemMessageHandler(date) {
+        await systemMessageService.addSystemMessage(
+            SYSTEM_MESSAGES.A5.content,
+            SYSTEM_MESSAGES.A5.title,
+            SYSTEM_MESSAGES.A5.code,
+            date
+        );
+    }
     useEffect(() => {
         getAllAmonyumAzotuAnalizDengelemeDataHandler();
         getSessionUserHandler();
@@ -67,7 +83,7 @@ export default function AmontumAzotuAnalizDengelemeComponent({ session, subCateg
             subcategory: `${subCategory}`,
         };
         values = Object.assign(values, employeeId, today, subcategory);
-        
+
         const options = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -82,13 +98,81 @@ export default function AmontumAzotuAnalizDengelemeComponent({ session, subCateg
                     });
                 }
             });
-            router.refresh();
-            resetForm();
-        
+        updateTransferDataToDengelemeHavuzu();
+    }
+    async function updateTransferDataToDengelemeHavuzu() {
+        const date = moment(getToday).format("YYYY-MM-DD");
+        await aritmaService.getValuesCikisToDesarj(date)
+            .then((result) => {
+                sendDataHandler(result);
+            });
+
+    }
+    async function sendDataHandler(result) {
+        const today = {
+            today: `${getToday}`,
+        }
+        result = Object.assign(result, today);
+        const options = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(result),
+        };
+        await fetch("/api/controller/post/updateTransferDesarjAmonyumAzot", options)
+            .then((res) => res.json())
+            .then((data) => {
+                if (data) {
+                    toast.success(
+                        "Veriler başarıyla güncellendi.",
+                        {
+                            position: toast.POSITION.BOTTOM_RIGHT,
+                        }
+                    );
+                }
+            });
+
+        updateTransferAmonyumAzotAnalizToDengelemeHavuzu();
+
 
 
     }
-    
+    async function updateTransferAmonyumAzotAnalizToDengelemeHavuzu() {
+        const date = moment(getToday).format("YYYY-MM-DD");
+        await aritmaService.getValuesAmonyumAzotToDengelemeHavuzu(date)
+            .then((result) => {
+                sendDataHandlerSecond(result);
+            });
+
+    }
+    async function sendDataHandlerSecond(result) {
+        const today = {
+            today: `${getToday}`,
+        }
+        result = Object.assign(result, today);
+        const options = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(result),
+        };
+        await fetch("/api/controller/post/updateTransferDengelemeHavuzu", options)
+            .then((res) => res.json())
+            .then((data) => {
+                if (data) {
+                    toast.success(
+                        "Veriler başarıyla güncellendi.",
+                        {
+                            position: toast.POSITION.BOTTOM_RIGHT,
+                        }
+                    );
+                }
+            });
+
+        router.refresh();
+
+
+
+    }
+
 
     async function deleteAmonyumAzotuAnalizVerileri(id) {
         const dataId = {
@@ -135,7 +219,7 @@ export default function AmontumAzotuAnalizDengelemeComponent({ session, subCateg
                         <p className="text-danger">Günlük veri girişi gerçekleşmedi!</p>
                     )}
                 </div>
-               
+
                 <section>
                     <form onSubmit={formik.handleSubmit} className="d-flex flex-column gap-3 ">
                         <div className={AuthFormCSS.input_group}>
@@ -201,6 +285,9 @@ export default function AmontumAzotuAnalizDengelemeComponent({ session, subCateg
                                                     >
                                                         <RiDeleteBin5Line />
                                                     </span>
+                                                </span>
+                                                <span>
+                                                    < AmonyumAzotuAnalizDengelemeUpdateModal dataId={data.id} />
                                                 </span>
 
 

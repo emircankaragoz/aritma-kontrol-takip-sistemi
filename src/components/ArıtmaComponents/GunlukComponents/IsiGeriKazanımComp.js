@@ -2,18 +2,21 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { AuthFormCSS } from "@/styles";
 import { toast } from "react-toastify";
-import { AritmaService, UserService } from "@/services"
+import { AritmaService, UserService, SystemMessageService } from "@/services"
 import moment from "moment/moment";
 import { useRouter } from "next/navigation";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { IsiGeriKazanimUpdateModal } from "@/components";
-export default function IsiGeriKazanımComponent({ session, subCategory }) {
+import { SYSTEM_MESSAGES } from "../../../../environment";
+
+export default function IsiGeriKazanımComponent({ session }) {
     const [allData, setAllData] = useState([]);
+    const [totalKimyasalMiktari, setTotalKimyasalMiktari] = useState(0);
     const [sessionUser, setSessionUser] = useState(null);
     const [isDataEntered, setIsDataEntered] = useState(false);
     const getToday = moment().startOf("day").format();
     const router = useRouter();
-
+    console.log(getToday);
     const formik = useFormik({
         initialValues: {
             esansorPompasiAmperSaat12: "",
@@ -32,6 +35,7 @@ export default function IsiGeriKazanımComponent({ session, subCategory }) {
     const aritmaService = new AritmaService();
     const userService = new UserService();
     const employee_id = session.user.employeeId;
+    const systemMessageService = new SystemMessageService();
 
     async function getAllIsiGeriKazanimDataHandler() {
         await aritmaService.getAllIsiGeriKazanimVerileri().then((result) => {
@@ -57,15 +61,29 @@ export default function IsiGeriKazanımComponent({ session, subCategory }) {
         );
         if (result) {
             setIsDataEntered(true);
+            deleteSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
         } else {
             setIsDataEntered(false);
+            createdSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
         }
+    }
+    async function deleteSystemMessageHandler(date) {
+        await systemMessageService.deleteSystemMessage(SYSTEM_MESSAGES.A14.code, date);
+    }
+
+    async function createdSystemMessageHandler(date) {
+        await systemMessageService.addSystemMessage(
+            SYSTEM_MESSAGES.A14.content,
+            SYSTEM_MESSAGES.A14.title,
+            SYSTEM_MESSAGES.A14.code,
+            date
+        );
     }
     useEffect(() => {
         getAllIsiGeriKazanimDataHandler();
         getSessionUserHandler();
-
     }, []);
+
     async function onSubmit(values, { resetForm }) {
         const employeeId = {
             employeeId: `${employee_id}`,
@@ -89,8 +107,8 @@ export default function IsiGeriKazanımComponent({ session, subCategory }) {
                     });
                 }
             });
-        //router.refresh();
-        //resetForm();
+        router.refresh();
+        resetForm();
 
 
     }
@@ -256,12 +274,12 @@ export default function IsiGeriKazanımComponent({ session, subCategory }) {
                                     <th scope="col">Sr. No.</th>
                                     <th scope="col">Tarih</th>
                                     <th scope="col">Çalışan ID</th>
-                                    <th scope="col">Esansor Pompasi Amper<br/> Saat 12:00</th>
-                                    <th scope="col">Esansor Pompasi Amper <br/>Saat 12:20</th>
-                                    <th scope="col">Asit Tanki pH<br/> Saat 12:00</th>
-                                    <th scope="col">Esansor Pompasi Amper<br/> Saat 02:00</th>
-                                    <th scope="col">Esansor Pompasi Amper<br/> Saat 02:20</th>
-                                    <th scope="col">Asit Tanki pH<br/> Saat 02:00</th>
+                                    <th scope="col">Esansor Pompasi Amper<br /> Saat 12:00</th>
+                                    <th scope="col">Esansor Pompasi Amper <br />Saat 12:20</th>
+                                    <th scope="col">Asit Tanki pH<br /> Saat 12:00</th>
+                                    <th scope="col">Esansor Pompasi Amper<br /> Saat 02:00</th>
+                                    <th scope="col">Esansor Pompasi Amper<br /> Saat 02:20</th>
+                                    <th scope="col">Asit Tanki pH<br /> Saat 02:00</th>
                                     <th scope="col">Kimyasal Miktari</th>
                                     <th scope="col">15 KW POM</th>
                                     <th scope="col">18 KW POM</th>
@@ -286,6 +304,7 @@ export default function IsiGeriKazanımComponent({ session, subCategory }) {
                                         <td>{parseFloat(data.kw_pom_15).toFixed(2)}</td>
                                         <td>{parseFloat(data.kw_pom_18).toFixed(2)}</td>
                                         <td>{data.aciklama}</td>
+
                                         {sessionUser.role.roleName === "admin" ? (
                                             <td>
                                                 <span className="me-2">

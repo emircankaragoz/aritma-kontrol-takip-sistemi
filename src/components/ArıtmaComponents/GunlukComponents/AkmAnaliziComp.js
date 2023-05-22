@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { AuthFormCSS } from "@/styles";
 import { toast } from "react-toastify";
-import { AritmaService, UserService } from "@/services"
+import { AritmaService, UserService,SystemMessageService } from "@/services"
 import moment from "moment/moment";
 import { useRouter } from "next/navigation";
 import { RiDeleteBin5Line } from "react-icons/ri";
-import { FiltrepresUpdateModal } from "@/components";
+import AkmAnaliziUpdateModal from "./UpdateComponents/AkmAnaliziUpdateModal";
+import { SYSTEM_MESSAGES } from "../../../../environment";
 
-export default function FiltrepresComponent({ session }) {
+export default function AkmAnaliziComponent({ session }) {
     const [allData, setAllData] = useState([]);
     const [sessionUser, setSessionUser] = useState(null);
     const [isDataEntered, setIsDataEntered] = useState(false);
@@ -17,17 +18,20 @@ export default function FiltrepresComponent({ session }) {
 
     const formik = useFormik({
         initialValues: {
-            camurKekiNem: "",
-            filtrepresSarjSayisi: "",
+            numuneninAlindigiYer: "",
+            filtreEdilenHacim: "",
+            filtreKagidiAgirligi: "",
+            filtreKagidiVeNumuneninAgirligi: ""
         },
         onSubmit,
     });
     const aritmaService = new AritmaService();
     const userService = new UserService();
     const employee_id = session.user.employeeId;
+    const systemMessageService = new SystemMessageService();
 
-    async function getAllFiltrepresDataHandler() {
-        await aritmaService.getAllFiltrepresVerileri().then((result) => {
+    async function getAllAkmAnalizDataHandler() {
+        await aritmaService.getAllAkmAnaliz().then((result) => {
             setAllData(result.data);
             isDatasEntered(result.data);
         });
@@ -50,16 +54,30 @@ export default function FiltrepresComponent({ session }) {
         );
         if (result) {
             setIsDataEntered(true);
+            deleteSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
         } else {
             setIsDataEntered(false);
+            createdSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
         }
     }
+    async function deleteSystemMessageHandler(date) {
+        await systemMessageService.deleteSystemMessage(SYSTEM_MESSAGES.A1.code, date);
+    }
+
+    async function createdSystemMessageHandler(date) {
+        await systemMessageService.addSystemMessage(
+            SYSTEM_MESSAGES.A1.content,
+            SYSTEM_MESSAGES.A1.title,
+            SYSTEM_MESSAGES.A1.code,
+            date
+        );
+    }
     useEffect(() => {
-        getAllFiltrepresDataHandler();
+        getAllAkmAnalizDataHandler();
         getSessionUserHandler();
 
     }, []);
-    async function onSubmit(values,{resetForm}) {
+    async function onSubmit(values) {
         const employeeId = {
             employeeId: `${employee_id}`,
         };
@@ -73,7 +91,7 @@ export default function FiltrepresComponent({ session }) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(values),
         };
-        await fetch("/api/controller/post/addFiltrepres", options)
+        await fetch("/api/controller/post/addAkmAnalizi", options)
             .then((res) => res.json())
             .then((data) => {
                 if (data) {
@@ -82,11 +100,9 @@ export default function FiltrepresComponent({ session }) {
                     });
                 }
             });
-            router.refresh();
-        resetForm();
-
+        router.refresh();
     }
-    async function deleteFiltrepresVerileri(id) {
+    async function deleteAkmAnalizVerileri(id) {
         const dataId = {
             dataId: `${id}`,
         };
@@ -96,7 +112,7 @@ export default function FiltrepresComponent({ session }) {
             body: JSON.stringify(dataId),
         };
 
-        await fetch("/api/controller/post/deleteFiltrepres", options)
+        await fetch("/api/controller/post/deleteAkmAnalizi", options)
             .then((res) => res.json())
             .then((data) => {
                 if (data) {
@@ -107,19 +123,15 @@ export default function FiltrepresComponent({ session }) {
             });
 
         router.refresh();
-
-
     }
     if (sessionUser === null) {
         return <div className="text-center">Yükleniyor...</div>;
     }
-
-
     return (
         <div className="container p-2">
             <div className="d-flex  flex-column mx-auto w-50">
                 <p className="text-muted text-center fs-5 fw-bolder pb-3 mt-3">
-                    FİLTREPRES ANALİZ FORMU
+                    AKM ANALİZİ KAYIT FORMU
                 </p>
                 <span className="text-center text-muted">
                     {moment().format("DD/MM/YYYY")}
@@ -131,25 +143,41 @@ export default function FiltrepresComponent({ session }) {
                         <p className="text-danger">Günlük veri girişi gerçekleşmedi!</p>
                     )}
                 </div>
-
                 <section>
                     <form onSubmit={formik.handleSubmit} className="d-flex flex-column gap-3 ">
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
-                                type="number"
-                                step="0.01"
-                                name="camurKekiNem"
-                                placeholder="camurKekiNem"
-                                {...formik.getFieldProps("camurKekiNem")}
+                                type="text"
+                                name="numuneninAlindigiYer"
+                                placeholder="numuneninAlindigiYer"
+                                {...formik.getFieldProps("numuneninAlindigiYer")}
                             />
                         </div>
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
                                 type="number"
                                 step="0.01"
-                                name="filtrepresSarjSayisi"
-                                placeholder="filtrepresSarjSayisi"
-                                {...formik.getFieldProps("filtrepresSarjSayisi")}
+                                name="filtreEdilenHacim"
+                                placeholder="filtreEdilenHacim"
+                                {...formik.getFieldProps("filtreEdilenHacim")}
+                            />
+                        </div>
+                        <div className={AuthFormCSS.input_group}>
+                            <input className="form-control"
+                                type="number"
+                                step="0.01"
+                                name="filtreKagidiAgirligi"
+                                placeholder="filtreKagidiAgirligi"
+                                {...formik.getFieldProps("filtreKagidiAgirligi")}
+                            />
+                        </div>
+                        <div className={AuthFormCSS.input_group}>
+                            <input className="form-control"
+                                type="number"
+                                step="0.01"
+                                name="filtreKagidiVeNumuneninAgirligi"
+                                placeholder="filtreKagidiVeNumuneninAgirligi"
+                                {...formik.getFieldProps("filtreKagidiVeNumuneninAgirligi")}
                             />
                         </div>
                         <div className="input-button mx-auto">
@@ -167,7 +195,7 @@ export default function FiltrepresComponent({ session }) {
             <hr />
             <section>
                 <p className="text-muted text-center fs-5 fw-bolder pb-3">
-                    FİLTREPRES ANALİZ VERİLERİ
+                    AKM ANALİZ VERİLERİ
                 </p>
 
                 <div className="row">
@@ -178,8 +206,12 @@ export default function FiltrepresComponent({ session }) {
                                     <th scope="col">Sr. No.</th>
                                     <th scope="col">Tarih</th>
                                     <th scope="col">Çalışan ID</th>
-                                    <th scope="col">camurKekiNem</th>
-                                    <th scope="col">filtrepresSarjSayisi</th>
+                                    <th scope="col">numuneninAlindigiYer</th>
+                                    <th scope="col">filtreEdilenHacim</th>
+                                    <th scope="col">filtreKagidiAgirligi</th>
+                                    <th scope="col">filtreKagidiVeNumuneninAgirligi</th>
+                                    <th scope="col">kuruKatilarinNetAgirligi</th>
+                                    <th scope="col">akm</th>
                                     <th scope="col">.</th>
 
                                 </tr>
@@ -190,21 +222,28 @@ export default function FiltrepresComponent({ session }) {
                                         <th scope="row">{index + 1}</th>
                                         <td>{moment(data.dateAndTime).format("DD/MM/YY")}</td>
                                         <td>@{data.createdBy.employeeId}</td>
-                                        <td>{parseFloat(data.camurKekiNem).toFixed(2)}</td>
-                                        <td>{parseFloat(data.filtrepresSarjSayisi).toFixed(2)}</td>
+                                        <td>{data.numuneninAlindigiYer}</td>
+                                        <td>{parseFloat(data.filtreEdilenHacim).toFixed(2)}</td>
+                                        <td>{parseFloat(data.filtreKagidiAgirligi).toFixed(2)}</td>
+                                        <td>{parseFloat(data.filtreKagidiVeNumuneninAgirligi).toFixed(2)}</td>
+                                        <td>{parseFloat(data.kuruKatilarinNetAgirligi).toFixed(2)}</td>
+                                        <td>{parseFloat(data.AKM).toFixed(2)}</td>
+
                                         {sessionUser.role.roleName === "admin" ? (
                                             <td>
                                                 <span className="me-2">
                                                     <span
                                                         className="fs-4"
                                                         style={{ cursor: "pointer" }}
-                                                        onClick={() => deleteFiltrepresVerileri(data.id)}
+                                                        onClick={() => deleteAkmAnalizVerileri(data.id)}
                                                     >
                                                         <RiDeleteBin5Line />
                                                     </span>
                                                 </span>
-                                                <span>
-                                                    <FiltrepresUpdateModal  dataId={data.id}/>
+                                                <span className="ms-2">
+                                                    <AkmAnaliziUpdateModal
+                                                        formIdToBeUpdated={data.id}
+                                                    />
                                                 </span>
 
 

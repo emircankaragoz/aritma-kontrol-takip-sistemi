@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 import { getSession } from "next-auth/react";
 import { Tab, Tabs, Nav } from "react-bootstrap";
-import { AtiksuAritmaGirisCikisFormu, CamurYogunlastirmaFormu, FiltrepresKimyasalCamurFormu, RenkGidericiKimyasalGirdiKontroluFormu, AmonyumAzotuAnalizDengelemeFormu, AmonyumAzotuAnalizCikisFormu, AmonyumAzotuAnalizBiyolojikFormu, DengelemeHavuzuFormu, IsiGeriKazanimFormu, Layout, AnaerobikHavuzuFormu, GeriDevirHaznesiFormu, BiyolojikCokeltimHavuzuFormu, FiltrepresFormu,Desarj } from '@/components'
+import { AtiksuAritmaGirisCikisFormu, CamurYogunlastirmaFormu, FiltrepresKimyasalCamurFormu, RenkGidericiKimyasalGirdiKontroluFormu, AmonyumAzotuAnalizDengelemeFormu, AmonyumAzotuAnalizCikisFormu, AmonyumAzotuAnalizBiyolojikFormu, DengelemeHavuzuFormu, IsiGeriKazanimFormu, Layout, AnaerobikHavuzuFormu, GeriDevirHaznesiFormu, BiyolojikCokeltimHavuzuFormu, FiltrepresFormu, DesarjFormu,NotralizasyonHavuzuFormu,AerobikHavuzuFormu,AkmAnaliziFormu } from '@/components'
 
 
 export default function GunlukPage({ session }) {
-  const [key, setKey] = useState("home");
   const [keySecond, setKeySecond] = useState('Dengeleme');
   return (
     <>
@@ -13,6 +12,31 @@ export default function GunlukPage({ session }) {
         <h2 className="mb-4 fw-bold text-center">Günlük Formlar</h2>
         <Tabs id="controlled-tab-example"
           className="mb-3 justify-content-center">
+          {/* <Tab eventKey="takip" title="Takip Formu">
+            <Tab.Container id="left-tabs-example" defaultActiveKey="first">
+              <Nav variant="pills" className="d-flex justify-content-center">
+                <Nav.Item>
+                  <Nav.Link eventKey="first" className="text-center">
+                    ÇAMUR YOĞUNLAŞTIRMA 
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="second" className="text-center">
+                   NÖTRALİZASYON HAVUZU
+                  </Nav.Link>
+                </Nav.Item>
+              </Nav>
+              <Tab.Content className="mt-4">
+                <Tab.Pane eventKey="first">
+                <CamurYogunlastirmaFormu session={session} />
+                </Tab.Pane>
+                <Tab.Pane eventKey="second">
+                  <NotralizasyonHavuzuFormu session={session} />
+                </Tab.Pane>
+              </Tab.Content>
+            </Tab.Container>
+
+          </Tab> */}
           <Tab eventKey="kayıt" title="Kayıt Formu">
             <Tab.Container id="left-tabs-example" defaultActiveKey="first">
               <Nav variant="pills" className="d-flex justify-content-center">
@@ -26,13 +50,21 @@ export default function GunlukPage({ session }) {
                     ISI GERİ KAZANIM PH VE AMPER
                   </Nav.Link>
                 </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="third" className="text-center">
+                  AKM ANALİZİ KAYIT FORMU
+                  </Nav.Link>
+                </Nav.Item>
               </Nav>
               <Tab.Content className="mt-4">
                 <Tab.Pane eventKey="first">
-                  <AtiksuAritmaGirisCikisFormu session={session} />
+                  {/* <AtiksuAritmaGirisCikisFormu session={session} /> */}
                 </Tab.Pane>
                 <Tab.Pane eventKey="second">
                   <IsiGeriKazanimFormu session={session} />
+                </Tab.Pane>
+                 <Tab.Pane eventKey="third">
+                  {/* <AkmAnaliziFormu session={session} /> */}
                 </Tab.Pane>
               </Tab.Content>
             </Tab.Container>
@@ -54,6 +86,11 @@ export default function GunlukPage({ session }) {
                 <Nav.Item>
                   <Nav.Link eventKey="anaerobik" className="text-center">
                     ANAEROBİK HAVUZU
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="aerobik" className="text-center">
+                    AEROBİK HAVUZU
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
@@ -85,12 +122,12 @@ export default function GunlukPage({ session }) {
                     <Nav variant="pills" className="d-flex justify-content-center">
                       <Nav.Item>
                         <Nav.Link eventKey="dengeleme" className="text-center">
-                           Dengeleme 
+                          Dengeleme
                         </Nav.Link>
                       </Nav.Item>
                       <Nav.Item>
                         <Nav.Link eventKey="cikis" className="text-center">
-                           Cikis 
+                          Cikis
                         </Nav.Link>
                       </Nav.Item>
                       <Nav.Item>
@@ -102,41 +139,41 @@ export default function GunlukPage({ session }) {
                     </Nav>
                     <Tab.Content className="mt-4">
                       <Tab.Pane eventKey="dengeleme">
-                        <AmonyumAzotuAnalizDengelemeFormu session={session} subCategory={keySecond} />
+                        {/* <AmonyumAzotuAnalizDengelemeFormu session={session} subCategory={keySecond} /> */}
                       </Tab.Pane>
                       <Tab.Pane eventKey="cikis">
-                        <AmonyumAzotuAnalizCikisFormu session={session} subCategory={keySecond} />
+                        {/* <AmonyumAzotuAnalizCikisFormu session={session} subCategory={keySecond} /> */}
                       </Tab.Pane>
                       <Tab.Pane eventKey="biyolojik">
-                        <AmonyumAzotuAnalizBiyolojikFormu session={session} subCategory={keySecond} />
+                        {/* <AmonyumAzotuAnalizBiyolojikFormu session={session} subCategory={keySecond} /> */}
                       </Tab.Pane>
                     </Tab.Content>
                   </Tab.Container>
                 </Tab.Pane>
                 <Tab.Pane eventKey="dengeleme">
-                  <DengelemeHavuzuFormu session={session} />
+                  {/* <DengelemeHavuzuFormu session={session} /> */}
                 </Tab.Pane>
                 <Tab.Pane eventKey="anaerobik">
-                  <AnaerobikHavuzuFormu session={session} />
+                  {/* <AnaerobikHavuzuFormu session={session} /> */}
+                </Tab.Pane>
+                <Tab.Pane eventKey="aerobik">
+                  {/* <AerobikHavuzuFormu session={session} /> */}
                 </Tab.Pane>
                 <Tab.Pane eventKey="geridevir">
-                  <GeriDevirHaznesiFormu session={session} />
+                  {/* <GeriDevirHaznesiFormu session={session} /> */}
                 </Tab.Pane>
                 <Tab.Pane eventKey="biyolojik">
-                  <BiyolojikCokeltimHavuzuFormu session={session} />
+                  {/* <BiyolojikCokeltimHavuzuFormu session={session} /> */}
                 </Tab.Pane>
                 <Tab.Pane eventKey="filtrepres">
-                  <FiltrepresFormu session={session} />
+                  {/* <FiltrepresFormu session={session} /> */}
                 </Tab.Pane>
-                {/* <Tab.Pane eventKey="desarj">
-                  <Desarj session={session} />
-                </Tab.Pane> */}
+                <Tab.Pane eventKey="desarj">
+                  {/* <DesarjFormu session={session} /> */}
+                </Tab.Pane>
               </Tab.Content>
             </Tab.Container>
 
-          </Tab>
-          <Tab eventKey="takip" title="Takip Formu">
-            <CamurYogunlastirmaFormu session={session} />
           </Tab>
           <Tab eventKey="kontrol" title="Kontrol Formu">
             <Tab.Container id="left-tabs-example" defaultActiveKey="first">
@@ -154,10 +191,10 @@ export default function GunlukPage({ session }) {
               </Nav>
               <Tab.Content className="mt-4">
                 <Tab.Pane eventKey="first">
-                  <FiltrepresKimyasalCamurFormu session={session} />
+                  {/* <FiltrepresKimyasalCamurFormu session={session} /> */}
                 </Tab.Pane>
                 <Tab.Pane eventKey="second">
-                  <RenkGidericiKimyasalGirdiKontroluFormu session={session} />
+                  {/* <RenkGidericiKimyasalGirdiKontroluFormu session={session} /> */}
                 </Tab.Pane>
               </Tab.Content>
             </Tab.Container>

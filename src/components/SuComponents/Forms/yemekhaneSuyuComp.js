@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
-import { SuService, UserService } from "@/services"
+import { SuService, UserService, SystemMessageService } from "@/services"
 import { YemekhaneUpdateModal } from "@/components";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { yemekhane_validate } from "lib/validate";
 import { AuthFormCSS } from "@/styles";
+import { useRouter } from "next/navigation";
 import moment from "moment/moment";
-
+import { SYSTEM_MESSAGES } from "../../../../environment";
 export default function YemekhaneSuyuPageComp({ session, subCategory }) {
   const [allData, setAllData] = useState([]);
   const [sessionUser, setSessionUser] = useState(null);
-  const refresh = () => window.location.reload(true);
+  const [isDataEntered, setIsDataEntered] = useState(false);
+  const getToday = moment().startOf("day").format();
+  const router = useRouter();
+
   const formik = useFormik({
     initialValues: {
       klorCozeltisiDozaji: "",
@@ -29,16 +33,47 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
   const yemekhaneSuyuService = new SuService();
   const userService = new UserService();
   const employee_id = session.user.employeeId;
+  const systemMessageService = new SystemMessageService();
+
   async function getAllYemekhaneSuyuDataHandler() {
-    await yemekhaneSuyuService.getAllYemekhaneSuyu().then((result) => setAllData(result.data));
+    await yemekhaneSuyuService.getAllYemekhaneSuyu().then((result) => {
+      setAllData(result.data);
+      isDatasEntered(result.data);
+    });
   }
-  
+
   async function getSessionUserHandler() {
     if (session) {
       await userService
         .getSessionUser(employee_id)
         .then((result) => setSessionUser(result));
     }
+  }
+  async function isDatasEntered(datas) {
+    const result = datas.find(
+      (item) =>
+        moment(item.dateAndTime).format("YYYY-MM-DD") ===
+        moment(getToday).format("YYYY-MM-DD")
+
+    );
+    if (result) {
+      setIsDataEntered(true);
+      deleteSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
+    } else {
+      setIsDataEntered(false);
+      createdSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
+    }
+  }
+  async function deleteSystemMessageHandler(date) {
+    await systemMessageService.deleteSystemMessage(SYSTEM_MESSAGES.S3.code, date);
+  }
+  async function createdSystemMessageHandler(date) {
+    await systemMessageService.addSystemMessage(
+      SYSTEM_MESSAGES.S3.content,
+      SYSTEM_MESSAGES.S3.title,
+      SYSTEM_MESSAGES.S3.code,
+      date
+    );
   }
   useEffect(() => {
     getSessionUserHandler();
@@ -69,7 +104,7 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
           });
         }
       });
-    resetForm();
+      router.refresh();
   }
 
   async function deleteYemekhane(id) {
@@ -91,6 +126,7 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
           });
         }
       });
+      router.refresh();
   }
   if (sessionUser === null) {
     return <div className="text-center">Yükleniyor...</div>;
@@ -101,9 +137,19 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
 
     <div className="container p-2">
       <div className="d-flex flex-column  mx-auto w-50">
-        <span className="text-center text-muted mb-3">
-          {moment().format("DD/MM/YYYY")}
-        </span>
+      <p className="text-muted text-center fs-5 fw-bolder pb-3 mt-3">
+                    YEMEKHANE SUYU KONTROL FORMU
+                </p>
+                <span className="text-center text-muted">
+                    {moment().format("DD/MM/YYYY")}
+                </span>
+                <div className="text-center mb-2">
+                    {isDataEntered ? (
+                        <p className="text-success">Günlük veri girişi gerçekleşti</p>
+                    ) : (
+                        <p className="text-danger">Günlük veri girişi gerçekleşmedi!</p>
+                    )}
+                </div>
       </div>
       <div className="d-flex  flex-column mx-auto w-50">
         <section>
@@ -204,7 +250,7 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
               )}
             </div>
             <div className="input-button mx-auto">
-              <button onClick={refresh} type="submit" className="btn btn-outline-dark mt-2">
+              <button type="submit" className="btn btn-outline-dark mt-2">
                 Ekle
               </button>
             </div>
@@ -216,7 +262,7 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
       <hr />
       <section>
         <p className="text-muted text-center fs-5 fw-bolder pb-3">
-          YEMEKHANE SUYU TESİSİ KONTROL FORMU
+          YEMEKHANE SUYU TESİSİ KONTROL FORMU VERİLERİ
         </p>
         <div className="row">
           <div className="col-sm-12">

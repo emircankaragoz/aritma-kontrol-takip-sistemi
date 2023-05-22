@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { RiMore2Fill } from "react-icons/ri";
 import Modal from "react-bootstrap/Modal";
-import { AtiksuAritmaGirisCikisUpdateModalForm} from "../../../index";
+import { AtiksuAritmaGirisCikisUpdateModalForm} from "@/components";
 
 export default function ModalComponent({dataId}) {
   const [show, setShow] = useState(false);

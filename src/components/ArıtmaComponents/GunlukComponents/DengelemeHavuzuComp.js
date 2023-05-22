@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { AuthFormCSS } from "@/styles";
 import { toast } from "react-toastify";
-import { AritmaService, UserService } from "@/services"
+import { AritmaService, UserService,SystemMessageService } from "@/services"
 import moment from "moment/moment";
 import { useRouter } from "next/navigation";
 import { RiDeleteBin5Line } from "react-icons/ri";
-
+import {DengelemeHavuzuUpdateModal} from "@/components"
+import { SYSTEM_MESSAGES } from "../../../../environment";
 export default function DengelemeHavuzuComponent({ session }) {
     const [allData, setAllData] = useState([]);
     const [sessionUser, setSessionUser] = useState(null);
@@ -30,6 +31,7 @@ export default function DengelemeHavuzuComponent({ session }) {
     });
     const aritmaService = new AritmaService();
     const userService = new UserService();
+    const systemMessageService = new SystemMessageService();
     const employee_id = session.user.employeeId;
 
     async function getAllDengelemeHavuzuDataHandler() {
@@ -56,9 +58,22 @@ export default function DengelemeHavuzuComponent({ session }) {
         );
         if (result) {
             setIsDataEntered(true);
+            deleteSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
         } else {
             setIsDataEntered(false);
+            createdSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
         }
+    }
+    async function deleteSystemMessageHandler(date) {
+        await systemMessageService.deleteSystemMessage(SYSTEM_MESSAGES.A9.code, date);
+    }
+    async function createdSystemMessageHandler(date) {
+        await systemMessageService.addSystemMessage(
+            SYSTEM_MESSAGES.A9.content,
+            SYSTEM_MESSAGES.A9.title,
+            SYSTEM_MESSAGES.A9.code,
+            date
+        );
     }
     useEffect(() => {
         getAllDengelemeHavuzuDataHandler();
@@ -88,49 +103,14 @@ export default function DengelemeHavuzuComponent({ session }) {
                     });
                 }
             });
-            getValuesFromAnotherForms();
+            //getValuesFromAnotherForms();
 
         
 
 
 
     }
-    async function getValuesFromAnotherForms(){
-        const date = moment(getToday).format("YYYY-MM-DD");
-        await aritmaService.getValuesFromAnotherForms(date)   
-        .then((result) => {
-            sendDataHandler(result);
-        });
 
-
-    }
-    async function sendDataHandler(result) {
-        const today = {
-            today :`${getToday}`,
-        }
-        result = Object.assign(result,today);
-        console.log(result);
-        const options = {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(result),
-        };
-       
-        
-        await fetch("/api/controller/post/updateTransferDengelemeHavuzuForm", options)
-          .then((res) => res.json())
-          .then((data) => {
-            if (data) {
-              toast.success(
-                "Veriler başarıyla transfer edildi.",
-                {
-                  position: toast.POSITION.BOTTOM_RIGHT,
-                }
-              );
-            }
-          });   
-          router.refresh();     
-    }
     async function deleteDengelemeHavuzuVerileri(id) {
         const dataId = {
             dataId: `${id}`,
@@ -298,10 +278,10 @@ export default function DengelemeHavuzuComponent({ session }) {
                                         <td>@{data.createdBy.employeeId}</td>
                                         <td>{parseFloat(data.sicaklik).toFixed(2)}</td>
                                         <td>{parseFloat(data.ph).toFixed(2)}</td>
-                                        <td>{parseFloat(data.koi).toFixed(1)}</td>
+                                        <td>{parseFloat(data.koi).toFixed(2)}</td>
                                         <td>{parseFloat(data.akm).toFixed(2)}</td>
                                         <td>{parseFloat(data.sulfit).toFixed(2)}</td>
-                                        <td>{parseFloat(data.amonyumAzot).toFixed(2)}</td>
+                                        <td>{parseFloat(data.amonyumAzot).toFixed(1)}</td>
                                         <td>{parseFloat(data.fosfor).toFixed(2)}</td>
                                         <td>{parseFloat(data.azot).toFixed(2)}</td>
                                         <td>{data.renk}</td>
@@ -316,6 +296,9 @@ export default function DengelemeHavuzuComponent({ session }) {
                                                     >
                                                         <RiDeleteBin5Line />
                                                     </span>
+                                                </span>
+                                                <span>
+                                                <DengelemeHavuzuUpdateModal dataId = {data.id}/>
                                                 </span>
 
 

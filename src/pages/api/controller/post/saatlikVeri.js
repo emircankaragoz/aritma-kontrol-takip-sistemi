@@ -4,30 +4,30 @@ export default async function handler(req, res) {
     if (req.method === "POST") {
         if (!req.body) return res.status(404).json({ error: "Do not have data" });
         try {
-            const { esanjorGirisSicakligi,esanjorCikisSicakligi,oksijen,ph,employeeId } = req.body;
+            const { esanjorGirisSicakligi, esanjorCikisSicakligi, oksijen, ph, employeeId } = req.body;
             console.log(employeeId);
             const data = await prisma.saatlikVeriEsNotrPhOksijen.create({
                 data: {
                     createdBy: {
                         connect: {
-                          employeeId: employeeId,
+                            employeeId: employeeId,
                         },
-                      },
-                      updatedBy: {
+                    },
+                    updatedBy: {
                         connect: {
-                          employeeId: employeeId,
+                            employeeId: employeeId,
                         },
-                      },
+                    },
                     category: "arıtma",
-                    esanjorGirisSicakligi:`${esanjorGirisSicakligi}` ,
-                    esanjorCikisSicakligi:`${esanjorCikisSicakligi}` ,
+                    esanjorGirisSicakligi: `${esanjorGirisSicakligi}`,
+                    esanjorCikisSicakligi: `${esanjorCikisSicakligi}`,
                     oksijen: `${oksijen}`,
-                    ph:`${ph}` ,
-                    
-                    
-                    
-                   
-                    
+                    ph: `${ph}`,
+
+
+
+
+
                 },
             });
             res.status(201).json({ status: true, saatlikVeriEsNotrPhOksijen: data });

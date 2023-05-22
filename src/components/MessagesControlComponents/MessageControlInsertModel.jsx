@@ -9,6 +9,20 @@ import {
   RenkGidericiInsertForm,
   DemirUcKlorurInsertForm,
 } from "./AritmaMaddeKullanim";
+import {
+  AkmAnaliziInsertForm,
+  AerobikHavuzuInsertForm,
+  AmonyumAzotAnalizBiyolojikInsertForm,
+  AmonyumAzotAnalizCikisInsertForm,
+  AmonyumAzotAnalizDengelemeInsertForm,
+  AnaerobikHavuzuInsertForm,
+  AtiksuAritmaGirisCikisInsertForm,
+  BiyolojikCokeltimHavuzuInsertForm,
+  DengelemeHavuzuInsertForm,
+  DesarjInsertForm,
+  FiltrepresInsertForm,
+  GeriDevirHaznesiInsertForm
+} from "./Aritma"
 import { TuzSodaSayacToplamaInsertForm } from "./Tuz";
 
 export default function InsertOldDatasModal({ messageCode, date, session }) {
@@ -45,6 +59,91 @@ export default function InsertOldDatasModal({ messageCode, date, session }) {
         setModalBody(
           <div>
             <RenkGidericiInsertForm date={date} session={session} />
+          </div>
+        );
+        break;
+      case SYSTEM_MESSAGES.A1.code:
+        setModalBody(
+          <div>
+            <AkmAnaliziInsertForm date={date} session={session} />
+          </div>
+        );
+        break;
+      case SYSTEM_MESSAGES.A2.code:
+        setModalBody(
+          <div>
+            <AerobikHavuzuInsertForm date={date} session={session} />
+          </div>
+        );
+        break;
+      case SYSTEM_MESSAGES.A3.code:
+        setModalBody(
+          <div>
+            <AmonyumAzotAnalizBiyolojikInsertForm date={date} session={session} />
+          </div>
+        );
+        break;
+      case SYSTEM_MESSAGES.A4.code:
+        setModalBody(
+          <div>
+            <AmonyumAzotAnalizCikisInsertForm date={date} session={session} />
+          </div>
+        );
+        break;
+
+      case SYSTEM_MESSAGES.A5.code:
+        setModalBody(
+          <div>
+            <AmonyumAzotAnalizDengelemeInsertForm date={date} session={session} />
+          </div>
+        );
+        break;
+      case SYSTEM_MESSAGES.A6.code:
+        setModalBody(
+          <div>
+            <AnaerobikHavuzuInsertForm date={date} session={session} />
+          </div>
+        );
+        break;
+      case SYSTEM_MESSAGES.A7.code:
+        setModalBody(
+          <div>
+            <AtiksuAritmaGirisCikisInsertForm date={date} session={session} />
+          </div>
+        );
+        break;
+      case SYSTEM_MESSAGES.A8.code:
+        setModalBody(
+          <div>
+            <BiyolojikCokeltimHavuzuInsertForm date={date} session={session} />
+          </div>
+        );
+        break;
+      case SYSTEM_MESSAGES.A9.code:
+        setModalBody(
+          <div>
+            <DengelemeHavuzuInsertForm date={date} session={session} />
+          </div>
+        );
+        break;
+      case SYSTEM_MESSAGES.A10.code:
+        setModalBody(
+          <div>
+            <DesarjInsertForm date={date} session={session} />
+          </div>
+        );
+        break;
+      case SYSTEM_MESSAGES.A11.code:
+        setModalBody(
+          <div>
+            <FiltrepresInsertForm date={date} session={session} />
+          </div>
+        );
+        break;
+      case SYSTEM_MESSAGES.A13.code:
+        setModalBody(
+          <div>
+            <GeriDevirHaznesiInsertForm date={date} session={session} />
           </div>
         );
         break;

@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { AuthFormCSS } from "@/styles";
 import { toast } from "react-toastify";
-import { AritmaService, UserService } from "@/services"
+import { AritmaService, UserService,SystemMessageService } from "@/services"
 import moment from "moment/moment";
 import { useRouter } from "next/navigation";
 import { RiDeleteBin5Line } from "react-icons/ri";
-import {GeriDevirHaznesiUpdateModal} from "@/components"
+import {GeriDevirHaznesiUpdateModal} from "@/components";
+import { SYSTEM_MESSAGES } from "../../../../environment";
 export default function GeriDevirHaznesiComponent({ session }) {
     const [allData, setAllData] = useState([]);
     const [sessionUser, setSessionUser] = useState(null);
@@ -24,6 +25,7 @@ export default function GeriDevirHaznesiComponent({ session }) {
     const aritmaService = new AritmaService();
     const userService = new UserService();
     const employee_id = session.user.employeeId;
+    const systemMessageService = new SystemMessageService();
 
     async function getAllGeriDevirHaznesiDataHandler() {
         await aritmaService.getAllGeriDevirHaznesiVerileri().then((result) => {
@@ -49,9 +51,23 @@ export default function GeriDevirHaznesiComponent({ session }) {
         );
         if (result) {
             setIsDataEntered(true);
+            deleteSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
         } else {
             setIsDataEntered(false);
+            createdSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
         }
+    }
+    async function deleteSystemMessageHandler(date) {
+        await systemMessageService.deleteSystemMessage(SYSTEM_MESSAGES.A13.code, date);
+    }
+
+    async function createdSystemMessageHandler(date) {
+        await systemMessageService.addSystemMessage(
+            SYSTEM_MESSAGES.A13.content,
+            SYSTEM_MESSAGES.A13.title,
+            SYSTEM_MESSAGES.A13.code,
+            date
+        );
     }
     useEffect(() => {
         getAllGeriDevirHaznesiDataHandler();
@@ -66,7 +82,6 @@ export default function GeriDevirHaznesiComponent({ session }) {
             today: `${getToday}`,
         }
         values = Object.assign(values, employeeId, today);
-        console.log(values);
         const options = {
             method: "POST",
             headers: { "Content-Type": "application/json" },

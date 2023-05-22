@@ -4,7 +4,7 @@ import moment from "moment";
 
 export default function CamurYogunlastirmaComponent({ session }) {
     const [sessionUser, setSessionUser] = useState(null);
-    const [getAllCamurYogunlastirmaMiktari, setGetAllCamurYogunlastirmaMiktari,] = useState(
+    const [getAllCamurYogunlastirmaMiktari, setGetAllCamurYogunlastirmaMiktari] = useState(
         []
     );
 

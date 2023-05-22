@@ -29,19 +29,7 @@ export default async function handler(req, res) {
       const feClUcSarfiyatiKg = feClUcSarfiyatiLt * 1.4;
       const hazirlananKirecMiktariTL =hazirlananKirecMiktariKg * hazirlananKirecBirimFiyatTL;
       const hazirlananFeClUcMiktariKG = feClUcSarfiyatiKg / 3;
-      const hazirlananFeClUcMiktariTL = hazirlananFeClUcMiktariKG *hazirlananFeClUcBirimFiyatTL;
-
-      // console.log(netKirecSarfiyatiLt);
-      // console.log(netKirecSarfiyatiKg);
-      // console.log(feClUcSarfiyatiLt);
-      // console.log(feClUcSarfiyatiKg);
-      // console.log(hazirlananKirecMiktariTL);
-      // console.log(hazirlananFeClUcMiktariKG);
-      // console.log(hazirlananFeClUcMiktariTL);
-      // console.log(typeof(hazirlananFeClUcMiktariTL));
-
-
-      
+      const hazirlananFeClUcMiktariTL = hazirlananFeClUcMiktariKG *hazirlananFeClUcBirimFiyatTL;      
 
       const data = await prisma.filtrepresKimyasalVeCamurPerformans.create({
         data: {
@@ -78,7 +66,7 @@ export default async function handler(req, res) {
           
         },
       });
-      console.log(data);
+      
 
       res
         .status(201)

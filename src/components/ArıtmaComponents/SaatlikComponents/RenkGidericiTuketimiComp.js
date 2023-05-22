@@ -5,6 +5,7 @@ import { AuthFormCSS } from "@/styles";
 import { AritmaService, UserService } from "@/services"
 import { RenkGidericiTuketimiUpdateModal } from "@/components";
 import { RiDeleteBin5Line } from "react-icons/ri";
+import { useRouter } from "next/navigation";
 import { renkGidericiTuketimi_validate } from "lib/validate";
 import moment from "moment/moment";
 
@@ -12,6 +13,8 @@ export default function RenkGidericiTuketimiComponent({ session }) {
 
     const [allData, setAllData] = useState([]);
     const [sessionUser, setSessionUser] = useState(null);
+    const getToday = moment().startOf("day").format();
+    const router = useRouter();
     const formik = useFormik({
         initialValues: {
             renkGidericiDozajiMlDak: "",
@@ -66,9 +69,41 @@ export default function RenkGidericiTuketimiComponent({ session }) {
                     });
                 }
             });
-        resetForm();
+        updateTransferDataToDesarjForm();
 
 
+
+    }
+    async function updateTransferDataToDesarjForm() {
+        await renkGidericiTuketimi.getValuesRenkGidericiTuketimiToDesarj()
+            .then((result) => {
+                sendDataHandler(result);
+            });
+
+    }
+    async function sendDataHandler(result) {
+        const today = {
+            today: `${getToday}`,
+        }
+        result = Object.assign(result, today);
+        const options = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(result),
+        };
+        await fetch("/api/controller/post/updateTransferDesarjRenk", options)
+            .then((res) => res.json())
+            .then((data) => {
+                if (data) {
+                    toast.success(
+                        "Veriler Desarja gönderildi.",
+                        {
+                            position: toast.POSITION.BOTTOM_RIGHT,
+                        }
+                    );
+                }
+            });
+            router.refresh();
     }
     async function deleteRenkGidericiTuketimi(id) {
         const dataId = {
@@ -89,6 +124,7 @@ export default function RenkGidericiTuketimiComponent({ session }) {
                     });
                 }
             });
+            router.refresh();
     }
     if (sessionUser === null) {
         return <div className="text-center">Yükleniyor...</div>;

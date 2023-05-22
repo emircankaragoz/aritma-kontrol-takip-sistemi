@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { AuthFormCSS } from "@/styles";
 import { toast } from "react-toastify";
-import { AritmaService, UserService } from "@/services"
+import { AritmaService, UserService, SystemMessageService } from "@/services"
 import moment from "moment/moment";
 import { useRouter } from "next/navigation";
 import { RiDeleteBin5Line } from "react-icons/ri";
-
+import { DesarjUpdateModal } from "@/components"
+import { SYSTEM_MESSAGES } from "../../../../environment";
 export default function DesarjComponent({ session }) {
     const [allData, setAllData] = useState([]);
     const [sessionUser, setSessionUser] = useState(null);
@@ -16,7 +17,7 @@ export default function DesarjComponent({ session }) {
 
     const formik = useFormik({
         initialValues: {
-            debi:"",
+            debi: "",
             sicaklik: "",
             ph: "",
             koi: "",
@@ -25,18 +26,19 @@ export default function DesarjComponent({ session }) {
             toplamKrom: "",
             sulfur: "",
             sulfit: "",
-            fenol:"",
-            yagVeGres:"",
-            klorur:"",
-            sulfat :"",
-            demir:"",
-            cinko:""
+            fenol: "",
+            yagVeGres: "",
+            klorur: "",
+            sulfat: "",
+            demir: "",
+            cinko: ""
         },
         onSubmit,
     });
     const aritmaService = new AritmaService();
     const userService = new UserService();
     const employee_id = session.user.employeeId;
+    const systemMessageService = new SystemMessageService();
 
     async function getAllDesarjDataHandler() {
         await aritmaService.getAllDesarjVerileri().then((result) => {
@@ -62,9 +64,23 @@ export default function DesarjComponent({ session }) {
         );
         if (result) {
             setIsDataEntered(true);
+            deleteSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
         } else {
             setIsDataEntered(false);
+            createdSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
         }
+    }
+    async function deleteSystemMessageHandler(date) {
+        await systemMessageService.deleteSystemMessage(SYSTEM_MESSAGES.A10.code, date);
+    }
+
+    async function createdSystemMessageHandler(date) {
+        await systemMessageService.addSystemMessage(
+            SYSTEM_MESSAGES.A10.content,
+            SYSTEM_MESSAGES.A10.title,
+            SYSTEM_MESSAGES.A10.code,
+            date
+        );
     }
     useEffect(() => {
         getAllDesarjDataHandler();
@@ -79,7 +95,7 @@ export default function DesarjComponent({ session }) {
             today: `${getToday}`,
         }
         values = Object.assign(values, employeeId, today);
-        console.log(values);
+
         const options = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -94,11 +110,44 @@ export default function DesarjComponent({ session }) {
                     });
                 }
             });
+        getValuesFromAnotherForms();
+
+    }
+    async function getValuesFromAnotherForms() {
+        const date = moment(getToday).format("YYYY-MM-DD");
+        await aritmaService.getValuesCikisAndRenkGidericiToDesarj(date)
+            .then((result) => {
+                sendDataHandler(result);
+            });
 
 
-        
+    }
+    async function sendDataHandler(result) {
+        const today = {
+            today: `${getToday}`,
+        }
+        result = Object.assign(result, today);
+        console.log(result);
+        const options = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(result),
+        };
 
 
+        await fetch("/api/controller/post/updateTransferDesarj", options)
+            .then((res) => res.json())
+            .then((data) => {
+                if (data) {
+                    toast.success(
+                        "Veriler başarıyla transfer edildi.",
+                        {
+                            position: toast.POSITION.BOTTOM_RIGHT,
+                        }
+                    );
+                }
+            });
+        router.refresh();
 
     }
     async function deleteDesarj(id) {
@@ -134,7 +183,7 @@ export default function DesarjComponent({ session }) {
         <div className="container p-2">
             <div className="d-flex  flex-column mx-auto w-50">
                 <p className="text-muted text-center fs-5 fw-bolder pb-3 mt-3">
-                KİMYASAL ÇÖKELTİM HAVUZ ÇIKIŞI (DEŞARJ) FORMU
+                    KİMYASAL ÇÖKELTİM HAVUZ ÇIKIŞI (DEŞARJ) FORMU
                 </p>
                 <span className="text-center text-muted">
                     {moment().format("DD/MM/YYYY")}
@@ -215,6 +264,7 @@ export default function DesarjComponent({ session }) {
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
                                 type="number"
+                                step="0.01"
                                 name="sulfur"
                                 placeholder="sulfur"
                                 {...formik.getFieldProps("sulfur")}
@@ -223,6 +273,7 @@ export default function DesarjComponent({ session }) {
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
                                 type="number"
+                                step="0.01"
                                 name="sulfit"
                                 placeholder="sulfit"
                                 {...formik.getFieldProps("sulfit")}
@@ -231,6 +282,7 @@ export default function DesarjComponent({ session }) {
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
                                 type="number"
+                                step="0.01"
                                 name="fenol"
                                 placeholder="fenol"
                                 {...formik.getFieldProps("fenol")}
@@ -239,6 +291,7 @@ export default function DesarjComponent({ session }) {
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
                                 type="number"
+                                step="0.01"
                                 name="yagVeGres"
                                 placeholder="yagVeGres"
                                 {...formik.getFieldProps("yagVeGres")}
@@ -247,6 +300,7 @@ export default function DesarjComponent({ session }) {
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
                                 type="number"
+                                step="0.01"
                                 name="klorur"
                                 placeholder="klorur"
                                 {...formik.getFieldProps("klorur")}
@@ -255,6 +309,7 @@ export default function DesarjComponent({ session }) {
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
                                 type="number"
+                                step="0.01"
                                 name="sulfat"
                                 placeholder="sulfat"
                                 {...formik.getFieldProps("sulfat")}
@@ -263,6 +318,7 @@ export default function DesarjComponent({ session }) {
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
                                 type="number"
+                                step="0.01"
                                 name="demir"
                                 placeholder="demir"
                                 {...formik.getFieldProps("demir")}
@@ -271,6 +327,7 @@ export default function DesarjComponent({ session }) {
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
                                 type="number"
+                                step="0.01"
                                 name="cinko"
                                 placeholder="cinko"
                                 {...formik.getFieldProps("cinko")}
@@ -307,6 +364,7 @@ export default function DesarjComponent({ session }) {
                                     <th scope="col">ph</th>
                                     <th scope="col">koi</th>
                                     <th scope="col">akm</th>
+                                    <th scope="col">Amonyum<br />Azotu (mg/l)</th>
                                     <th scope="col">serbestKlor</th>
                                     <th scope="col">toplamKrom</th>
                                     <th scope="col">sulfur</th>
@@ -317,6 +375,7 @@ export default function DesarjComponent({ session }) {
                                     <th scope="col">sulfat</th>
                                     <th scope="col">demir</th>
                                     <th scope="col">cinko</th>
+                                    <th scope="col">Renk<br />(Pt - Co)</th>
                                     <th scope="col">.</th>
 
                                 </tr>
@@ -332,6 +391,7 @@ export default function DesarjComponent({ session }) {
                                         <td>{parseFloat(data.ph).toFixed(1)}</td>
                                         <td>{parseFloat(data.koi).toFixed(2)}</td>
                                         <td>{parseFloat(data.akm).toFixed(2)}</td>
+                                        <td>{parseFloat(data.amonyumAzotu).toFixed(2)}</td>
                                         <td>{parseFloat(data.serbestKlor).toFixed(2)}</td>
                                         <td>{parseFloat(data.toplamKrom).toFixed(2)}</td>
                                         <td>{parseFloat(data.sulfur).toFixed(2)}</td>
@@ -342,6 +402,7 @@ export default function DesarjComponent({ session }) {
                                         <td>{parseFloat(data.sulfat).toFixed(2)}</td>
                                         <td>{parseFloat(data.demir).toFixed(2)}</td>
                                         <td>{parseFloat(data.cinko).toFixed(2)}</td>
+                                        <td>{parseFloat(data.renk).toFixed(2)}</td>
                                         {sessionUser.role.roleName === "admin" ? (
                                             <td>
                                                 <span className="me-2">
@@ -352,6 +413,9 @@ export default function DesarjComponent({ session }) {
                                                     >
                                                         <RiDeleteBin5Line />
                                                     </span>
+                                                </span>
+                                                <span>
+                                                    <DesarjUpdateModal dataId={data.id} />
                                                 </span>
 
 

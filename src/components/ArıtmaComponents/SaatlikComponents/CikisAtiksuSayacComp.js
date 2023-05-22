@@ -6,13 +6,14 @@ import { AritmaService, UserService } from "@/services"
 import { CikisAtiksuSayacUpdateModal } from "@/components";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { cikisAtiksuSayac_validate } from "lib/validate";
+import { useRouter } from "next/navigation";
 import moment from "moment/moment";
 
 export default function CikisAtiksuSayacComponent({ session }) {
 
     const [allData, setAllData] = useState([]);
     const [sessionUser, setSessionUser] = useState(null);
-
+    const router = useRouter();
     const formik = useFormik({
         initialValues: {
             atiksuSayac: "",
@@ -63,6 +64,7 @@ export default function CikisAtiksuSayacComponent({ session }) {
                 }
             });
         resetForm();
+        router.refresh();
 
 
     }

@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { AuthFormCSS } from "@/styles";
 import { toast } from "react-toastify";
-import { AritmaService, UserService } from "@/services"
+import { AritmaService, UserService,SystemMessageService  } from "@/services"
 import { RiDeleteBin5Line } from "react-icons/ri";
 import moment from "moment/moment";
 import { useRouter } from "next/navigation";
-
+import {AtiksuAritmaGirisCikisUpdateModal} from "@/components"
+import { SYSTEM_MESSAGES } from "../../../../environment";
 export default function AtiksuAritmaGirisCikisComponent({ session }) {
-
+   
     const [allData, setAllData] = useState([]);
     const [sessionUser, setSessionUser] = useState(null);
     const [isDataEntered, setIsDataEntered] = useState(false);
@@ -25,6 +26,7 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
     const atiksuAritmaGirisCikis = new AritmaService();
     const userService = new UserService();
     const employee_id = session.user.employeeId;
+    const systemMessageService = new SystemMessageService();
 
 
     async function getAllAtiksuAritmaGirisCikisDataHandler() {
@@ -50,10 +52,24 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
 
         if (result) {
             setIsDataEntered(true);
+            deleteSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
 
         } else {
             setIsDataEntered(false);
+            createdSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
         }
+    }
+    async function deleteSystemMessageHandler(date) {
+        await systemMessageService.deleteSystemMessage(SYSTEM_MESSAGES.A7.code, date);
+    }
+
+    async function createdSystemMessageHandler(date) {
+        await systemMessageService.addSystemMessage(
+            SYSTEM_MESSAGES.A7.content,
+            SYSTEM_MESSAGES.A7.title,
+            SYSTEM_MESSAGES.A7.code,
+            date
+        );
     }
     useEffect(() => {
         getAllAtiksuAritmaGirisCikisDataHandler();
@@ -107,6 +123,8 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                 }
             });
 
+        router.refresh();
+
        
             
            
@@ -120,39 +138,7 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                 sendDataHandlerSecond(result);
             });
     }
-    //camur yogunlastirma data handler
-    async function sendDataHandlerSecond(result) {
-        const employeeId = {
-            employeeId: `${employee_id}`,
-        };
-        const today = {
-            today :`${getToday}`,
-        }
-        result = Object.assign(result, employeeId,today);
-        console.log(result);
-        const options = {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(result),
-        };
-       
-        
-        await fetch("/api/controller/post/addCamurYogunlastirma", options)
-          .then((res) => res.json())
-          .then((data) => {
-            if (data) {
-              toast.success(
-                "Veriler Camur Yogunlastırma formuna başarıyla gönderildi",
-                {
-                  position: toast.POSITION.BOTTOM_RIGHT,
-                }
-              );
-            }
-          });  
-          //router.refresh();
-          
-         
-    }
+ 
  
 
 
@@ -161,11 +147,35 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
     async function transferDataToSameForm() {
         const date = moment(getToday).format("YYYY-MM-DD");
         await atiksuAritmaGirisCikis
-            .getCalculationDeneme(date)
+            .getCalculationAtiksuAritmaGirisCikis(date)
             .then((result) => {
                 sendDataHandler(result);
             });
 
+    }
+      //adding operation update
+      async function sendDataHandler(result) {
+        const options = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(result),
+        };
+
+        await fetch("/api/controller/post/updateTransferAtiksuAritmaGirisCikis", options)
+            .then((res) => res.json())
+            .then((data) => {
+                if (data) {
+                    toast.success(
+                        "Hesaplamalar başarıyla yapıldı.",
+                        {
+                            position: toast.POSITION.BOTTOM_RIGHT,
+                        }
+                    );
+                }
+            });
+            transferDataToCamurYogunlastirmaForm();
+            
+           
     }
         // hesaplanan veriler camur yogunlastırma formuna aktarılıyor.
     async function transferDataToCamurYogunlastirmaForm() {
@@ -205,33 +215,46 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
             }
           });  
           
+          updateTransferDataToDengelemeHavuzu();
           
          
     }
-    //adding operation update
-    async function sendDataHandler(result) {
+  
+    //ATİKSU ARİTMA GİRİS CİKİSTAN DENGELEME HAVUZUNA DEBİ AKTARIMI
+    async function updateTransferDataToDengelemeHavuzu() {
+        const date = moment(getToday).format("YYYY-MM-DD");
+        await atiksuAritmaGirisCikis.getValuesGunlukAtıksuSayacıToDengelemeHavuzu(date)
+            .then((result) => {
+                sendDataHandlerThird(result);
+            });
+
+    }
+    async function sendDataHandlerThird(result) {
+        const today = {
+            today: `${getToday}`,
+        }
+        result = Object.assign(result, today);
         const options = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(result),
         };
-
-        await fetch("/api/controller/post/updateAtiksuAritmaGirisCikis", options)
+        await fetch("/api/controller/post/updateTransferDengelemeHavuzu", options)
             .then((res) => res.json())
             .then((data) => {
                 if (data) {
                     toast.success(
-                        "Hesaplamalar başarıyla yapıldı.",
+                        "Veriler başarıyla güncellendi",
                         {
                             position: toast.POSITION.BOTTOM_RIGHT,
                         }
                     );
                 }
             });
-            transferDataToCamurYogunlastirmaForm();
-            
-           
+
     }
+
+    
 
    
 
@@ -283,7 +306,7 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="kimyasalCokeltimdenCekilenCamurMiktari_m3gun"
-                                placeholder=" Kimyasal Çökeltimden Çekilen Çamur Miktari (m3/gun)"
+                                placeholder="Kimyasal Çökeltimden Çekilen Çamur Miktari (m3/gun)"
                                 {...formik.getFieldProps("kimyasalCokeltimdenCekilenCamurMiktari_m3gun")}
                             />
                         </div>
@@ -347,9 +370,9 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                                                         <RiDeleteBin5Line />
                                                     </span>
                                                 </span>
-                                                {/* <span>
-                                                    <CikisAtiksuSayacUpdateModal dataId={data.id} />
-                                                </span> */}
+                                                <span>
+                                                    <AtiksuAritmaGirisCikisUpdateModal dataId={data.id} />
+                                                </span>
 
                                             </td>
                                         ) : (

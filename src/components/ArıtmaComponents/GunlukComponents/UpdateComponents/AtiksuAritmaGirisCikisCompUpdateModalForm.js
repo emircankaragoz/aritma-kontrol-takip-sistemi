@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
 import { AritmaService } from "@/services"
-
+import { useRouter } from "next/navigation";
+import moment from "moment/moment";
 export default function ModalForm({ dataId }) {
 
     const [allDataById, setAllDataById] = useState({});
     const atiksuAritmaGirisCikis = new AritmaService();
+    const getToday = moment().startOf("day").format();
+    const router = useRouter();
     async function getAllAtiksuAritmaGirisCikisDataHandler() {
         if (dataId !== undefined && dataId !== null) {
             await atiksuAritmaGirisCikis.getAtiksuAritmaGirisCikisById(dataId)
@@ -30,6 +33,39 @@ export default function ModalForm({ dataId }) {
         onSubmit,
     });
 
+    async function afterOnSubmit(){
+        const date = moment(getToday).format("YYYY-MM-DD");
+        await atiksuAritmaGirisCikis
+            .getCalculationAtiksuAritmaGirisCikis(date)
+            .then((result) => {
+                sendDataHandler(result);
+            });
+    }
+     //adding operation update
+     async function sendDataHandler(result) {
+        const options = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(result),
+        };
+
+        await fetch("/api/controller/post/updateAtiksuAritmaGirisCikisValues", options)
+            .then((res) => res.json())
+            .then((data) => {
+                if (data) {
+                    toast.success(
+                        "Güncelleme başarıyla yapıldı.",
+                        {
+                            position: toast.POSITION.BOTTOM_RIGHT,
+                        }
+                    );
+                }
+            });
+
+            
+           
+    }
+
     async function onSubmit(values) {
         const IdData = {
             IdData: `${dataId}`,
@@ -42,7 +78,7 @@ export default function ModalForm({ dataId }) {
             body: JSON.stringify(values),
         };
 
-        await fetch("/api/controller/post/updateAtiksuGirisCikis2", options)
+        await fetch("/api/controller/post/updateAtiksuAritmaGirisCikis", options)
             .then((res) => res.json())
             .then((data) => {
                 if (data) {
@@ -51,6 +87,8 @@ export default function ModalForm({ dataId }) {
                     });
                 }
             });
+        afterOnSubmit();
+        
     }
 
 

@@ -58,4 +58,23 @@ export default class SuService {
     return yemekhaneSuyu;
   }
 
+  //WC SUYU
+
+  async getAllWcSuyu() {
+    return await axios.get(`${URL}/api/controller/get/wcSuyu`);
+  }
+   
+   async getWcSuyuById(id) {
+    let wcSuyu;
+    await axios.get(`${URL}/api/controller/get/wcSuyu`).then((result) => {
+      result.data.map((data) => {
+        if (data.id === id) {
+          wcSuyu = data;
+        }
+      });
+    });
+    
+    return wcSuyu;
+  }
+
 }
