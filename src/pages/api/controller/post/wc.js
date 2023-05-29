@@ -6,7 +6,7 @@ export default async function handler(req, res) {
     if (req.method === "POST") {
         if (!req.body) return res.status(404).json({ error: "Do not have data" });
         try {
-            const { klorCozeltisiDozaji, klor, ph, iletkenlik, genelTemizlik, aciklama,subcategory,employeeId } = req.body;
+            const { klorCozeltisiDozaji, klor, ph, iletkenlik, genelTemizlik, aciklama,employeeId,today } = req.body;
             
             const data = await prisma.wcVeKullanmaSuyu.create({
                 data: {
@@ -20,7 +20,6 @@ export default async function handler(req, res) {
                             employeeId: employeeId
                         }
                     },
-                    subCategory:subcategory,
                     category: "su",  
                     klorCozeltisiDozaji:`${klorCozeltisiDozaji}`,
                     klor:`${klor}`,
@@ -28,6 +27,7 @@ export default async function handler(req, res) {
                     iletkenlik:`${iletkenlik}`,
                     genelTemizlik:`${genelTemizlik}`,
                     aciklama:`${aciklama}`,
+                    dateAndTime: today,
                    
                 
                     

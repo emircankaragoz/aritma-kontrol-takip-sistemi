@@ -49,6 +49,7 @@ export default function AnaerobikHavuzuInsertForm({ date, session }) {
             moment(date).format("YYYY-MM-DD")
         );
         router.refresh();
+        
     }
 
     return (

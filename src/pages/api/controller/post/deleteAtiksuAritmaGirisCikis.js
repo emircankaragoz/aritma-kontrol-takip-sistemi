@@ -19,7 +19,9 @@ export default async function handler(req, res) {
     });
     const Datetime = moment(checkexisting.dateAndTime).startOf("day")
     .format();
-    console.log(Datetime);
+
+
+
     
     if (checkexisting !== null) {
       try {

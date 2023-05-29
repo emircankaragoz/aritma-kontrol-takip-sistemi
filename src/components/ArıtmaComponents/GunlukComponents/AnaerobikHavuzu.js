@@ -42,7 +42,7 @@ export default function AnaerobikComponent ({session}) {
                 .then((result) => setSessionUser(result));
         }
     }
-    async function onSubmit(values,{resetForm}) {
+    async function onSubmit(values) {
 
         const employeeId = {
             employeeId: `${employee_id}`,
@@ -67,7 +67,7 @@ export default function AnaerobikComponent ({session}) {
                 }
             });
             router.refresh();
-            resetForm();
+
        
     }
     // veri girildi mi kontrolü yapılır.
@@ -155,7 +155,7 @@ export default function AnaerobikComponent ({session}) {
                                 type="number"
                                 step="0.01"
                                 name="akm"
-                                placeholder="akm"
+                                placeholder="Akm"
                                 {...formik.getFieldProps("akm")}
                             />
                         </div>
@@ -164,7 +164,7 @@ export default function AnaerobikComponent ({session}) {
                                 type="number"
                                 step="0.01"
                                 name="imhoff"
-                                placeholder="imhoff"
+                                placeholder="Imhoff"
                                 {...formik.getFieldProps("imhoff")}
                             />
                         </div>
@@ -173,7 +173,7 @@ export default function AnaerobikComponent ({session}) {
                                 type="number"
                                 step="0.01"
                                 name="oksijen "
-                                placeholder="oksijen"
+                                placeholder="Oksijen"
                                 {...formik.getFieldProps("oksijen")}
                             />
                         </div>

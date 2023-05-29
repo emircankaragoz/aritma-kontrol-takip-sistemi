@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
 import { AuthFormCSS } from "@/styles";
-import { AritmaService, UserService } from "@/services"
+import { AritmaService, UserService, SabitlerService } from "@/services"
 import { RenkGidericiTuketimiUpdateModal } from "@/components";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { useRouter } from "next/navigation";
@@ -13,8 +13,19 @@ export default function RenkGidericiTuketimiComponent({ session }) {
 
     const [allData, setAllData] = useState([]);
     const [sessionUser, setSessionUser] = useState(null);
+    const [sbtRenkGidericiTuketimi, setSbtRenkGidericiTuketimi] =
+        useState();
     const getToday = moment().startOf("day").format();
     const router = useRouter();
+    const sabitlerService = new SabitlerService();
+
+    async function getRenkGidericiTuketimi_SBT() {
+        await sabitlerService
+            .aritma_getAllRenkGidericiTuketimiSabitler()
+            .then((result) => {
+                setSbtRenkGidericiTuketimi(result);
+            });
+    }
     const formik = useFormik({
         initialValues: {
             renkGidericiDozajiMlDak: "",
@@ -26,17 +37,25 @@ export default function RenkGidericiTuketimiComponent({ session }) {
             atikSu_m3sa: "",
             kullanilanKimyasal: ""
         },
-        validate: renkGidericiTuketimi_validate,
+        validate: (values) =>
+            renkGidericiTuketimi_validate(
+                values,
+                sbtRenkGidericiTuketimi.yavasKaristirmaHavCikisiMin,
+                sbtRenkGidericiTuketimi.yavasKaristirmaHavCikisiMax,
+                sbtRenkGidericiTuketimi.kimyasalCokHavCikisiRenkMin,
+                sbtRenkGidericiTuketimi.kimyasalCokHavCikisiRenkMax,
+
+            ),
         onSubmit,
     });
-    
+
     const renkGidericiTuketimi = new AritmaService();
     const userService = new UserService();
     const employee_id = session.user.employeeId;
     async function getAllRenkGidericiTuketimiDataHandler() {
         await renkGidericiTuketimi.getAllRenkGidericiTuketimi().then((result) => setAllData(result.data));
     }
-  
+
     async function getSessionUserHandler() {
         if (session) {
             await userService
@@ -47,6 +66,7 @@ export default function RenkGidericiTuketimiComponent({ session }) {
     useEffect(() => {
         getAllRenkGidericiTuketimiDataHandler();
         getSessionUserHandler();
+        getRenkGidericiTuketimi_SBT();
     }, []);
 
     async function onSubmit(values, { resetForm }) {
@@ -69,7 +89,8 @@ export default function RenkGidericiTuketimiComponent({ session }) {
                     });
                 }
             });
-        updateTransferDataToDesarjForm();
+        router.refresh();
+        //updateTransferDataToDesarjForm();
 
 
 
@@ -103,7 +124,7 @@ export default function RenkGidericiTuketimiComponent({ session }) {
                     );
                 }
             });
-            router.refresh();
+        router.refresh();
     }
     async function deleteRenkGidericiTuketimi(id) {
         const dataId = {
@@ -124,11 +145,11 @@ export default function RenkGidericiTuketimiComponent({ session }) {
                     });
                 }
             });
-            router.refresh();
+        router.refresh();
     }
     if (sessionUser === null) {
         return <div className="text-center">Yükleniyor...</div>;
-      }
+    }
 
 
     return (
@@ -136,12 +157,15 @@ export default function RenkGidericiTuketimiComponent({ session }) {
 
         <div className="container p-2">
             <div className="d-flex  flex-column mx-auto w-50">
+                <p className="text-muted text-center fs-5 fw-bolder pb-3">
+                    RENK GİDERİCİ TÜKETİMİ VE RENK ÖLÇÜM SONUÇLARI TAKİP FORMU
+                </p>
                 <section>
                     <form onSubmit={formik.handleSubmit} className="d-flex flex-column gap-3 ">
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
-                                 type="number"
-                                 step="0.01"
+                                type="number"
+                                step="0.01"
                                 name="renkGidericiDozajiMlDak"
                                 placeholder="Renk Giderici Dozaji (Ml/Dak)"
                                 {...formik.getFieldProps("renkGidericiDozajiMlDak")}
@@ -157,10 +181,10 @@ export default function RenkGidericiTuketimiComponent({ session }) {
                         </div>
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
-                                 type="number"
-                                 step="0.01"
+                                type="number"
+                                step="0.01"
                                 name="biyolojikCokHavCikisiKompozitRenk"
-                                placeholder="Biyolojik Cok. Hav. Cikisi Kompozit Renk"
+                                placeholder="Biyolojik Çök. Hav. Çıkışı Kompozit Renk"
                                 {...formik.getFieldProps("biyolojikCokHavCikisiKompozitRenk")}
                             />
                             {formik.errors.biyolojikCokHavCikisiKompozitRenk && formik.touched.biyolojikCokHavCikisiKompozitRenk ? (
@@ -174,10 +198,10 @@ export default function RenkGidericiTuketimiComponent({ session }) {
                         </div>
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
-                                 type="number"
-                                 step="0.01"
+                                type="number"
+                                step="0.01"
                                 name="yavasKaristirmaHavCikisi"
-                                placeholder="Yavas Karistirma Hav. Cikisi"
+                                placeholder="Yavaş Karıştırma Hav. Çıkışı"
                                 {...formik.getFieldProps("yavasKaristirmaHavCikisi")}
                             />
                             {formik.errors.yavasKaristirmaHavCikisi && formik.touched.yavasKaristirmaHavCikisi ? (
@@ -195,7 +219,7 @@ export default function RenkGidericiTuketimiComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="kimyasalCokHavCikisiRenk"
-                                placeholder="Kimyasal Cok. Hav. Cikisi Renk"
+                                placeholder="Kimyasal Çök. Hav. Çıkışı Renk"
                                 {...formik.getFieldProps("kimyasalCokHavCikisiRenk")}
 
                             />
@@ -270,7 +294,7 @@ export default function RenkGidericiTuketimiComponent({ session }) {
                                 className="form-control"
                                 type="text"
                                 name="kullanilanKimyasal"
-                                placeholder="Kullanilan Kimyasal"
+                                placeholder="Kullanılan Kimyasal"
                                 {...formik.getFieldProps("kullanilanKimyasal")}
                             />
                             {formik.errors.kullanilanKimyasal && formik.touched.kullanilanKimyasal ? (
@@ -294,7 +318,7 @@ export default function RenkGidericiTuketimiComponent({ session }) {
             <hr />
             <section>
                 <p className="text-muted text-center fs-5 fw-bolder pb-3">
-                    RENK GİDERİCİ TÜKETİMİ VE RENK ÖLÇÜM SONUÇLARI TAKİP FORMU
+                    RENK GİDERİCİ TÜKETİMİ VE RENK ÖLÇÜM SONUÇLARI TAKİP FORMU VERİLERİ
                 </p>
 
                 <div className="row">
@@ -307,8 +331,8 @@ export default function RenkGidericiTuketimiComponent({ session }) {
                                     <th scope="col">Çalışan ID</th>
                                     <th scope="col">Renk<br />Giderici Dozaji<br />(Ml/Dak)</th>
                                     <th scope="col">Biyolojik<br />Çök. Hav.<br />Çıkışı<br />Kompozit Renk</th>
-                                    <th scope="col">Yavaş<br /> Karıştırma<br />Hav. Çıkışı</th>
-                                    <th scope="col">Kimyasal Çök.<br />Hav Çıkışı<br /> Renk</th>
+                                    <th scope="col">Yavaş<br /> Karıştırma<br />Hav. Çıkışı <br /> Mak 280 Pt-co</th>
+                                    <th scope="col">Kimyasal Çök.<br />Hav Çıkışı<br /> Renk <br />Mak 280 Pt-co</th>
                                     <th scope="col">Toplam Renk<br />Giderici<br />(Kg/Saat)</th>
                                     <th scope="col">Toplam Renk<br />Giderici<br />(Euro/Saat)</th>
                                     <th scope="col">Atık Su (m3/sa)</th>

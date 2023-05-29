@@ -217,4 +217,48 @@ export default class GraphicService {
       });
     return su;
   }
+  /* ARITMA  */
+  /* RENK GİDERİCİ TÜKETİMİ   */
+  async getAllRenkGidericiTuketimiYavasKaristirmaHavCikisiValues(){
+    let yavasKaristirmaHavCikisiValues = [];
+    await axios
+      .get(`${URL}/api/controller/get/renkGidericiTuketimi`)
+      .then((result) => {
+        yavasKaristirmaHavCikisiValues = result.data.map((data) => ({
+          yavasKaristirmaHavCikisi: data.yavasKaristirmaHavCikisi,
+          dateAndTime: data.createdAt
+      
+          
+        }));
+      });
+    return yavasKaristirmaHavCikisiValues;
+  }
+  async getAllRenkGidericiTuketimiKimyasalCokHavCikisiRenkValues(){
+    let kimyasalCokHavCikisiRenkValues = [];
+    await axios
+      .get(`${URL}/api/controller/get/renkGidericiTuketimi`)
+      .then((result) => {
+        kimyasalCokHavCikisiRenkValues = result.data.map((data) => ({
+          kimyasalCokHavCikisiRenk: data.kimyasalCokHavCikisiRenk,
+          dateAndTime: data.createdAt
+      
+          
+        }));
+      });
+    return kimyasalCokHavCikisiRenkValues;
+  }
+  
+  async getAllCamurKekiNemValues(){
+    let camurKekiNemValues = [];
+    await axios
+      .get(`${URL}/api/controller/get/filtrepres`)
+      .then((result) => {
+        camurKekiNemValues = result.data.map((data) => ({
+          camurKekiNem:data.camurKekiNem,
+          dateAndTime: data.createdAt
+        }));
+      });
+    return camurKekiNemValues;
+  }
+
 }

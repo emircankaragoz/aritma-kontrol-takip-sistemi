@@ -37,10 +37,9 @@ export default function AkmAnaliziInsertForm({ date, session }) {
         await fetch("/api/controller/post/addAkmAnalizi", options)
             .then((res) => res.json())
             .then((data) => {
-                if (data) {
-                    deleteSystemMessageHandler();
-                }
+                deleteSystemMessageHandler();
             });
+            
     }
 
     async function deleteSystemMessageHandler() {

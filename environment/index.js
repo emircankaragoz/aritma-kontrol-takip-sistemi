@@ -158,6 +158,8 @@ export const SYSTEM_MESSAGES = {
     title: "Arıtma - Renk Giderici Kimyasal Girdi Kontrolu Kontrol Formu",
     code: "A15",
   },
+ 
+
 
 
 };

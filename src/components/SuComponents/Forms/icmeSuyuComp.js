@@ -88,7 +88,10 @@ export default function IcmeSuyuPageComponent({ session }) {
     const employeeId = {
       employeeId: `${employee_id}`,
     };
-    values = Object.assign(values, employeeId);
+    const today = {
+      today: `${getToday}`,
+    }
+    values = Object.assign(values, employeeId, today);
     console.log(values);
     const options = {
       method: "POST",

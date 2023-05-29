@@ -52,7 +52,8 @@ export { default as AmonyumAzotuAnalizDengelemeFormu} from "./ArıtmaComponents/
 export { default as AmonyumAzotuAnalizCikisFormu} from "./ArıtmaComponents/GunlukComponents/AmonyumAzotAnalizCikisComp";
 export { default as AmonyumAzotuAnalizBiyolojikFormu} from "./ArıtmaComponents/GunlukComponents/AmonyumAzotAnalizBiyolojikComp";
 export { default as DengelemeHavuzuFormu} from "./ArıtmaComponents/GunlukComponents/DengelemeHavuzuComp";
-export { default as IsiGeriKazanimFormu} from "./ArıtmaComponents/GunlukComponents/IsiGeriKazanımComp";
+
+export { default as IsiGeriKazanimFormu} from "./ArıtmaComponents/GunlukComponents/IsiGeriKazanimComp";
 export { default as IsiGeriKazanimUpdateModalForm} from "./ArıtmaComponents/GunlukComponents/UpdateComponents/IsiGeriKazanimUpdateModalForm";
 export { default as IsiGeriKazanimUpdateModal} from "./ArıtmaComponents/GunlukComponents/UpdateComponents/IsiGeriKazanimUpdateModal";
 export { default as AnaerobikHavuzuFormu} from "./ArıtmaComponents/GunlukComponents/AnaerobikHavuzu";
@@ -94,6 +95,7 @@ export { default as  DesarjUpdateModalForm} from "./ArıtmaComponents/GunlukComp
 
 export { default as DengelemeHavuzuUpdateModal} from "./ArıtmaComponents/GunlukComponents/UpdateComponents/DengelemeHavuzuUpdateModal";
 export { default as  DengelemeHavuzuUpdateModalForm} from "./ArıtmaComponents/GunlukComponents/UpdateComponents/DengelemeHavuzuUpdateModalForm";
+
 
 
 

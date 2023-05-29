@@ -35,7 +35,7 @@ export default class SystemMessageService {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
       };
-
+      console.log(values);
       await fetch("/api/controller/post/addSystemMessage", options)
         .then((res) => res.json())
         .then((data) => {
@@ -48,14 +48,16 @@ export default class SystemMessageService {
 
   async deleteSystemMessage(code, date) {
     const response = await axios.get(`${URL}/api/controller/get/systemMessage`);
-
+    console.log(response);
     const data = response.data.find(
       (item) =>
         item.messageCode === code &&
         moment(item.createdAt).format("YYYY-MM-DD") === date
     );
 
+
     if (data) {
+
       let values = {};
       const messageCode = {
         messageCode: `${code}`,
@@ -70,6 +72,7 @@ export default class SystemMessageService {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
       };
+
 
       await fetch("/api/controller/post/deleteSystemMessage", options)
         .then((res) => res.json())

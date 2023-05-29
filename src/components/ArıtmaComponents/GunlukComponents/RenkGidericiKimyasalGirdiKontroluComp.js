@@ -197,7 +197,7 @@ export default function RenkGidericiKimyasalGirdiKontroluComponent({ session }) 
                                 type="number"
                                 step="0.01"
                                 name="bosKapAgirligi"
-                                placeholder="Boş Kap Ağirliği"
+                                placeholder="Boş Kap Ağırlığı"
                                 {...formik.getFieldProps("bosKapAgirligi")}
                             />
                         </div>
@@ -206,7 +206,7 @@ export default function RenkGidericiKimyasalGirdiKontroluComponent({ session }) 
                                 type="number"
                                 step="0.01"
                                 name="numuneAgirligi"
-                                placeholder="Numune Ağirliği"
+                                placeholder="Numune Ağırlığı"
                                 {...formik.getFieldProps("numuneAgirligi")}
                             />
                         </div>
@@ -215,7 +215,7 @@ export default function RenkGidericiKimyasalGirdiKontroluComponent({ session }) 
                                 type="number"
                                 step="0.01"
                                 name="kuruToplamAgirlik"
-                                placeholder="Kuru Toplam Ağirlik"
+                                placeholder="Kuru Toplam Ağırlık"
                                 {...formik.getFieldProps("kuruToplamAgirlik")}
                             />
                         </div>

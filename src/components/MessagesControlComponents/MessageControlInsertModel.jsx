@@ -22,10 +22,12 @@ import {
   DesarjInsertForm,
   FiltrepresInsertForm,
   GeriDevirHaznesiInsertForm,
-} from "./Aritma";
+  FiltrepresKimyasalCamurInsertForm,
+  IsiGeriKazanimInsertForm,
+  RenkGidericiKimyasalGirdiKontroluInsertForm 
+} from "./Aritma"
 import { TuzSodaSayacToplamaInsertForm } from "./Tuz";
-import { UserService, EmailService } from "@/services";
-import moment from "moment";
+import { IcmeSuyuInsertForm,YemekhaneSuyuInsertForm,WcSuyuInsertForm } from "./Su"
 
 export default function InsertOldDatasModal({ messageCode, date, session }) {
   const [show, setShow] = useState(false);
@@ -64,6 +66,28 @@ export default function InsertOldDatasModal({ messageCode, date, session }) {
           </div>
         );
         break;
+      case SYSTEM_MESSAGES.S2.code:
+        setModalBody(
+          <div>
+            <IcmeSuyuInsertForm date={date} session={session} />
+          </div>
+        );
+        break;
+      case SYSTEM_MESSAGES.S3.code:
+        setModalBody(
+          <div>
+            <YemekhaneSuyuInsertForm date={date} session={session} />
+          </div>
+        );
+        break;
+      case SYSTEM_MESSAGES.S4.code:
+        setModalBody(
+          <div>
+            <WcSuyuInsertForm date={date} session={session} />
+          </div>
+        );
+        break;
+
       case SYSTEM_MESSAGES.A1.code:
         setModalBody(
           <div>
@@ -148,10 +172,31 @@ export default function InsertOldDatasModal({ messageCode, date, session }) {
           </div>
         );
         break;
+        case SYSTEM_MESSAGES.A12.code:
+        setModalBody(
+          <div>
+            <FiltrepresKimyasalCamurInsertForm date={date} session={session} />
+          </div>
+        );
+        break;
       case SYSTEM_MESSAGES.A13.code:
         setModalBody(
           <div>
             <GeriDevirHaznesiInsertForm date={date} session={session} />
+          </div>
+        );
+        break;
+        case SYSTEM_MESSAGES.A14.code:
+        setModalBody(
+          <div>
+            <IsiGeriKazanimInsertForm date={date} session={session} />
+          </div>
+        );
+        break;
+        case SYSTEM_MESSAGES.A15.code:
+        setModalBody(
+          <div>
+            <RenkGidericiKimyasalGirdiKontroluInsertForm  date={date} session={session} />
           </div>
         );
         break;

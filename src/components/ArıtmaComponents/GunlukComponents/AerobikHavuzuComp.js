@@ -193,7 +193,7 @@ export default function AerobikComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="akm"
-                                placeholder="akm"
+                                placeholder="Akm"
                                 {...formik.getFieldProps("akm")}
                             />
                         </div>
@@ -202,7 +202,7 @@ export default function AerobikComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="imhoff"
-                                placeholder="imhoff"
+                                placeholder="Imhoff"
                                 {...formik.getFieldProps("imhoff")}
                             />
                         </div>

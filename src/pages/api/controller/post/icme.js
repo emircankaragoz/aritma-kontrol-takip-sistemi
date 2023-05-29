@@ -4,7 +4,7 @@ export default async function handler(req, res) {
     if (req.method === "POST") {
         if (!req.body) return res.status(404).json({ error: "Do not have data" });
         try {
-            const { hamsusayac, hamsuTonGun, uretilenSuTonGun,klorCozHazir,klorAnalizSonucuMgL,genelTemizlik,aciklama,employeeId } = req.body;
+            const { hamsusayac, hamsuTonGun, uretilenSuTonGun,klorCozHazir,klorAnalizSonucuMgL,genelTemizlik,aciklama,employeeId,today } = req.body;
             console.log(employeeId);
             const data = await prisma.icmeSuyuTesisiKontrolFormu.create({
                 data: {
@@ -20,6 +20,7 @@ export default async function handler(req, res) {
 
                         }
                     },
+                    dateAndTime: today,
                     category: "su",
                     hamsusayac: `${hamsusayac}`,
                     hamsuTonGun: `${hamsuTonGun}`,

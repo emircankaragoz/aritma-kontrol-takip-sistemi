@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
 import { SuService } from "@/services"
-
+import { AuthFormCSS } from "@/styles";
+import { useRouter } from "next/navigation";
 export default function ModalForm({ dataId }) {
 
     const [allDataById, setAllDataById] = useState({});
     const wcSuyuService = new SuService();
-
+    const router = useRouter();
     async function getAllWcSuyu() {
         if (dataId) {
             await wcSuyuService.getWcSuyuById(dataId)
@@ -58,7 +59,7 @@ export default function ModalForm({ dataId }) {
                 }
             });
 
-       
+            router.refresh();
         
     }
 

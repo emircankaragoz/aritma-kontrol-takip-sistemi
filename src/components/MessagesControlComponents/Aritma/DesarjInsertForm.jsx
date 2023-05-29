@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
-import { SystemMessageService } from "@/services";
+import { SystemMessageService,AritmaService } from "@/services";
 import { useRouter } from "next/navigation";
 import { SYSTEM_MESSAGES } from "../../../../environment";
 import moment from "moment";
@@ -27,7 +27,7 @@ export default function DesarjInsertForm({ date, session }) {
         },
         onSubmit,
     });
-
+    const aritmaService = new AritmaService();
     const employee_id = session.user.employeeId;
     const systemMessageService = new SystemMessageService();
 
@@ -49,9 +49,42 @@ export default function DesarjInsertForm({ date, session }) {
             .then((res) => res.json())
             .then((data) => {
                 if (data) {
-                    deleteSystemMessageHandler();
+                    getValuesFromAmonyumAzotandRenkGidericiForms();
                 }
             });
+    }
+    async function getValuesFromAmonyumAzotandRenkGidericiForms() {
+        const Date = moment.utc(date).format("YYYY-MM-DD");
+        await aritmaService.getValuesCikisAndRenkGidericiToDesarj(Date)
+            .then((result) => {
+                sendDataHandler(result);
+            });
+
+
+    }
+    async function sendDataHandler(result) {
+        const today = {
+            today: moment.utc(date).startOf("day").toISOString(),
+        };
+        result = Object.assign(result, today);
+
+        const options = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(result),
+        };
+
+
+        await fetch("/api/controller/post/updateTransferDesarj", options)
+            .then((res) => res.json())
+            .then((data) => {
+                if (data) {
+                    
+                    
+                }
+            });
+            deleteSystemMessageHandler();
+
     }
 
     async function deleteSystemMessageHandler() {
@@ -59,7 +92,7 @@ export default function DesarjInsertForm({ date, session }) {
             SYSTEM_MESSAGES.A10.code,
             moment(date).format("YYYY-MM-DD")
         );
-        router.refresh();
+       // router.refresh();
     }
 
     return (

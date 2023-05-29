@@ -110,10 +110,10 @@ export default function DesarjComponent({ session }) {
                     });
                 }
             });
-        getValuesFromAnotherForms();
+            getValuesFromAmonyumAzotandRenkGidericiForms();
 
     }
-    async function getValuesFromAnotherForms() {
+    async function getValuesFromAmonyumAzotandRenkGidericiForms() {
         const date = moment(getToday).format("YYYY-MM-DD");
         await aritmaService.getValuesCikisAndRenkGidericiToDesarj(date)
             .then((result) => {
@@ -203,7 +203,7 @@ export default function DesarjComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="debi"
-                                placeholder="debi"
+                                placeholder="Debi"
                                 {...formik.getFieldProps("debi")}
                             />
                         </div>
@@ -212,7 +212,7 @@ export default function DesarjComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="sicaklik"
-                                placeholder="sicaklik"
+                                placeholder="Sıcaklık"
                                 {...formik.getFieldProps("sicaklik")}
                             />
                         </div>
@@ -221,7 +221,7 @@ export default function DesarjComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="ph"
-                                placeholder="ph"
+                                placeholder="pH"
                                 {...formik.getFieldProps("ph")}
                             />
                         </div>
@@ -230,7 +230,7 @@ export default function DesarjComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="koi"
-                                placeholder="koi"
+                                placeholder="Koi"
                                 {...formik.getFieldProps("koi")}
                             />
                         </div>
@@ -239,7 +239,7 @@ export default function DesarjComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="akm"
-                                placeholder="akm"
+                                placeholder="Akm"
                                 {...formik.getFieldProps("akm")}
                             />
                         </div>
@@ -248,7 +248,7 @@ export default function DesarjComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="serbestKlor"
-                                placeholder="serbestKlor"
+                                placeholder="Serbest Klor"
                                 {...formik.getFieldProps("serbestKlor")}
                             />
                         </div>
@@ -257,7 +257,7 @@ export default function DesarjComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="toplamKrom"
-                                placeholder="toplamKrom"
+                                placeholder="Toplam Krom"
                                 {...formik.getFieldProps("toplamKrom")}
                             />
                         </div>
@@ -266,7 +266,7 @@ export default function DesarjComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="sulfur"
-                                placeholder="sulfur"
+                                placeholder="Sülfür"
                                 {...formik.getFieldProps("sulfur")}
                             />
                         </div>
@@ -275,7 +275,7 @@ export default function DesarjComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="sulfit"
-                                placeholder="sulfit"
+                                placeholder="Sülfit"
                                 {...formik.getFieldProps("sulfit")}
                             />
                         </div>
@@ -284,7 +284,7 @@ export default function DesarjComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="fenol"
-                                placeholder="fenol"
+                                placeholder="Fenol"
                                 {...formik.getFieldProps("fenol")}
                             />
                         </div>
@@ -293,7 +293,7 @@ export default function DesarjComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="yagVeGres"
-                                placeholder="yagVeGres"
+                                placeholder="Yağ ve Gres"
                                 {...formik.getFieldProps("yagVeGres")}
                             />
                         </div>
@@ -302,7 +302,7 @@ export default function DesarjComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="klorur"
-                                placeholder="klorur"
+                                placeholder="Klorür"
                                 {...formik.getFieldProps("klorur")}
                             />
                         </div>
@@ -311,7 +311,7 @@ export default function DesarjComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="sulfat"
-                                placeholder="sulfat"
+                                placeholder="Sülfat"
                                 {...formik.getFieldProps("sulfat")}
                             />
                         </div>
@@ -320,7 +320,7 @@ export default function DesarjComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="demir"
-                                placeholder="demir"
+                                placeholder="Demir"
                                 {...formik.getFieldProps("demir")}
                             />
                         </div>
@@ -329,7 +329,7 @@ export default function DesarjComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="cinko"
-                                placeholder="cinko"
+                                placeholder="Çinko"
                                 {...formik.getFieldProps("cinko")}
                             />
                         </div>

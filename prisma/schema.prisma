@@ -226,8 +226,8 @@ model YemekhaneVeKullanmaSuyu {
   iletkenlik          String @db.VarChar(45)
   genelTemizlik       String @map(name: "genel_temizlik") @db.VarChar(45)
   aciklama            String @db.VarChar(45)
-  subCategory         String @db.VarChar(45)
 }
+
 
 model WcVeKullanmaSuyu {
   id          Int      @id @default(autoincrement())
@@ -248,7 +248,6 @@ model WcVeKullanmaSuyu {
   iletkenlik          String @db.VarChar(45)
   genelTemizlik       String @map(name: "genel_temizlik") @db.VarChar(45)
   aciklama            String @db.VarChar(45)
-  subCategory         String @db.VarChar(45)
 }
 
 // Arıtma
@@ -797,7 +796,7 @@ model SodaTesisiKontrolFormu {
 
 model SystemMessage {
   id          Int      @id @default(autoincrement())
-  title       String?  @db.VarChar(45)
+  title       String?  @db.VarChar(65)
   content     String?
   createdAt   DateTime @default(now()) @map(name: "created_at")
   messageCode String   @db.VarChar(30)
@@ -863,4 +862,19 @@ model Sbt_WCSuyu {
 model EmailOutcome {
   id          Int      @id @default(autoincrement())
   dateAndTime DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
+}
+
+//Arıtma Sabitler
+model Sbt_RenkGidericiTuketimiTakipFormu {
+  id                          Int     @id @default(autoincrement())
+  yavasKaristirmaHavCikisiMin String? @db.VarChar(45)
+  yavasKaristirmaHavCikisiMax String? @db.VarChar(45)
+  kimyasalCokHavCikisiRenkMin String? @db.VarChar(45)
+  kimyasalCokHavCikisiRenkMax String? @db.VarChar(45)
+}
+
+model Sbt_FiltrepresAnalizFormu {
+  id              Int     @id @default(autoincrement())
+  camurKekiNemMin String? @db.VarChar(45)
+  camurKekiNemMax String? @db.VarChar(45)
 }

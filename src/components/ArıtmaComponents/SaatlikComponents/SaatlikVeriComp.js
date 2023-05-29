@@ -173,6 +173,9 @@ export default function SaatlikVeriComponent({ session }) {
 
         <div className="container p-2">
             <div className="d-flex  flex-column mx-auto w-50">
+            <p className="text-muted text-center fs-5 fw-bolder pb-3">
+                    SAATLİK VERİ EŞ. TAKİP FORMU 
+                </p>
                 <section>
                     <form onSubmit={formik.handleSubmit} className="d-flex flex-column gap-3 ">
                         <div className={AuthFormCSS.input_group}>
@@ -258,7 +261,7 @@ export default function SaatlikVeriComponent({ session }) {
             <hr />
             <section>
                 <p className="text-muted text-center fs-5 fw-bolder pb-3">
-                    SAATLİK VERİ EŞ. TAKİP FORMU
+                    SAATLİK VERİ EŞ. TAKİP FORMU VERİLERİ
                 </p>
 
                 <div className="row">

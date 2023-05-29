@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
-import { SystemMessageService } from "@/services";
+import { SystemMessageService,AritmaService } from "@/services";
 import { useRouter } from "next/navigation";
 import { SYSTEM_MESSAGES } from "../../../../environment";
 import moment from "moment";
@@ -15,7 +15,7 @@ export default function AerobikHavuzuInsertForm({ date, session }) {
         },
         onSubmit,
     });
-
+    const aritmaService = new AritmaService();
     const employee_id = session.user.employeeId;
     const systemMessageService = new SystemMessageService();
 
@@ -37,9 +37,38 @@ export default function AerobikHavuzuInsertForm({ date, session }) {
             .then((res) => res.json())
             .then((data) => {
                 if (data) {
-                    deleteSystemMessageHandler();
+                    transferDataFromSaatlikToAerobik();
                 }
             });
+    }
+    async function transferDataFromSaatlikToAerobik() {
+        await aritmaService.getTransferValuesSatlikVeriEsToAerobikHavuzu()
+            .then((result) => {
+                sendDataHandler(result);
+            });
+
+    }
+    async function sendDataHandler(result) {
+        const employeeId = {
+            employeeId: `${employee_id}`,
+        };
+        const today = {
+            today: moment.utc(date).startOf("day").toISOString(),
+        };
+        result = Object.assign(result, employeeId,today);
+        console.log(result);
+        const options = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(result),
+        };
+        await fetch("/api/controller/post/updateTransferAerobikHavuzu", options)
+            .then((res) => res.json())
+            .then((data) => {
+            });
+
+            deleteSystemMessageHandler();
+
     }
 
     async function deleteSystemMessageHandler() {

@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
 import { SuService } from "@/services"
-
+import { useRouter } from "next/navigation";
 export default function ModalForm({ dataId }) {
 
     const [allDataById, setAllDataById] = useState({});
     const yemekhaneSuyuService = new SuService();
-
+    const router = useRouter();
     async function getAllYemekhaneSuyuDataHandler() {
         if (dataId) {
             await yemekhaneSuyuService.getYemekhaneSuyuById(dataId)
@@ -58,7 +58,7 @@ export default function ModalForm({ dataId }) {
                 }
             });
 
-       
+            router.refresh();
         
     }
 

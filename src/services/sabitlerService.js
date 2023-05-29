@@ -73,4 +73,28 @@ export default class SabitlerService {
     return su;
   }
 
+  /* ARITMA */
+  /* RENK GİDERİCİ TÜKETİMİ TAKİP FORMU  */
+
+  async aritma_getAllRenkGidericiTuketimiSabitler(){
+    let aritma;
+    await axios
+      .get(`${URL}/api/controller/get/sbt_RenkGidericiTuketimi`)
+      .then((result) => {
+        let lastItem = result.data.pop();
+        aritma = lastItem;
+      });
+    return aritma;
+  }
+  /* FİLTREPRES ANALİZ FORMU  */
+  async aritma_getAllFiltrepresSabitler(){
+    let aritma;
+    await axios
+      .get(`${URL}/api/controller/get/sbt_Filtrepres`)
+      .then((result) => {
+        let lastItem = result.data.pop();
+        aritma = lastItem;
+      });
+    return aritma;
+  }
 }

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
-import { SystemMessageService } from "@/services";
+import { SystemMessageService, AritmaService } from "@/services";
 import { useRouter } from "next/navigation";
 import { SYSTEM_MESSAGES } from "../../../../environment";
 import moment from "moment";
 
 export default function AtiksuAritmaGirisCikisInsertForm({ date, session }) {
     const router = useRouter();
-
+    const getToday = moment.utc(date).startOf("day").toISOString();
     const formik = useFormik({
         initialValues: {
             girisAtiksuSayacDegeri: "",
@@ -19,7 +19,7 @@ export default function AtiksuAritmaGirisCikisInsertForm({ date, session }) {
 
     const employee_id = session.user.employeeId;
     const systemMessageService = new SystemMessageService();
-
+    const aritmaService = new AritmaService();
     async function onSubmit(values) {
         const employeeId = {
             employeeId: `${employee_id}`,
@@ -38,9 +38,98 @@ export default function AtiksuAritmaGirisCikisInsertForm({ date, session }) {
             .then((res) => res.json())
             .then((data) => {
                 if (data) {
-                    deleteSystemMessageHandler();
+                    transferDataToSameForm();
                 }
             });
+    }
+    async function transferDataToSameForm() {
+        const Date = moment.utc(date).format("YYYY-MM-DD");
+        await aritmaService
+            .getCalculationAtiksuAritmaGirisCikis(Date)
+            .then((result) => {
+                sendDataHandler(result);
+            });
+
+    }
+    async function sendDataHandler(result) {
+        const options = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(result),
+        };
+
+        await fetch("/api/controller/post/updateTransferAtiksuAritmaGirisCikis", options)
+            .then((res) => res.json())
+            .then((data) => {
+                if (data) {
+
+                }
+            });
+            transferDataToCamurYogunlastirmaForm();
+            
+           
+    }
+    async function transferDataToCamurYogunlastirmaForm() {
+        const Date = moment.utc(date).format("YYYY-MM-DD");
+        await aritmaService.getTransferDataToCamurYogunlastirmaFromAtiksuAritmaGirisCikis(Date)   
+            .then((result) => {
+                sendDataHandlerSecond(result);
+            });
+    }
+    async function sendDataHandlerSecond(result) {
+        const employeeId = {
+            employeeId: `${employee_id}`,
+        };
+        const today = {
+            today :`${getToday}`,
+        }
+        result = Object.assign(result, employeeId,today);
+        console.log(result);
+        const options = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(result),
+        };
+       
+        
+        await fetch("/api/controller/post/addCamurYogunlastirma", options)
+          .then((res) => res.json())
+          .then((data) => {
+            if (data) {
+
+            }
+          });  
+          
+          updateTransferDataToDengelemeHavuzu();
+          
+         
+    }
+    async function updateTransferDataToDengelemeHavuzu() {
+        const Date = moment.utc(date).format("YYYY-MM-DD");
+        await aritmaService.getValuesGunlukAtıksuSayacıToDengelemeHavuzu(Date)
+            .then((result) => {
+                sendDataHandlerThird(result);
+            });
+
+    }
+    async function sendDataHandlerThird(result) {
+        const today = {
+            today: `${getToday}`,
+        }
+        result = Object.assign(result, today);
+        const options = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(result),
+        };
+        await fetch("/api/controller/post/updateTransferDengelemeHavuzu", options)
+            .then((res) => res.json())
+            .then((data) => {
+                if (data) {
+
+                }
+            });
+            deleteSystemMessageHandler()
     }
 
     async function deleteSystemMessageHandler() {

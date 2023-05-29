@@ -12,6 +12,7 @@ import {
   Sbt_WCSuyu,
   Sbt_YemekhaneSuyu,
 } from "@/components/SabitlerVeLimitlerComponents/Su";
+import {Sbt_RenkGidericiTuketimiTakipFormu, Sbt_FiltrepresAnalizFormu} from "@/components/SabitlerVeLimitlerComponents/Aritma"
 
 export default function SabitlerLimitlerPage({ session }) {
   const [key, setKey] = useState("first");
@@ -66,6 +67,9 @@ export default function SabitlerLimitlerPage({ session }) {
           </Tab>
           <Tab eventKey="third" title="Arıtma">
             <p className="mt-2 mb-2 text-center fs-3 fw-bold">Arıtma</p>
+            <Sbt_RenkGidericiTuketimiTakipFormu/>
+            <hr />
+            <Sbt_FiltrepresAnalizFormu/>
           </Tab>
         </Tabs>
       </Layout>

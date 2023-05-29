@@ -50,6 +50,7 @@ export default function Panel({ session }) {
       password: `${values.employeeId}`,
     };
     values = Object.assign(values, password);
+    console.log(values);
     const options = {
       method: "POST",
       headers: { "Content-Type": "application/json" },

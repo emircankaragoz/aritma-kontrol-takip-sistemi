@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
-import { SystemMessageService } from "@/services";
+import { SystemMessageService, AritmaService } from "@/services";
 import { useRouter } from "next/navigation";
 import { SYSTEM_MESSAGES } from "../../../../environment";
 import moment from "moment";
@@ -14,7 +14,7 @@ export default function AmonyumAzotAnalizCikisInsertForm({ date, session }) {
         },
         onSubmit,
     });
-
+    const aritmaService = new AritmaService();
     const employee_id = session.user.employeeId;
     const systemMessageService = new SystemMessageService();
 
@@ -36,9 +36,43 @@ export default function AmonyumAzotAnalizCikisInsertForm({ date, session }) {
             .then((res) => res.json())
             .then((data) => {
                 if (data) {
-                    deleteSystemMessageHandler();
+                    updateTransferDataToDesarj();
                 }
             });
+    }
+    async function updateTransferDataToDesarj() {
+        const Date = moment.utc(date).format("YYYY-MM-DD");
+        await aritmaService.getValuesCikisToDesarj(Date)
+            .then((result) => {
+                sendDataHandler(result);
+            });
+
+    }
+    async function sendDataHandler(result) {
+        
+        const employeeId = {
+            employeeId: `${employee_id}`,
+        };
+        const today = {
+            today: moment.utc(date).startOf("day").toISOString(),
+        };
+        result = Object.assign(result, employeeId, today);
+        const options = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(result),
+        };
+        await fetch("/api/controller/post/updateTransferDesarjAmonyumAzot", options)
+            .then((res) => res.json())
+            .then((data) => {
+
+            });
+            deleteSystemMessageHandler();
+       
+
+        
+
+
     }
 
     async function deleteSystemMessageHandler() {

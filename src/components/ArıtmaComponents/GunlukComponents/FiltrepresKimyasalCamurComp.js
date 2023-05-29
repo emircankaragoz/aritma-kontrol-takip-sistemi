@@ -137,6 +137,7 @@ export default function FiltrepresKimyasalComponent({ session }) {
 
 
     return (
+        
         <div className="container p-2">
             <div className="d-flex  flex-column mx-auto w-50">
                 <p className="text-muted text-center fs-5 fw-bolder pb-3 mt-3">
@@ -240,7 +241,7 @@ export default function FiltrepresKimyasalComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="hazirlananKirecBirimFiyatTL"
-                                placeholder="Hazirlanan Kireç Birim Fiyat TL"
+                                placeholder="Hazirlanan Kireç Birim Fiyat (TL)"
                                 {...formik.getFieldProps("hazirlananKirecBirimFiyatTL")}
                             />
                         </div>
@@ -284,20 +285,20 @@ export default function FiltrepresKimyasalComponent({ session }) {
                                     <th scope="col">Çalışma Saati Bitiş</th>
                                     <th scope="col">Kireç Sarfiyat Başlangiç (Lt)</th>
                                     <th scope="col">Kireç Sarfiyat Bitiş (Lt)</th>
-                                    <th scope="col">net Kireç Sarfiyati (Lt)</th>
-                                    <th scope="col">net Kireç Sarfiyati (kg)</th>
+                                    <th scope="col"  className="text-danger">Net Kireç Sarfiyati (Lt)</th>
+                                    <th scope="col"  className="text-danger">Net Kireç Sarfiyati (kg)</th>
                                     <th scope="col">FeCl3 Sarfiyati Başlangıç (Lt)</th>
                                     <th scope="col">FeCl3 Sarfiyati Bitiş (Lt)</th>
-                                    <th scope="col">FeCl3 Sarfiyati (Lt)</th>
-                                    <th scope="col">FeCl3 Sarfiyati (kg)</th>
+                                    <th scope="col" className="text-danger">FeCl3 Sarfiyati (Lt)</th>
+                                    <th scope="col"  className="text-danger">FeCl3 Sarfiyati (kg)</th>
                                     <th scope="col">Yoğunlaştırma<br/> Katı <br />Madde %</th>
                                     <th scope="col">Çamur Keki Nem %</th>
                                     <th scope="col">Hazirlanan Kireç Miktari (kg)</th>
                                     <th scope="col">Hazirlanan Kireç Birim Fiyat TL</th>
-                                    <th scope="col">Hazirlanan Kireç Miktari TL</th>
-                                    <th scope="col">Hazirlanan FeCl3 Miktari (kg)</th>
+                                    <th scope="col"  className="text-danger">Hazirlanan Kireç Miktari TL</th>
+                                    <th scope="col"  className="text-danger">Hazirlanan FeCl3 Miktari (kg)</th>
                                     <th scope="col">Hazirlanan FeCl3 Birim Fiyat (TL)</th>
-                                    <th scope="col">Hazirlanan FeCl3 Miktari (TL)</th>
+                                    <th scope="col"  className="text-danger">Hazirlanan FeCl3 Miktari (TL)</th>
                                     <th scope="col">.</th>
 
                                 </tr>
@@ -355,7 +356,10 @@ export default function FiltrepresKimyasalComponent({ session }) {
                 </div>
 
             </section>
+            
         </div>
+
+        
     )
 
 

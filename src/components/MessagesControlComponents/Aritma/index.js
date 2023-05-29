@@ -10,3 +10,6 @@ export { default as DengelemeHavuzuInsertForm } from './DengelemeHavuzuInsertFor
 export { default as DesarjInsertForm } from './DesarjInsertForm';
 export { default as FiltrepresInsertForm } from './FiltrepresInsertForm';
 export { default as GeriDevirHaznesiInsertForm } from './GeriDevirHaznesiInsertForm';
+export { default as FiltrepresKimyasalCamurInsertForm } from './FiltrepresKimyasalCamurInsertForm';
+export { default as IsiGeriKazanimInsertForm } from './IsiGeriKazanimInsertForm';
+export { default as RenkGidericiKimyasalGirdiKontroluInsertForm } from './RenkGidericiKimyasalGirdiKontroluInsertForm';

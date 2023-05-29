@@ -79,10 +79,8 @@ export default function AmonyumAzotuAnalizDengelemeComponent({ session, subCateg
         const today = {
             today: `${getToday}`,
         }
-        const subcategory = {
-            subcategory: `${subCategory}`,
-        };
-        values = Object.assign(values, employeeId, today, subcategory);
+
+        values = Object.assign(values, employeeId, today);
 
         const options = {
             method: "POST",
@@ -98,44 +96,10 @@ export default function AmonyumAzotuAnalizDengelemeComponent({ session, subCateg
                     });
                 }
             });
-        updateTransferDataToDengelemeHavuzu();
+            updateTransferAmonyumAzotAnalizToDengelemeHavuzu();
     }
-    async function updateTransferDataToDengelemeHavuzu() {
-        const date = moment(getToday).format("YYYY-MM-DD");
-        await aritmaService.getValuesCikisToDesarj(date)
-            .then((result) => {
-                sendDataHandler(result);
-            });
 
-    }
-    async function sendDataHandler(result) {
-        const today = {
-            today: `${getToday}`,
-        }
-        result = Object.assign(result, today);
-        const options = {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(result),
-        };
-        await fetch("/api/controller/post/updateTransferDesarjAmonyumAzot", options)
-            .then((res) => res.json())
-            .then((data) => {
-                if (data) {
-                    toast.success(
-                        "Veriler başarıyla güncellendi.",
-                        {
-                            position: toast.POSITION.BOTTOM_RIGHT,
-                        }
-                    );
-                }
-            });
-
-        updateTransferAmonyumAzotAnalizToDengelemeHavuzu();
-
-
-
-    }
+ 
     async function updateTransferAmonyumAzotAnalizToDengelemeHavuzu() {
         const date = moment(getToday).format("YYYY-MM-DD");
         await aritmaService.getValuesAmonyumAzotToDengelemeHavuzu(date)
@@ -145,10 +109,12 @@ export default function AmonyumAzotuAnalizDengelemeComponent({ session, subCateg
 
     }
     async function sendDataHandlerSecond(result) {
+        
         const today = {
             today: `${getToday}`,
         }
         result = Object.assign(result, today);
+        console.log(result);
         const options = {
             method: "POST",
             headers: { "Content-Type": "application/json" },

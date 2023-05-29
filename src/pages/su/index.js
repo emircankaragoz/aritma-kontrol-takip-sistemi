@@ -67,7 +67,6 @@ export default function SuPage({ session }) {
             >
               <YemekhaneSuyuKontrolForm
                 session={session}
-                subCategory={keySecond}
               />
             </Tab>
             <Tab eventKey="wc" title="WC Kullanım Suyu 2. Tank">

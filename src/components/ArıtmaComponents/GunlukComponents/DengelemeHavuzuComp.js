@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { AuthFormCSS } from "@/styles";
 import { toast } from "react-toastify";
-import { AritmaService, UserService,SystemMessageService } from "@/services"
+import { AritmaService, UserService, SystemMessageService } from "@/services"
 import moment from "moment/moment";
 import { useRouter } from "next/navigation";
 import { RiDeleteBin5Line } from "react-icons/ri";
-import {DengelemeHavuzuUpdateModal} from "@/components"
+import { DengelemeHavuzuUpdateModal } from "@/components"
 import { SYSTEM_MESSAGES } from "../../../../environment";
 export default function DengelemeHavuzuComponent({ session }) {
     const [allData, setAllData] = useState([]);
@@ -103,11 +103,43 @@ export default function DengelemeHavuzuComponent({ session }) {
                     });
                 }
             });
-            //getValuesFromAnotherForms();
 
-        
+        getValuesFromAmonyumAzotandGunlukAtıksuSayacıForms();
 
 
+
+
+    }
+    async function getValuesFromAmonyumAzotandGunlukAtıksuSayacıForms() {
+        const date = moment(getToday).format("YYYY-MM-DD");
+        await aritmaService.getValuesAmonyumAzotAndGunlukAtıksuSayacıToDengelemeHavuzu(date)
+            .then((result) => {
+                sendDataHandler(result);
+            });
+
+
+    }
+    async function sendDataHandler(result) {
+        const today = {
+            today: `${getToday}`,
+        }
+        result = Object.assign(result, today);
+        console.log(result);
+        const options = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(result),
+        };
+
+
+        await fetch("/api/controller/post/updateTransferDengelemeHavuzuFromAmonyumAzotandGunlukAtıksuSayacı", options)
+            .then((res) => res.json())
+            .then((data) => {
+                if (data) {
+                    
+                }
+            });
+            //router.refresh();
 
     }
 
@@ -164,7 +196,7 @@ export default function DengelemeHavuzuComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="sicaklik"
-                                placeholder="sicaklik"
+                                placeholder="Sıcaklık"
                                 {...formik.getFieldProps("sicaklik")}
                             />
                         </div>
@@ -173,7 +205,7 @@ export default function DengelemeHavuzuComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="ph"
-                                placeholder="ph"
+                                placeholder="pH"
                                 {...formik.getFieldProps("ph")}
                             />
                         </div>
@@ -182,7 +214,7 @@ export default function DengelemeHavuzuComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="koi"
-                                placeholder="koi"
+                                placeholder="Koi"
                                 {...formik.getFieldProps("koi")}
                             />
                         </div>
@@ -191,7 +223,7 @@ export default function DengelemeHavuzuComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="akm"
-                                placeholder="akm"
+                                placeholder="Akm"
                                 {...formik.getFieldProps("akm")}
                             />
                         </div>
@@ -200,7 +232,7 @@ export default function DengelemeHavuzuComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="sulfit"
-                                placeholder="sulfit"
+                                placeholder="Sülfit"
                                 {...formik.getFieldProps("sulfit")}
                             />
                         </div>
@@ -209,7 +241,7 @@ export default function DengelemeHavuzuComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="fosfor"
-                                placeholder="fosfor"
+                                placeholder="Fosfor"
                                 {...formik.getFieldProps("fosfor")}
                             />
                         </div>
@@ -218,7 +250,7 @@ export default function DengelemeHavuzuComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="azot"
-                                placeholder="azot"
+                                placeholder="Azot"
                                 {...formik.getFieldProps("azot")}
                             />
                         </div>
@@ -226,7 +258,7 @@ export default function DengelemeHavuzuComponent({ session }) {
                             <input className="form-control"
                                 type="text"
                                 name="renk"
-                                placeholder="renk"
+                                placeholder="Renk"
                                 {...formik.getFieldProps("renk")}
                             />
                         </div>
@@ -298,7 +330,7 @@ export default function DengelemeHavuzuComponent({ session }) {
                                                     </span>
                                                 </span>
                                                 <span>
-                                                <DengelemeHavuzuUpdateModal dataId = {data.id}/>
+                                                    <DengelemeHavuzuUpdateModal dataId={data.id} />
                                                 </span>
 
 

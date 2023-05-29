@@ -8,6 +8,8 @@ export default async function handler(req, res) {
         const { girisAtiksuSayacDegeri, cikisAtiksuSayacDegeri,kimyasalCokeltimdenCekilenCamurMiktari_m3gun, IdData } = req.body;
         
         const ID = parseInt(IdData);
+        console.log(ID);
+        console.log(IdData);
         const checkexisting = await prisma.atiksuAritmaTesisiGirisVeCikisAtiksuMiktari.findUnique({
             where: { id: ID },
             select: {
@@ -16,6 +18,7 @@ export default async function handler(req, res) {
         });
 
         if (checkexisting !== null) {
+            console.log("hi");
 
             try {
                 const data = await prisma.atiksuAritmaTesisiGirisVeCikisAtiksuMiktari.update({

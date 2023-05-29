@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { AuthFormCSS } from "@/styles";
 import { toast } from "react-toastify";
-import { AritmaService, UserService,SystemMessageService  } from "@/services"
+import { AritmaService, UserService,SystemMessageService } from "@/services"
 import { RiDeleteBin5Line } from "react-icons/ri";
 import moment from "moment/moment";
 import { useRouter } from "next/navigation";
@@ -25,8 +25,9 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
     });
     const atiksuAritmaGirisCikis = new AritmaService();
     const userService = new UserService();
-    const employee_id = session.user.employeeId;
     const systemMessageService = new SystemMessageService();
+    const employee_id = session.user.employeeId;
+   
 
 
     async function getAllAtiksuAritmaGirisCikisDataHandler() {
@@ -53,16 +54,17 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
         if (result) {
             setIsDataEntered(true);
             deleteSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
+            
 
         } else {
             setIsDataEntered(false);
             createdSystemMessageHandler(moment(getToday).format("YYYY-MM-DD"));
+            
         }
     }
     async function deleteSystemMessageHandler(date) {
         await systemMessageService.deleteSystemMessage(SYSTEM_MESSAGES.A7.code, date);
     }
-
     async function createdSystemMessageHandler(date) {
         await systemMessageService.addSystemMessage(
             SYSTEM_MESSAGES.A7.content,
@@ -71,6 +73,7 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
             date
         );
     }
+    
     useEffect(() => {
         getAllAtiksuAritmaGirisCikisDataHandler();
         getSessionUserHandler();
@@ -123,7 +126,7 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                 }
             });
 
-        router.refresh();
+        //router.refresh();
 
        
             
@@ -206,12 +209,7 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
           .then((res) => res.json())
           .then((data) => {
             if (data) {
-              toast.success(
-                "Veriler Camur Yogunlastırma formuna başarıyla gönderildi",
-                {
-                  position: toast.POSITION.BOTTOM_RIGHT,
-                }
-              );
+
             }
           });  
           
@@ -243,14 +241,10 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
             .then((res) => res.json())
             .then((data) => {
                 if (data) {
-                    toast.success(
-                        "Veriler başarıyla güncellendi",
-                        {
-                            position: toast.POSITION.BOTTOM_RIGHT,
-                        }
-                    );
+
                 }
             });
+            router.refresh();
 
     }
 
@@ -371,7 +365,7 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                                                     </span>
                                                 </span>
                                                 <span>
-                                                    <AtiksuAritmaGirisCikisUpdateModal dataId={data.id} />
+                                                    <AtiksuAritmaGirisCikisUpdateModal dataId={data.id}/>
                                                 </span>
 
                                             </td>

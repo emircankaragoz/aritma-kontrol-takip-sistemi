@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
-import { SystemMessageService } from "@/services";
+import { SystemMessageService,AritmaService } from "@/services";
 import { useRouter } from "next/navigation";
 import { SYSTEM_MESSAGES } from "../../../../environment";
 import moment from "moment";
+import { toast } from "react-toastify";
 
 export default function AmonyumAzotAnalizDengelemeInsertForm({ date, session }) {
     const router = useRouter();
-
+    const getToday = moment().startOf("day").format();
     const formik = useFormik({
         initialValues: {
             veriGirisiAbzorbans: "",
         },
         onSubmit,
     });
-
+    const aritmaService = new AritmaService();
     const employee_id = session.user.employeeId;
     const systemMessageService = new SystemMessageService();
 
@@ -36,10 +37,45 @@ export default function AmonyumAzotAnalizDengelemeInsertForm({ date, session }) 
             .then((res) => res.json())
             .then((data) => {
                 if (data) {
-                    deleteSystemMessageHandler();
+
                 }
             });
+            updateTransferAmonyumAzotAnalizToDengelemeHavuzu();
+           
     }
+    
+    async function updateTransferAmonyumAzotAnalizToDengelemeHavuzu() {
+        const Date = moment.utc(date).format("YYYY-MM-DD");
+        await aritmaService.getValuesAmonyumAzotToDengelemeHavuzu(Date)
+            .then((result) => {
+                sendDataHandlerSecond(result);
+            });
+
+    }
+    async function sendDataHandlerSecond(result) {
+        const today = {
+            today: moment.utc(date).startOf("day").toISOString(),
+        };
+        result = Object.assign(result, today);
+        const options = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(result),
+        };
+        await fetch("/api/controller/post/updateTransferDengelemeHavuzu", options)
+            .then((res) => res.json())
+            .then((data) => {
+                if (data) {
+                    
+                }
+            });
+            deleteSystemMessageHandler();
+       
+
+            
+
+    }
+
 
     async function deleteSystemMessageHandler() {
         await systemMessageService.deleteSystemMessage(
@@ -47,6 +83,9 @@ export default function AmonyumAzotAnalizDengelemeInsertForm({ date, session }) 
             moment(date).format("YYYY-MM-DD")
         );
         router.refresh();
+       
+        
+        
     }
 
     return (

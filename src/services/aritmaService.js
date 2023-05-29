@@ -273,6 +273,49 @@ export default class AritmaService {
 
     };
   }
+  //AMONYUM AZOT ANALİZ DENGELEME VE GÜNLÜK ATIKSU SAYACINDAN --> DENGELEME HAVUZUNA
+
+  async getValuesAmonyumAzotAndGunlukAtıksuSayacıToDengelemeHavuzu(datetime) {
+
+    let amonyumAzot;
+    let debi;
+
+    const response = await axios.get(
+      `${URL}/api/controller/get/amonyumAzotuAnalizDengeleme`
+    );
+    const response2 = await axios.get(
+      `${URL}/api/controller/get/atiksuAritmaGirisCikis`
+    );
+    const data = response.data.find(
+      (item) => moment(item.dateAndTime).format("YYYY-MM-DD") == datetime
+    );
+    const data2 = response2.data.find(
+      (item) => moment(item.dateAndTime).format("YYYY-MM-DD") == datetime
+    );
+    
+
+    if (data && data2) {
+      amonyumAzot = data.seyreltme;
+      debi = data2.girisAtiksuMiktariM3Gun;
+
+    }
+    else if(data){
+      amonyumAzot = data.seyreltme;
+      debi = 0;
+    }
+    else if (data2){
+      debi = data2.girisAtiksuMiktariM3Gun;
+      amonyumAzot = 0;
+    }
+    else {
+      amonyumAzot = 0;
+      debi = 0;
+    }
+    return {
+      amonyumAzot,
+      debi
+    };
+  }
 
   //CİKİS
   async getAllAmonyumAzotuAnalizCikisVerileri() {
@@ -459,8 +502,24 @@ export default class AritmaService {
     const data2 = response2.data.map(item => parseFloat(item.kimyasalCokHavCikisiRenk));
     //Kimyasal  Çök Hav Çıkışı Renk Mak 280 Pt-co 
     if (data && data2) {
-      console.log(data2);
       amonyumAzotu = data.sonuc;
+      renkGidericiTuketimiTotal = data2.reduce((total, item) => {
+        const renkFloat = parseFloat(item);
+        if (!isNaN(renkFloat)) {
+          return total + renkFloat;
+        } else {
+          return total;
+        }
+      }, 0);
+      renkGidericiTuketimiCount = data2.length;
+      renk = renkGidericiTuketimiTotal / renkGidericiTuketimiCount;
+    }
+    else if(data){
+      amonyumAzotu = data.sonuc;
+      renk = 0;
+    }
+    else if (data2){
+      amonyumAzotu = 0;
       renkGidericiTuketimiTotal = data2.reduce((total, item) => {
         const renkFloat = parseFloat(item);
         if (!isNaN(renkFloat)) {
@@ -477,6 +536,7 @@ export default class AritmaService {
       renk = 0;
     }
     return {
+      
       amonyumAzotu,
       renk
     };

@@ -8,6 +8,7 @@ export default function ModalForm({ dataId }) {
 
     const [allDataById, setAllDataById] = useState({});
     const atiksuAritmaGirisCikis = new AritmaService();
+
     const getToday = moment().startOf("day").format();
     const router = useRouter();
     async function getAllAtiksuAritmaGirisCikisDataHandler() {
@@ -33,38 +34,7 @@ export default function ModalForm({ dataId }) {
         onSubmit,
     });
 
-    async function afterOnSubmit(){
-        const date = moment(getToday).format("YYYY-MM-DD");
-        await atiksuAritmaGirisCikis
-            .getCalculationAtiksuAritmaGirisCikis(date)
-            .then((result) => {
-                sendDataHandler(result);
-            });
-    }
-     //adding operation update
-     async function sendDataHandler(result) {
-        const options = {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(result),
-        };
-
-        await fetch("/api/controller/post/updateAtiksuAritmaGirisCikisValues", options)
-            .then((res) => res.json())
-            .then((data) => {
-                if (data) {
-                    toast.success(
-                        "Güncelleme başarıyla yapıldı.",
-                        {
-                            position: toast.POSITION.BOTTOM_RIGHT,
-                        }
-                    );
-                }
-            });
-
-            
-           
-    }
+     
 
     async function onSubmit(values) {
         const IdData = {
@@ -87,8 +57,114 @@ export default function ModalForm({ dataId }) {
                     });
                 }
             });
-        afterOnSubmit();
+            transferDataToSameForm();
         
+    }
+    async function transferDataToSameForm() {
+        const date = moment(getToday).format("YYYY-MM-DD");
+        await atiksuAritmaGirisCikis
+            .getCalculationAtiksuAritmaGirisCikis(date)
+            .then((result) => {
+                sendDataHandler(result);
+            });
+
+    }
+      //adding operation update
+      async function sendDataHandler(result) {
+        const options = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(result),
+        };
+
+        await fetch("/api/controller/post/updateTransferAtiksuAritmaGirisCikis", options)
+            .then((res) => res.json())
+            .then((data) => {
+                if (data) {
+                    toast.success(
+                        "Hesaplamalar başarıyla yapıldı.",
+                        {
+                            position: toast.POSITION.BOTTOM_RIGHT,
+                        }
+                    );
+                }
+            });
+            transferDataToCamurYogunlastirmaForm();
+            
+           
+    }
+    // hesaplanan veriler camur yogunlastırma formuna aktarılıyor.
+    async function transferDataToCamurYogunlastirmaForm() {
+        const date = moment(getToday).format("YYYY-MM-DD");
+        await atiksuAritmaGirisCikis.getTransferDataToCamurYogunlastirmaFromAtiksuAritmaGirisCikis(date)   
+            .then((result) => {
+                sendDataHandlerSecond(result);
+            });
+    }
+       //camur yogunlastirma data handler
+       async function sendDataHandlerSecond(result) {
+        const today = {
+            today :`${getToday}`,
+        }
+        result = Object.assign(result,today);
+        console.log(result);
+        const options = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(result),
+        };
+       
+        
+        await fetch("/api/controller/post/addCamurYogunlastirma", options)
+          .then((res) => res.json())
+          .then((data) => {
+            if (data) {
+              toast.success(
+                "Veriler Camur Yogunlastırma formuna başarıyla gönderildi",
+                {
+                  position: toast.POSITION.BOTTOM_RIGHT,
+                }
+              );
+            }
+          });  
+          
+          updateTransferDataToDengelemeHavuzu();
+          
+         
+    }
+    //ATİKSU ARİTMA GİRİS CİKİSTAN DENGELEME HAVUZUNA DEBİ AKTARIMI
+    async function updateTransferDataToDengelemeHavuzu() {
+        const date = moment(getToday).format("YYYY-MM-DD");
+        await atiksuAritmaGirisCikis.getValuesGunlukAtıksuSayacıToDengelemeHavuzu(date)
+            .then((result) => {
+                sendDataHandlerThird(result);
+            });
+
+    }
+    async function sendDataHandlerThird(result) {
+        const today = {
+            today: `${getToday}`,
+        }
+        result = Object.assign(result, today);
+        const options = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(result),
+        };
+        await fetch("/api/controller/post/updateTransferDengelemeHavuzu", options)
+            .then((res) => res.json())
+            .then((data) => {
+                if (data) {
+                    toast.success(
+                        "Veriler başarıyla güncellendi",
+                        {
+                            position: toast.POSITION.BOTTOM_RIGHT,
+                        }
+                    );
+                }
+            });
+            //router.refresh();
+
     }
 
 

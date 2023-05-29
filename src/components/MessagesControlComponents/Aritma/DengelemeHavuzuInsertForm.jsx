@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
-import { SystemMessageService } from "@/services";
+import { SystemMessageService,AritmaService } from "@/services";
 import { useRouter } from "next/navigation";
 import { SYSTEM_MESSAGES } from "../../../../environment";
 import moment from "moment";
@@ -20,7 +20,7 @@ export default function DengelemeHavuzuInsertForm({ date, session }) {
         },
         onSubmit,
     });
-
+    const aritmaService = new AritmaService();
     const employee_id = session.user.employeeId;
     const systemMessageService = new SystemMessageService();
 
@@ -32,7 +32,7 @@ export default function DengelemeHavuzuInsertForm({ date, session }) {
             today: moment.utc(date).startOf("day").toISOString(),
         };
         values = Object.assign(values, employeeId, today);
-
+        console.log(values);
         const options = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -42,9 +42,41 @@ export default function DengelemeHavuzuInsertForm({ date, session }) {
             .then((res) => res.json())
             .then((data) => {
                 if (data) {
-                    deleteSystemMessageHandler();
+                    getValuesFromAmonyumAzotandGunlukAtıksuSayacıForms();
                 }
             });
+    }
+    async function getValuesFromAmonyumAzotandGunlukAtıksuSayacıForms() {
+        const Date = moment.utc(date).format("YYYY-MM-DD");
+        await aritmaService.getValuesAmonyumAzotAndGunlukAtıksuSayacıToDengelemeHavuzu(Date)
+            .then((result) => {
+                sendDataHandler(result);
+            });
+
+
+    }
+    async function sendDataHandler(result) {
+        const today = {
+            today: moment.utc(date).startOf("day").toISOString(),
+        };
+        result = Object.assign(result, today);
+        console.log(result);
+        const options = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(result),
+        };
+
+
+        await fetch("/api/controller/post/updateTransferDengelemeHavuzuFromAmonyumAzotandGunlukAtiksuSayaci", options)
+            .then((res) => res.json())
+            .then((data) => {
+                if(data == null){
+                    
+                }
+            });
+            deleteSystemMessageHandler();
+
     }
 
     async function deleteSystemMessageHandler() {

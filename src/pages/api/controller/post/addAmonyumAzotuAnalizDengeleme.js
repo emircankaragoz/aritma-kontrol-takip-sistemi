@@ -8,7 +8,7 @@ export default async function handler(req, res) {
             const {veriGirisiAbzorbans,employeeId,today } = req.body;
             const seyreltme = parseFloat(((veriGirisiAbzorbans + 0.0726) / 0.9175) * 0.777).toFixed(1);
             const sonuc = parseFloat(seyreltme).toFixed(2);
- 
+
             const data = await prisma.amonyumAzotuAnalizDengeleme.create({
                 data: {
                     category: "Arıtma",

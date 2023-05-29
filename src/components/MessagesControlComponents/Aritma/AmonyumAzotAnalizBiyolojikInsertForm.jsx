@@ -35,10 +35,9 @@ export default function AmonyumAzotAnalizBiyolojikInsertForm({ date, session }) 
         await fetch("/api/controller/post/addAmonyumAzotuAnalizBiyolojik", options)
             .then((res) => res.json())
             .then((data) => {
-                if (data) {
-                    deleteSystemMessageHandler();
-                }
+                deleteSystemMessageHandler();
             });
+             
     }
 
     async function deleteSystemMessageHandler() {

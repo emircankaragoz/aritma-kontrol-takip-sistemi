@@ -149,7 +149,7 @@ export default function AkmAnaliziComponent({ session }) {
                             <input className="form-control"
                                 type="text"
                                 name="numuneninAlindigiYer"
-                                placeholder="numuneninAlindigiYer"
+                                placeholder="Numunenin Alındığı Yer"
                                 {...formik.getFieldProps("numuneninAlindigiYer")}
                             />
                         </div>
@@ -158,7 +158,7 @@ export default function AkmAnaliziComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="filtreEdilenHacim"
-                                placeholder="filtreEdilenHacim"
+                                placeholder="Filtre Edilen Hacim"
                                 {...formik.getFieldProps("filtreEdilenHacim")}
                             />
                         </div>
@@ -167,7 +167,7 @@ export default function AkmAnaliziComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="filtreKagidiAgirligi"
-                                placeholder="filtreKagidiAgirligi"
+                                placeholder="Filtre Kağıdı Ağırlığı"
                                 {...formik.getFieldProps("filtreKagidiAgirligi")}
                             />
                         </div>
@@ -176,7 +176,7 @@ export default function AkmAnaliziComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="filtreKagidiVeNumuneninAgirligi"
-                                placeholder="filtreKagidiVeNumuneninAgirligi"
+                                placeholder="Filtre Kağıdı Ve Numunenin Ağırlığı"
                                 {...formik.getFieldProps("filtreKagidiVeNumuneninAgirligi")}
                             />
                         </div>

@@ -2,25 +2,44 @@ import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { AuthFormCSS } from "@/styles";
 import { toast } from "react-toastify";
-import { AritmaService, UserService,SystemMessageService  } from "@/services"
+import { AritmaService, UserService, SystemMessageService, SabitlerService } from "@/services"
 import moment from "moment/moment";
 import { useRouter } from "next/navigation";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { FiltrepresUpdateModal } from "@/components";
 import { SYSTEM_MESSAGES } from "../../../../environment";
-
+import { filtrepresAnalizFormu_validate } from "lib/validate";
 export default function FiltrepresComponent({ session }) {
     const [allData, setAllData] = useState([]);
     const [sessionUser, setSessionUser] = useState(null);
     const [isDataEntered, setIsDataEntered] = useState(false);
+    const [sbtFiltrepresAnalizFormu, setSbtFiltrepresAnalizFormu] =
+        useState();
+    const sabitlerService = new SabitlerService();
     const getToday = moment().startOf("day").format();
     const router = useRouter();
+
+
+    async function getFiltrepresAnalizFormu_SBT() {
+        await sabitlerService
+            .aritma_getAllFiltrepresSabitler()
+            .then((result) => {
+                setSbtFiltrepresAnalizFormu(result);
+            });
+    }
 
     const formik = useFormik({
         initialValues: {
             camurKekiNem: "",
             filtrepresSarjSayisi: "",
         },
+        validate: (values) =>
+            filtrepresAnalizFormu_validate(
+                values,
+                sbtFiltrepresAnalizFormu.camurKekiNemMin,
+                sbtFiltrepresAnalizFormu.camurKekiNemMax,
+
+            ),
         onSubmit,
     });
     const aritmaService = new AritmaService();
@@ -73,6 +92,7 @@ export default function FiltrepresComponent({ session }) {
     useEffect(() => {
         getAllFiltrepresDataHandler();
         getSessionUserHandler();
+        getFiltrepresAnalizFormu_SBT();
 
     }, []);
     async function onSubmit(values) {
@@ -155,18 +175,34 @@ export default function FiltrepresComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="camurKekiNem"
-                                placeholder="camurKekiNem"
+                                placeholder="Çamur Keki Nem"
                                 {...formik.getFieldProps("camurKekiNem")}
                             />
+                            {formik.errors.camurKekiNem &&
+                                formik.touched.camurKekiNem ? (
+                                <span className="text-danger opacity-75">
+                                    {formik.errors.camurKekiNem}
+                                </span>
+                            ) : (
+                                <></>
+                            )}
                         </div>
                         <div className={AuthFormCSS.input_group}>
                             <input className="form-control"
                                 type="number"
                                 step="0.01"
                                 name="filtrepresSarjSayisi"
-                                placeholder="filtrepresSarjSayisi"
+                                placeholder="Filtrepres Şarj Sayısı"
                                 {...formik.getFieldProps("filtrepresSarjSayisi")}
                             />
+                            {formik.errors.filtrepresSarjSayisi &&
+                                formik.touched.filtrepresSarjSayisi ? (
+                                <span className="text-danger opacity-75">
+                                    {formik.errors.filtrepresSarjSayisi}
+                                </span>
+                            ) : (
+                                <></>
+                            )}
                         </div>
                         <div className="input-button mx-auto">
                             <button
@@ -194,8 +230,8 @@ export default function FiltrepresComponent({ session }) {
                                     <th scope="col">Sr. No.</th>
                                     <th scope="col">Tarih</th>
                                     <th scope="col">Çalışan ID</th>
-                                    <th scope="col">camurKekiNem</th>
-                                    <th scope="col">filtrepresSarjSayisi</th>
+                                    <th scope="col">Çamur Keki Nem <br/> (Maks %65)</th>
+                                    <th scope="col">Filtrepres Şarj Sayısı</th>
                                     <th scope="col">.</th>
 
                                 </tr>
@@ -220,7 +256,7 @@ export default function FiltrepresComponent({ session }) {
                                                     </span>
                                                 </span>
                                                 <span>
-                                                    <FiltrepresUpdateModal  dataId={data.id}/>
+                                                    <FiltrepresUpdateModal dataId={data.id} />
                                                 </span>
 
 

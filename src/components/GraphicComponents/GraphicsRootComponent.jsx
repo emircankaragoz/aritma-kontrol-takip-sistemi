@@ -7,6 +7,9 @@ import {
   GRF_Demir_SodyumKlorurKontrolCizelgesi,
   GRF_Sertlik_SodyumKlorurKontrolCizelgesi,
 } from "./Tuz";
+import {GRF_YavasKaristirma_RenkGidericiTuketimiTakipFormu,
+  GRF_KimyasalCokHavCikisiRenk_RenkGidericiTuketimiTakipFormu,
+  GRF_CamurKekiNem_FiltrepresAnalizFormu} from "./Aritma"
 import { Tabs, Tab } from "react-bootstrap";
 import {
   GRF_Iletkenlik_WCSuyu,
@@ -24,6 +27,7 @@ export default function GraphicsRootComponent() {
   const [key_su, setKey_su] = useState("first_su");
   const [key_kullanim, setKey_kullanim] = useState("first_kullanim");
 
+  const [key_aritma, setKey_aritma] = useState("first_aritma");
   return (
     <div className="container">
       <Tabs
@@ -109,7 +113,33 @@ export default function GraphicsRootComponent() {
             </Tab>
           </Tabs>
         </Tab>
-        <Tab eventKey="third" title="Arıtma"></Tab>
+        <Tab eventKey="third" title="Arıtma">
+          <Tabs id="controlled-tab-example"
+            activeKey={key_aritma}
+            onSelect={(k) => setKey_aritma(k)}
+            className="mb-3 justify-content-center"
+            variant="pills">
+              <Tab eventKey="first_aritma" title="Renk Giderici Tüketimi">
+              <section className="d-flex flex-column align-items-center">
+                <p className="mt-2 mb-2 text-center fs-5 fw-semibold">
+                  Renk Giderici Tüketimi Takip Formu Verilerinin Grafikleri
+                </p>
+                <GRF_YavasKaristirma_RenkGidericiTuketimiTakipFormu/>
+                <GRF_KimyasalCokHavCikisiRenk_RenkGidericiTuketimiTakipFormu />
+              </section>
+            </Tab>
+            <Tab eventKey="second_aritma" title="Filtrepres">
+              <section className="d-flex flex-column align-items-center">
+                <p className="mt-2 mb-2 text-center fs-5 fw-semibold">
+                  Filtrepres Analiz Formu Verilerinin Grafiği
+                </p>
+                <GRF_CamurKekiNem_FiltrepresAnalizFormu/>
+
+              </section>
+            </Tab>
+
+          </Tabs>
+        </Tab>
       </Tabs>
     </div>
   );

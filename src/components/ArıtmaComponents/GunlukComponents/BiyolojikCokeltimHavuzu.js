@@ -155,7 +155,7 @@ export default function BiyolojikCokeltimHavuzuComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="sicaklik"
-                                placeholder="sicaklik"
+                                placeholder="Sıcaklık"
                                 {...formik.getFieldProps("sicaklik")}
                             />
                         </div>
@@ -164,7 +164,7 @@ export default function BiyolojikCokeltimHavuzuComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="ph"
-                                placeholder="ph"
+                                placeholder="pH"
                                 {...formik.getFieldProps("ph")}
                             />
                         </div>
@@ -173,7 +173,7 @@ export default function BiyolojikCokeltimHavuzuComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="koi"
-                                placeholder="koi"
+                                placeholder="Koi"
                                 {...formik.getFieldProps("koi")}
                             />
                         </div>
@@ -182,7 +182,7 @@ export default function BiyolojikCokeltimHavuzuComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="akm"
-                                placeholder="akm"
+                                placeholder="Akm"
                                 {...formik.getFieldProps("akm")}
                             />
                         </div>
@@ -193,7 +193,7 @@ export default function BiyolojikCokeltimHavuzuComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="sulfit"
-                                placeholder="sulfit"
+                                placeholder="Sülfit"
                                 {...formik.getFieldProps("sulfit")}
                             />
                         </div>
@@ -202,7 +202,7 @@ export default function BiyolojikCokeltimHavuzuComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="amonyumAzotu"
-                                placeholder="amonyumAzotu"
+                                placeholder="Amonyum Azotu"
                                 {...formik.getFieldProps("amonyumAzotu")}
                             />
                         </div>
@@ -210,7 +210,7 @@ export default function BiyolojikCokeltimHavuzuComponent({ session }) {
                             <input className="form-control"
                                 type="text"
                                 name="renk"
-                                placeholder="renk"
+                                placeholder="Renk"
                                 {...formik.getFieldProps("renk")}
                             />
                         </div>

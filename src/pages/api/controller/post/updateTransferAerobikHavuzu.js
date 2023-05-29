@@ -30,6 +30,10 @@ export default async function handler(req, res) {
                 if (err) return res.status(404).json(err);
             }
         }
+        else {
+            const data = null; 
+            res.status(200).json({ status: false, aerobikHavuzu: data});
+        }
 
 
 

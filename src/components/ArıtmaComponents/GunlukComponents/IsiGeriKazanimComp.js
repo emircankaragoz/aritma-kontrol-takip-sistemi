@@ -9,14 +9,14 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import { IsiGeriKazanimUpdateModal } from "@/components";
 import { SYSTEM_MESSAGES } from "../../../../environment";
 
-export default function IsiGeriKazanımComponent({ session }) {
+export default function IsiGeriKazanimComponent({ session }) {
     const [allData, setAllData] = useState([]);
     const [totalKimyasalMiktari, setTotalKimyasalMiktari] = useState(0);
     const [sessionUser, setSessionUser] = useState(null);
     const [isDataEntered, setIsDataEntered] = useState(false);
     const getToday = moment().startOf("day").format();
     const router = useRouter();
-    console.log(getToday);
+    
     const formik = useFormik({
         initialValues: {
             esansorPompasiAmperSaat12: "",
@@ -84,7 +84,7 @@ export default function IsiGeriKazanımComponent({ session }) {
         getSessionUserHandler();
     }, []);
 
-    async function onSubmit(values, { resetForm }) {
+    async function onSubmit(values) {
         const employeeId = {
             employeeId: `${employee_id}`,
         };
@@ -108,7 +108,7 @@ export default function IsiGeriKazanımComponent({ session }) {
                 }
             });
         router.refresh();
-        resetForm();
+        
 
 
     }
@@ -164,7 +164,7 @@ export default function IsiGeriKazanımComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="esansorPompasiAmperSaat12"
-                                placeholder="Esansor Pompasi Amper Saat 12:00"
+                                placeholder="Eşansör Pompası Amper Saat 12:00"
                                 {...formik.getFieldProps("esansorPompasiAmperSaat12")}
                             />
                         </div>
@@ -173,7 +173,7 @@ export default function IsiGeriKazanımComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="esansorPompasiAmperSaat12_20"
-                                placeholder="Esansor Pompasi Amper Saat 12:20"
+                                placeholder="Eşansör Pompası Amper Saat 12:20"
                                 {...formik.getFieldProps("esansorPompasiAmperSaat12_20")}
                             />
                         </div>
@@ -182,7 +182,7 @@ export default function IsiGeriKazanımComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="asitTankiPh_Saat_12"
-                                placeholder="Asit Tanki Ph Saat 12:00"
+                                placeholder="Asit Tankı Ph Saat 12:00"
                                 {...formik.getFieldProps("asitTankiPh_Saat_12")}
                             />
                         </div>
@@ -191,7 +191,7 @@ export default function IsiGeriKazanımComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="esansorPompasiAmperSaat2"
-                                placeholder="Esansor Pompasi Amper Saat 2:00"
+                                placeholder="Eşansör Pompası Amper Saat 2:00"
                                 {...formik.getFieldProps("esansorPompasiAmperSaat2")}
                             />
                         </div>
@@ -200,7 +200,7 @@ export default function IsiGeriKazanımComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="esansorPompasiAmperSaat2_20"
-                                placeholder="Esansor Pompasi Amper Saat 2:20"
+                                placeholder="Eşansör Pompası Amper Saat 2:20"
                                 {...formik.getFieldProps("esansorPompasiAmperSaat2_20")}
                             />
                         </div>
@@ -209,7 +209,7 @@ export default function IsiGeriKazanımComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="asitTankiPh_Saat_2"
-                                placeholder="Asit Tanki Ph Saat: 2:00"
+                                placeholder="Asit Tankı Ph Saat: 2:00"
                                 {...formik.getFieldProps("asitTankiPh_Saat_2")}
                             />
                         </div>

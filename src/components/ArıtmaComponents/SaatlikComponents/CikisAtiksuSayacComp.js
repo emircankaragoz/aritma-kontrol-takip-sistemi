@@ -97,6 +97,9 @@ export default function CikisAtiksuSayacComponent({ session }) {
 
         <div className="container p-2">
             <div className="d-flex  flex-column mx-auto w-50">
+            <p className="text-muted text-center fs-5 fw-bolder pb-3">
+                    ÇIKIŞ ATIKSU SAYACI KAYIT FORMU
+                </p>
                 <section>
                     <form onSubmit={formik.handleSubmit} className="d-flex flex-column gap-3 ">
                         <div className={AuthFormCSS.input_group}>
@@ -104,7 +107,7 @@ export default function CikisAtiksuSayacComponent({ session }) {
                                  type="number"
                                  step="0.01"
                                 name="atiksuSayac"
-                                placeholder="Atık Su Sayac"
+                                placeholder="Atık Su Sayaç"
                                 {...formik.getFieldProps("atiksuSayac")}
                             />
                             {formik.errors.atiksuSayac && formik.touched.atiksuSayac ? (
@@ -145,7 +148,7 @@ export default function CikisAtiksuSayacComponent({ session }) {
             <hr />
             <section>
                 <p className="text-muted text-center fs-5 fw-bolder pb-3">
-                    ÇIKIŞ ATIKSU SAYACI KAYIT FORMU
+                    ÇIKIŞ ATIKSU SAYACI KAYIT FORMU VERİLERİ
                 </p>
 
                 <div className="row">

@@ -11,9 +11,11 @@ export default async function handler(req, res) {
                 filtreKagidiAgirligi, filtreKagidiVeNumuneninAgirligi,
                 employeeId,
                 today } = req.body;
+         
+            const kuruKatilarinNetAgirligi = parseFloat(filtreKagidiVeNumuneninAgirligi) - parseFloat(filtreKagidiAgirligi);
+            const AKM = (parseFloat(kuruKatilarinNetAgirligi) * 1000000) / parseFloat(filtreEdilenHacim);
 
-            const kuruKatilarinNetAgirligi = filtreKagidiVeNumuneninAgirligi - filtreKagidiAgirligi;
-            const AKM = (kuruKatilarinNetAgirligi * 1000000) / filtreEdilenHacim;
+
             const data = await prisma.aKMAnalizFormu.create({
                 data: {
                     category: "Arıtma",

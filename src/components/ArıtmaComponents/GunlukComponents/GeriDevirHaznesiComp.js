@@ -154,7 +154,7 @@ export default function GeriDevirHaznesiComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="anaerobikHavuzaGeriDonenDebi"
-                                placeholder="anaerobikHavuzaGeriDonenDebi"
+                                placeholder="Anaerobik Havuza Geri Dönen Debi"
                                 {...formik.getFieldProps("anaerobikHavuzaGeriDonenDebi")}
                             />
                         </div>
@@ -165,7 +165,7 @@ export default function GeriDevirHaznesiComponent({ session }) {
                                 type="number"
                                 step="0.01"
                                 name="akm"
-                                placeholder="akm"
+                                placeholder="Akm"
                                 {...formik.getFieldProps("akm")}
                             />
                         </div>

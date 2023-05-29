@@ -109,10 +109,10 @@ export default function WcSuyuPageComp({ session, subCategory }) {
     const employeeId = {
       employeeId: `${employee_id}`,
     };
-    const subcategory = {
-      subcategory: `${subCategory}`,
-    };
-    values = Object.assign(values, employeeId, subcategory);
+    const today = {
+      today: `${getToday}`,
+    }
+    values = Object.assign(values, employeeId, today);
 
     const options = {
       method: "POST",
@@ -164,8 +164,8 @@ export default function WcSuyuPageComp({ session, subCategory }) {
     <div className="container p-2">
       <div className="d-flex flex-column  mx-auto w-50">
         <p className="text-muted text-center fs-5 fw-bolder pb-3 mt-3">
-                    WC SUYU KONTROL FORMU
-                </p>
+          WC SUYU KONTROL FORMU
+        </p>
         <span className="text-center text-muted">
           {moment().format("DD/MM/YYYY")}
         </span>
@@ -304,7 +304,6 @@ export default function WcSuyuPageComp({ session, subCategory }) {
                   <th scope="col">İletkenlik</th>
                   <th scope="col">Genel Temizlik</th>
                   <th scope="col">Açıklama</th>
-                  <th scope="col">Alt Kategori</th>
                   <th scope="col">.</th>
                 </tr>
               </thead>
@@ -322,7 +321,6 @@ export default function WcSuyuPageComp({ session, subCategory }) {
                     <td>{data.iletkenlik}</td>
                     <td>{data.genelTemizlik}</td>
                     <td>{data.aciklama}</td>
-                    <td>{data.subCategory}</td>
                     {sessionUser.role.roleName === "admin" ? (
                       <td>
                         <span className="me-2">

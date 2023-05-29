@@ -78,16 +78,6 @@ export default function FiltrepresInsertForm({ date, session }) {
                             />
                     </div>
 
-                    <div className="form-group py-2">
-                        <label>Filtre Kagidi Agirligi</label>
-                        <input className="form-control"
-                            type="number"
-                            step="0.01"
-                            name="filtreKagidiAgirligi"
-                            placeholder="filtreKagidiAgirligi"
-                            {...formik.getFieldProps("filtreKagidiAgirligi")}
-                        />
-                    </div>
                     <div className="input-button mx-auto">
                         <button type="submit" className="btn btn-outline-dark mt-2">
                             Ekle

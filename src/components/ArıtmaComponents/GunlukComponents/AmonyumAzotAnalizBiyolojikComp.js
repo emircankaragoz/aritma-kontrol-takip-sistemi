@@ -72,7 +72,7 @@ export default function AmonyumAzotuAnalizBiyolojikComponent({ session, subCateg
         getSessionUserHandler();
 
     }, []);
-    async function onSubmit(values, { resetForm }) {
+    async function onSubmit(values) {
         const employeeId = {
             employeeId: `${employee_id}`,
         };
@@ -99,7 +99,7 @@ export default function AmonyumAzotuAnalizBiyolojikComponent({ session, subCateg
                 }
             });
         router.refresh();
-        resetForm();
+
 
 
     }

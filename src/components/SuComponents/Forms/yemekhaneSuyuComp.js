@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import moment from "moment/moment";
 import { SabitlerService } from "@/services";
 import { SYSTEM_MESSAGES } from "../../../../environment";
-export default function YemekhaneSuyuPageComp({ session, subCategory }) {
+export default function YemekhaneSuyuPageComp({ session }) {
   const [allData, setAllData] = useState([]);
   const [sessionUser, setSessionUser] = useState(null);
   const [isDataEntered, setIsDataEntered] = useState(false);
@@ -105,14 +105,14 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
     su_getAllYemekhaneSuyu_SBT();
   }, []);
 
-  async function onSubmit(values, { resetForm }) {
+  async function onSubmit(values) {
     const employeeId = {
       employeeId: `${employee_id}`,
     };
-    const subcategory = {
-      subcategory: `${subCategory}`,
-    };
-    values = Object.assign(values, employeeId, subcategory);
+    const today = {
+      today: `${getToday}`,
+    }
+    values = Object.assign(values, employeeId, today);
 
     const options = {
       method: "POST",
@@ -308,7 +308,6 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
                   <th scope="col">İletkenlik</th>
                   <th scope="col">Genel Temizlik</th>
                   <th scope="col">Açıklama</th>
-                  <th scope="col">Alt Kategori</th>
                   <th scope="col">.</th>
                 </tr>
               </thead>
@@ -326,7 +325,6 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
                     <td>{data.iletkenlik}</td>
                     <td>{data.genelTemizlik}</td>
                     <td>{data.aciklama}</td>
-                    <td>{data.subCategory}</td>
                     {sessionUser.role.roleName === "admin" ? (
                       <td>
                         <span className="me-2">
