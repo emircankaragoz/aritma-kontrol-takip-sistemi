@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { signOut } from "next-auth/react";
 import Layout from "./Layout";
-import { SystemMessageService } from "@/services";
+import { SystemMessageService, UserService, EmailService } from "@/services";
 import moment from "moment";
 import MessageControlInsertModel from "../components/MessagesControlComponents/MessageControlInsertModel";
 import { GraphicsRootComponent } from "./GraphicComponents";
@@ -16,7 +16,6 @@ export default function User({ session }) {
   const [messages, setMessages] = useState([]);
   const [oldMessages, setOldMessages] = useState([]);
   const [todayMessages, setTodayMessages] = useState([]);
-
   const systemMessageService = new SystemMessageService();
 
   async function getAllSystemMessagesHandler() {
@@ -31,7 +30,9 @@ export default function User({ session }) {
 
   useEffect(() => {
     categorizingMessages();
+    getAllEmailOutcomesHandler();
   }, [messages]);
+
 
   async function categorizingMessages() {
     const today = moment().startOf("day");
@@ -44,7 +45,139 @@ export default function User({ session }) {
     setOldMessages(oldMsgs);
     setTodayMessages(todayMsgs);
   }
-  console.log(todayMessages);
+
+  /* EmaiL Service  */
+
+  const userService = new UserService();
+  const emailService = new EmailService();
+  const getToday = moment().startOf("day").format();
+
+  async function getAllEmailOutcomesHandler() {
+    console.log("0")
+    if (
+      oldMessages !== null &&
+      oldMessages.length !== 0 &&
+      oldMessages !== undefined
+    ) {
+      console.log("1")
+      await emailService
+        .getAllEmailOutcomes()
+        .then((result) => getAllAdminHandler(result.data));
+    }
+  }
+
+  async function getAllAdminHandler(e_outcomes) {
+    try {
+      console.log("2");
+      const result = await userService.getAllUser();
+      const adminUsers = result.data.filter(
+        (data) => data.role.roleName === "admin"
+      );
+      isEmailSent(e_outcomes, adminUsers);
+    } catch (error) {
+      console.error("Hata:", error);
+    }
+  }
+
+  function isEmailSent(email_outcomes, adminUsers) {
+    console.log("3");
+    if (email_outcomes !== null && email_outcomes !== undefined) {
+      const result = email_outcomes.find(
+        (item) =>
+          moment(item.dateAndTime).format("YYYY-MM-DD") ===
+          moment(getToday).format("YYYY-MM-DD")
+      );
+
+      const previousResult = email_outcomes.find(
+        (item) =>
+          moment(item.dateAndTime).format("YYYY-MM-DD") !==
+          moment(getToday).format("YYYY-MM-DD")
+      );
+
+      console.log("3.1")
+
+      if (result === undefined || result === null) {
+        console.log("3.2")
+        emailHandler(adminUsers);
+      }
+      if (previousResult !== undefined && previousResult !== null) {
+        console.log("3.3")
+        deleteEmailOutcomeHandler(previousResult);
+      }
+    } else {
+      emailHandler(adminUsers);
+    }
+  }
+
+  async function emailHandler(adminUsers) {
+    try {
+      console.log("4")
+      for (const admin of adminUsers) {
+        const body = { admin };
+        const response = await fetch(`/api/controller/post/sendEmail`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        if (response.ok) {
+          console.log("İstek tamamlandı. Sonuç:", response.ok);
+        } else {
+          console.error("Hata: İstek başarısız");
+        }
+      }
+      addEmailOutcomesHandler();
+    } catch (error) {
+      console.error("Hata:", error);
+    }
+  }
+
+  async function addEmailOutcomesHandler() {
+    console.log("5")
+    const dateTime = {
+      dateTime: `${getToday}`,
+    };
+    const options = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dateTime),
+    };
+
+    await fetch("/api/controller/post/addEmailOutcomes", options)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data) {
+          console.log("Email Outcome created.");
+        }
+      });
+  }
+
+  async function deleteEmailOutcomeHandler(previousResult) {
+    try {
+      const emailId = {
+        emailId: `${previousResult.id}`,
+      };
+      const options = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(emailId),
+      };
+
+      const response = await fetch(
+        "/api/controller/post/deleteEmailOutcomes",
+        options
+      );
+      if (response.ok) {
+        console.log("Email outcome deleted.");
+        // İstek başarıyla tamamlandı, istediğiniz işlemleri yapabilirsiniz.
+      } else {
+        console.error("Hata: İstek başarısız");
+        // İstek başarısız oldu, uygun hata işleme yapılabilir.
+      }
+    } catch (error) {
+      console.error("Hata:", error);
+      // Hata oluştu, uygun hata işleme yapılabilir.
+    }
+  }
 
   if (messages === null) {
     return <div className="text-center">Yükleniyor...</div>;

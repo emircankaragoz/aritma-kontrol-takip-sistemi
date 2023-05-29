@@ -7,10 +7,15 @@ import {
   Sbt_TuzTesisiKontrolCizelgesi,
 } from "@/components/SabitlerVeLimitlerComponents";
 import { Tabs, Tab } from "react-bootstrap";
-import { Sbt_IsletmeSuyu } from "@/components/SabitlerVeLimitlerComponents/Su";
+import {
+  Sbt_IsletmeSuyu,
+  Sbt_WCSuyu,
+  Sbt_YemekhaneSuyu,
+} from "@/components/SabitlerVeLimitlerComponents/Su";
 
 export default function SabitlerLimitlerPage({ session }) {
   const [key, setKey] = useState("first");
+  const [keySecond, setKeySecond] = useState("two_first");
   return (
     <>
       <Layout session={session}>
@@ -38,7 +43,26 @@ export default function SabitlerLimitlerPage({ session }) {
           </Tab>
           <Tab eventKey="second" title="Su">
             <p className="mt-2 mb-2 text-center fs-3 fw-bold">Su</p>
-            <Sbt_IsletmeSuyu />
+            {/* aa */}
+            <Tabs
+              id="controlled-tab-example"
+              activeKey={keySecond}
+              onSelect={(k) => setKeySecond(k)}
+              className="mb-3 justify-content-center"
+              variant="pills"
+            >
+              <Tab eventKey="two_first" title="İşletme Suyu">
+                <Sbt_IsletmeSuyu />
+              </Tab>
+              <Tab
+                eventKey="two_second"
+                title="Yemekhane ve Kullanma Suyu Tesisi"
+              >
+                <Sbt_YemekhaneSuyu />
+                <Sbt_WCSuyu />
+              </Tab>
+            </Tabs>
+            {/* bb */}
           </Tab>
           <Tab eventKey="third" title="Arıtma">
             <p className="mt-2 mb-2 text-center fs-3 fw-bold">Arıtma</p>

@@ -21,9 +21,11 @@ import {
   DengelemeHavuzuInsertForm,
   DesarjInsertForm,
   FiltrepresInsertForm,
-  GeriDevirHaznesiInsertForm
-} from "./Aritma"
+  GeriDevirHaznesiInsertForm,
+} from "./Aritma";
 import { TuzSodaSayacToplamaInsertForm } from "./Tuz";
+import { UserService, EmailService } from "@/services";
+import moment from "moment";
 
 export default function InsertOldDatasModal({ messageCode, date, session }) {
   const [show, setShow] = useState(false);
@@ -79,7 +81,10 @@ export default function InsertOldDatasModal({ messageCode, date, session }) {
       case SYSTEM_MESSAGES.A3.code:
         setModalBody(
           <div>
-            <AmonyumAzotAnalizBiyolojikInsertForm date={date} session={session} />
+            <AmonyumAzotAnalizBiyolojikInsertForm
+              date={date}
+              session={session}
+            />
           </div>
         );
         break;
@@ -94,7 +99,10 @@ export default function InsertOldDatasModal({ messageCode, date, session }) {
       case SYSTEM_MESSAGES.A5.code:
         setModalBody(
           <div>
-            <AmonyumAzotAnalizDengelemeInsertForm date={date} session={session} />
+            <AmonyumAzotAnalizDengelemeInsertForm
+              date={date}
+              session={session}
+            />
           </div>
         );
         break;

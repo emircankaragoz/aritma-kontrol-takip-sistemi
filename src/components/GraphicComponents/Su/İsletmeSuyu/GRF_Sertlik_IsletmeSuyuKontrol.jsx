@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { GraphicService } from "@/services";
+import React from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -22,31 +21,18 @@ ChartJS.register(
   Legend
 );
 import moment from "moment";
+const GRAPHIC_TITLE = "İşletme Suyu Kontrol Formu Sertlik Grafiği";
 
-const GRAPHIC_TITLE = "Sodyum Klorür Demir Grafiği";
-
-export default function GRF_SodyumKlorurKontrolDemir() {
-  const [values, setValues] = useState([]);
-
-  const graphicService = new GraphicService();
-
-  async function getAllSodyumKlorurDemirValues() {
-    const result = await graphicService.getAllSodyumKlorurDemirValues();
-    setValues(result);
-  }
-
-  useEffect(() => {
-    getAllSodyumKlorurDemirValues();
-  }, []);
+export default function GRF_Sertlik_IsletmeSuyuKontrol({ values }) {
 
   const data = {
     labels: values.map((item) => moment(item.dateAndTime).format("DD/MM/YY")),
     datasets: [
       {
-        label: "Demir",
-        data: values.map((item) => item.demir) || [],
+        label: "Sertlik",
+        data: values.map((item) => item.sertlik) || [],
         fill: false,
-        borderColor: "rgb(53, 162, 235)",
+        borderColor: 'rgb(255, 99, 132)',
         tension: 0.1,
       },
     ],
@@ -65,10 +51,6 @@ export default function GRF_SodyumKlorurKontrolDemir() {
       },
     },
   };
-
-  if(values.length === 0){
-    return <div className="text-center mt-2">Yükleniyor...</div>
-  }
 
   return <Line data={data} options={options} />;
 }

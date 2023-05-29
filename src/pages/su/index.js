@@ -2,19 +2,28 @@ import React, { useState } from "react";
 import { Layout } from "@/components";
 import { getSession } from "next-auth/react";
 import { Tabs, Tab } from "react-bootstrap";
-import {IcmeSuyuKontrolForm,IsletmeSuyuKontrolForm,YemekhaneSuyuKontrolForm,WcSuyuKontrolForm} from '@/components' 
-
-
+import {
+  IcmeSuyuKontrolForm,
+  IsletmeSuyuKontrolForm,
+  YemekhaneSuyuKontrolForm,
+  WcSuyuKontrolForm,
+} from "@/components";
 
 export default function SuPage({ session }) {
   const [key, setKey] = useState("Yumuşak Su");
-  const [keySecond, setKeySecond] = useState("Yemekhane 1.Tank");
+  const [mainKey, setMainKey] = useState("first");
+  const [keySecond, setKeySecond] = useState("yemekhane");
 
   return (
     <Layout session={session}>
       <h2 className="mb-4 fw-bold text-center">Su</h2>
-      <Tabs className="mb-3 justify-content-center">
-        <Tab eventKey="isletmeSuyuKontrolü" title="İşletme Suyu">
+      <Tabs
+        className="mb-3 justify-content-center"
+        id="controlled-tab-example"
+        activeKey={mainKey}
+        onSelect={(k) => setMainKey(k)}
+      >
+        <Tab eventKey="first" title="İşletme Suyu">
           {/* PILLS TAB  */}
           <p className="text-muted fw-semibold fs-5 text-center mt-4 pt-2">
             İşletme Suyu Kontrol Formu
@@ -38,25 +47,22 @@ export default function SuPage({ session }) {
           </Tabs>
           {/* END PILLS TAB  */}
         </Tab>
-        <Tab eventKey="icmeSuyuKontrolü" title="İçme Suyu">
+        <Tab eventKey="second" title="İçme Suyu">
           <p className="text-muted fw-semibold fs-5 text-center mt-4 pt-2">
             İçme Suyu Kontrol Formu
           </p>
           <IcmeSuyuKontrolForm session={session} />
         </Tab>
-        <Tab
-          eventKey="yemekhaneKullanmaSuyuKontrolü"
-          title="Yemekhane ve Kullanma Suyu Tesisi"
-        >
-
+        <Tab eventKey="third" title="Yemekhane ve Kullanma Suyu Tesisi">
           <Tabs
             activeKey={keySecond}
+            id="controlled-tab-example"
             onSelect={(k) => setKeySecond(k)}
             className="mb-3 d-flex justify-content-center"
             variant="pills"
           >
             <Tab
-              eventKey="Yemekhane 1.Tank"
+              eventKey="yemekhane"
               title="Yemekhane Kullanım Suyu 1. Tank"
             >
               <YemekhaneSuyuKontrolForm
@@ -64,11 +70,8 @@ export default function SuPage({ session }) {
                 subCategory={keySecond}
               />
             </Tab>
-            <Tab eventKey="WC 2.Tank" title="WC Kullanım Suyu 2. Tank">
-              <WcSuyuKontrolForm
-                session={session}
-                subCategory={keySecond}
-              />
+            <Tab eventKey="wc" title="WC Kullanım Suyu 2. Tank">
+              <WcSuyuKontrolForm session={session} subCategory={keySecond} />
             </Tab>
           </Tabs>
         </Tab>

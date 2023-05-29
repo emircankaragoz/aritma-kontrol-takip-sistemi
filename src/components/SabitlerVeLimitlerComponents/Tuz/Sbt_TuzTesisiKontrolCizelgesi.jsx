@@ -12,7 +12,7 @@ export default function Sbt_TuzTesisiKontrolCizelgesi() {
   const formik = useFormik({
     initialValues: {
       phMin: "",
-      phMin: "",
+      phMax: "",
       yogunlukMin: "",
       yogunlukMax: "",
       bikarbonatMin: "",

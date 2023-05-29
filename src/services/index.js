@@ -5,3 +5,5 @@ export { default as AritmaService } from './aritmaService'
 export { default as SystemMessageService } from './systemMessageService'
 export { default as SabitlerService } from './sabitlerService'
 export { default as GraphicService } from './graphicService'
+export { default as EmailService } from './emailService'
+

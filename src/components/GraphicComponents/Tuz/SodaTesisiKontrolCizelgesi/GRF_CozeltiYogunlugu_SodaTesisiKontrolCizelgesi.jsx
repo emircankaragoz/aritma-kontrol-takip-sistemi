@@ -21,6 +21,7 @@ ChartJS.register(
   Tooltip,
   Legend
 );
+import moment from "moment";
 
 const GRAPHIC_TITLE = "Soda Tesisi Çözelti Yoğunluğu Grafiği";
 
@@ -39,11 +40,11 @@ export default function GRF_SodaTesisiKontrolYogunluk() {
   }, []);
 
   const data = {
-    labels: values.map((_, index) => `${index + 1}`),
+    labels: values.map((item) => moment(item.dateAndTime).format("DD/MM/YY")),
     datasets: [
       {
         label: "Çözelti Yoğunluğu",
-        data: values,
+        data: values.map((item) => item.cozeltiYogunlugu) || [],
         fill: false,
         borderColor: "rgb(53, 162, 235)",
         tension: 0.1,

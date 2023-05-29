@@ -17,7 +17,6 @@ export default class SystemMessageService {
         date === moment(item.createdAt).format("YYYY-MM-DD")
     );
 
-
     if (!data || data === undefined || data === null) {
       let values = {};
       const content = {
@@ -63,7 +62,7 @@ export default class SystemMessageService {
       };
       const dateTime = {
         dateTime: `${date}`,
-      }
+      };
 
       values = Object.assign(values, messageCode, dateTime);
       const options = {
@@ -82,5 +81,15 @@ export default class SystemMessageService {
     }
   }
 
-  async insertOldDatas(code) {}
+  async getAllSystemMessagesByCode(code) {
+    let messages = []
+    await axios
+      .get(`${URL}/api/controller/get/systemMessage`)
+      .then((result) => result.data.map(data => {
+        if(data.messageCode === code){
+          messages.push(data)
+        }
+      }));
+      return messages
+  }
 }

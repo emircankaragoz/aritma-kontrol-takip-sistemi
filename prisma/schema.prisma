@@ -228,6 +228,7 @@ model YemekhaneVeKullanmaSuyu {
   aciklama            String @db.VarChar(45)
   subCategory         String @db.VarChar(45)
 }
+
 model WcVeKullanmaSuyu {
   id          Int      @id @default(autoincrement())
   category    String   @db.VarChar(45)
@@ -837,4 +838,29 @@ model Sbt_IsletmeSuyuKontrolFormu {
   bikarbonatMax String? @db.VarChar(45)
   bikarbonatMin String? @db.VarChar(45)
   subCategory   String? @db.VarChar(45)
+}
+
+model Sbt_YemekhaneSuyu {
+  id            Int     @id @default(autoincrement())
+  phMin         String? @db.VarChar(45)
+  phMax         String? @db.VarChar(45)
+  klorMin       String? @db.VarChar(45)
+  klorMax       String? @db.VarChar(45)
+  iletkenlikMin String? @db.VarChar(45)
+  iletkenlikMax String? @db.VarChar(45)
+}
+
+model Sbt_WCSuyu {
+  id            Int     @id @default(autoincrement())
+  phMin         String? @db.VarChar(45)
+  phMax         String? @db.VarChar(45)
+  klorMin       String? @db.VarChar(45)
+  klorMax       String? @db.VarChar(45)
+  iletkenlikMin String? @db.VarChar(45)
+  iletkenlikMax String? @db.VarChar(45)
+}
+
+model EmailOutcome {
+  id          Int      @id @default(autoincrement())
+  dateAndTime DateTime @unique(sort: Desc) @default(now()) @map(name: "date_and_time")
 }

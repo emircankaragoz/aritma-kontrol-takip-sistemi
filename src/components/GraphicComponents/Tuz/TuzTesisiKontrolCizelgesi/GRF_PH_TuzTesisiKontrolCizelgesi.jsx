@@ -21,6 +21,7 @@ ChartJS.register(
   Tooltip,
   Legend
 );
+import moment from "moment";
 
 const GRAPHIC_TITLE = "Sıvı Tuz Tesisi PH Grafiği";
 
@@ -39,11 +40,11 @@ export default function GRF_TuzTesisiKontrolPH() {
   }
 
   const data = {
-    labels: phValues.map((_, index) => `${index + 1}`),
+    labels: phValues.map((item) => moment(item.dateAndTime).format("DD/MM/YY")),
     datasets: [
       {
-        label: "pH",
-        data: phValues || [],
+        label: "PH",
+        data: phValues.map((item) => item.ph) || [],
         fill: false,
         borderColor: "rgb(53, 162, 235)",
         tension: 0.1,

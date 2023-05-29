@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
-import { SuService, UserService, SystemMessageService } from "@/services"
+import { SuService, UserService, SystemMessageService } from "@/services";
 import { YemekhaneUpdateModal } from "@/components";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { yemekhane_validate } from "lib/validate";
 import { AuthFormCSS } from "@/styles";
 import { useRouter } from "next/navigation";
 import moment from "moment/moment";
+import { SabitlerService } from "@/services";
 import { SYSTEM_MESSAGES } from "../../../../environment";
 export default function YemekhaneSuyuPageComp({ session, subCategory }) {
   const [allData, setAllData] = useState([]);
@@ -15,6 +16,18 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
   const [isDataEntered, setIsDataEntered] = useState(false);
   const getToday = moment().startOf("day").format();
   const router = useRouter();
+
+  const [sbtYemekhaneSuyu, setSbtYemekhaneSuyu] = useState()
+
+  const sabitlerService = new SabitlerService();
+
+  async function su_getAllYemekhaneSuyu_SBT() {
+    await sabitlerService
+      .su_getAllYemekhaneSuyu()
+      .then((result) => {
+        setSbtYemekhaneSuyu(result);
+      });
+  }
 
   const formik = useFormik({
     initialValues: {
@@ -24,9 +37,18 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
       iletkenlik: "",
       genelTemizlik: "",
       aciklama: "",
-
     },
-    validate: yemekhane_validate,
+    validate: (values) => {
+      const su = {
+        phMin: `${sbtYemekhaneSuyu.phMin}`,
+        phMax: `${sbtYemekhaneSuyu.phMax}`,
+        klorkMin: `${sbtYemekhaneSuyu.klorkMin}`,
+        klorMax: `${sbtYemekhaneSuyu.klorMax}`,
+        iletkenlikMin: `${sbtYemekhaneSuyu.iletkenlikMin}`,
+        iletkenlikMax: `${sbtYemekhaneSuyu.iletkenlikMax}`,
+      };
+      return yemekhane_validate(values, su);
+    },
     onSubmit,
   });
 
@@ -54,7 +76,6 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
       (item) =>
         moment(item.dateAndTime).format("YYYY-MM-DD") ===
         moment(getToday).format("YYYY-MM-DD")
-
     );
     if (result) {
       setIsDataEntered(true);
@@ -65,7 +86,10 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
     }
   }
   async function deleteSystemMessageHandler(date) {
-    await systemMessageService.deleteSystemMessage(SYSTEM_MESSAGES.S3.code, date);
+    await systemMessageService.deleteSystemMessage(
+      SYSTEM_MESSAGES.S3.code,
+      date
+    );
   }
   async function createdSystemMessageHandler(date) {
     await systemMessageService.addSystemMessage(
@@ -78,6 +102,7 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
   useEffect(() => {
     getSessionUserHandler();
     getAllYemekhaneSuyuDataHandler();
+    su_getAllYemekhaneSuyu_SBT();
   }, []);
 
   async function onSubmit(values, { resetForm }) {
@@ -104,7 +129,7 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
           });
         }
       });
-      router.refresh();
+    router.refresh();
   }
 
   async function deleteYemekhane(id) {
@@ -126,43 +151,46 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
           });
         }
       });
-      router.refresh();
+    router.refresh();
   }
   if (sessionUser === null) {
     return <div className="text-center">Yükleniyor...</div>;
   }
 
-
   return (
-
     <div className="container p-2">
       <div className="d-flex flex-column  mx-auto w-50">
-      <p className="text-muted text-center fs-5 fw-bolder pb-3 mt-3">
-                    YEMEKHANE SUYU KONTROL FORMU
-                </p>
-                <span className="text-center text-muted">
-                    {moment().format("DD/MM/YYYY")}
-                </span>
-                <div className="text-center mb-2">
-                    {isDataEntered ? (
-                        <p className="text-success">Günlük veri girişi gerçekleşti</p>
-                    ) : (
-                        <p className="text-danger">Günlük veri girişi gerçekleşmedi!</p>
-                    )}
-                </div>
+        <p className="text-muted text-center fs-5 fw-bolder pb-3 mt-3">
+          YEMEKHANE SUYU KONTROL FORMU
+        </p>
+        <span className="text-center text-muted">
+          {moment().format("DD/MM/YYYY")}
+        </span>
+        <div className="text-center mb-2">
+          {isDataEntered ? (
+            <p className="text-success">Günlük veri girişi gerçekleşti</p>
+          ) : (
+            <p className="text-danger">Günlük veri girişi gerçekleşmedi!</p>
+          )}
+        </div>
       </div>
       <div className="d-flex  flex-column mx-auto w-50">
         <section>
-          <form onSubmit={formik.handleSubmit} className="d-flex flex-column gap-3 ">
+          <form
+            onSubmit={formik.handleSubmit}
+            className="d-flex flex-column gap-3 "
+          >
             <div className={AuthFormCSS.input_group}>
-              <input className="form-control"
+              <input
+                className="form-control"
                 type="number"
                 step="0.01"
                 name="klor_cozeltisi_dozaji"
                 placeholder="Klor Çözeltisi Dozaji"
                 {...formik.getFieldProps("klorCozeltisiDozaji")}
               />
-              {formik.errors.klorCozeltisiDozaji && formik.touched.klorCozeltisiDozaji ? (
+              {formik.errors.klorCozeltisiDozaji &&
+              formik.touched.klorCozeltisiDozaji ? (
                 <span className="text-danger opacity-75">
                   {formik.errors.klorCozeltisiDozaji}
                 </span>
@@ -171,7 +199,8 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
               )}
             </div>
             <div className={AuthFormCSS.input_group}>
-              <input className="form-control"
+              <input
+                className="form-control"
                 type="number"
                 step="0.01"
                 name="klor"
@@ -187,7 +216,8 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
               )}
             </div>
             <div className={AuthFormCSS.input_group}>
-              <input className="form-control"
+              <input
+                className="form-control"
                 type="number"
                 step="0.01"
                 name="ph"
@@ -203,8 +233,8 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
               )}
             </div>
             <div className={AuthFormCSS.input_group}>
-
-              <input className="form-control"
+              <input
+                className="form-control"
                 type="number"
                 step="0.01"
                 name="iletkenlik"
@@ -220,7 +250,8 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
               )}
             </div>
             <div className={AuthFormCSS.input_group}>
-              <input className="form-control"
+              <input
+                className="form-control"
                 type="text"
                 name="genelTemizlik"
                 placeholder="Genel Temizlik"
@@ -235,7 +266,8 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
               )}
             </div>
             <div className={AuthFormCSS.input_group}>
-              <input className="form-control"
+              <input
+                className="form-control"
                 type="text"
                 name="aciklama"
                 placeholder="Açıklama"
@@ -255,8 +287,6 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
               </button>
             </div>
           </form>
-
-
         </section>
       </div>
       <hr />
@@ -315,7 +345,6 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
                     ) : (
                       <></>
                     )}
-
                   </tr>
                 ))}
               </tbody>
@@ -324,10 +353,6 @@ export default function YemekhaneSuyuPageComp({ session, subCategory }) {
         </div>
       </section>
       <hr />
-
     </div>
-
-
-  )
+  );
 }
-

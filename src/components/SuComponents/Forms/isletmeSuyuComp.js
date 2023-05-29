@@ -34,17 +34,17 @@ export default function IsletmeSuyuPageComp({ session, subCategory }) {
       sertlik: "",
       bikarbonat: "",
     },
-    validate: (values) =>
-      isletme_validate(
-        values,
-        subCategory,
-        sbtIsletmeSuyu.phMin,
-        sbtIsletmeSuyu.phMax,
-        sbtIsletmeSuyu.sertlikMin,
-        sbtIsletmeSuyu.sertlikMax,
-        sbtIsletmeSuyu.bikarbonatMin,
-        sbtIsletmeSuyu.bikarbonatMax
-      ),
+    validate: (values) => {
+      const su = {
+        phMin: `${sbtIsletmeSuyu.phMin}`,
+        phMax: `${sbtIsletmeSuyu.phMax}`,
+        sertlikMin: `${sbtIsletmeSuyu.sertlikMin}`,
+        sertlikMax: `${sbtIsletmeSuyu.sertlikMax}`,
+        bikarbonatMin: `${sbtIsletmeSuyu.bikarbonatMin}`,
+        bikarbonatMax: `${sbtIsletmeSuyu.bikarbonatMax}`,
+      };
+      return isletme_validate(values, subCategory, su);
+    },
     onSubmit,
   });
   const isletmeSuyuService = new SuService();

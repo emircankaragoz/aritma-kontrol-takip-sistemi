@@ -6,14 +6,30 @@ import { WcUpdateModal } from "@/components";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { AuthFormCSS } from "@/styles";
 import moment from "moment/moment";
+import { SabitlerService } from "@/services";
 import { useRouter } from "next/navigation";
 import { SYSTEM_MESSAGES } from "../../../../environment";
+import { wc_validate } from "lib/validate";
+
 export default function WcSuyuPageComp({ session, subCategory }) {
   const [allData, setAllData] = useState([]);
   const [sessionUser, setSessionUser] = useState(null);
   const [isDataEntered, setIsDataEntered] = useState(false);
   const getToday = moment().startOf("day").format();
   const router = useRouter();
+
+  const [sbtWCSuyu, setSbtWCSuyu] = useState()
+
+  const sabitlerService = new SabitlerService();
+
+  async function su_getAllWCSuyu_SBT() {
+    await sabitlerService
+      .su_getAllWCSuyu()
+      .then((result) => {
+        setSbtWCSuyu(result);
+      });
+  }
+
   const formik = useFormik({
     initialValues: {
       klorCozeltisiDozaji: "",
@@ -23,6 +39,17 @@ export default function WcSuyuPageComp({ session, subCategory }) {
       genelTemizlik: "",
       aciklama: "",
 
+    },
+    validate: (values) => {
+      const su = {
+        phMin: `${sbtWCSuyu.phMin}`,
+        phMax: `${sbtWCSuyu.phMax}`,
+        klorkMin: `${sbtWCSuyu.klorkMin}`,
+        klorMax: `${sbtWCSuyu.klorMax}`,
+        iletkenlikMin: `${sbtWCSuyu.iletkenlikMin}`,
+        iletkenlikMax: `${sbtWCSuyu.iletkenlikMax}`,
+      };
+      return wc_validate(values, su);
     },
     onSubmit,
   });
@@ -75,6 +102,7 @@ export default function WcSuyuPageComp({ session, subCategory }) {
   useEffect(() => {
     getSessionUserHandler();
     getAllWcSuyuDataHandler();
+    su_getAllWCSuyu_SBT();
   }, []);
 
   async function onSubmit(values) {

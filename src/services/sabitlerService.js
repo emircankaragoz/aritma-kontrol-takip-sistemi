@@ -37,7 +37,7 @@ export default class SabitlerService {
   }
 
   /*  SU  */
-  /*  SU - YUMUŞAK SU  */
+  /* SU - Isletme */
   async su_getAllIsletmeSuyu() {
     let su;
     await axios
@@ -47,4 +47,30 @@ export default class SabitlerService {
       });
     return su;
   }
+
+  /* SU - YEMEKHANE/WC */
+
+  async su_getAllYemekhaneSuyu() {
+    let su;
+    await axios
+      .get(`${URL}/api/controller/get/sbt_YemekhaneSuyu`)
+      .then((result) => {
+        let lastItem = result.data.pop();
+        su = lastItem;
+      });
+    return su;
+  }
+
+
+  async su_getAllWCSuyu() {
+    let su;
+    await axios
+      .get(`${URL}/api/controller/get/sbt_WcSuyu`)
+      .then((result) => {
+        let lastItem = result.data.pop();
+        su = lastItem;
+      });
+    return su;
+  }
+
 }

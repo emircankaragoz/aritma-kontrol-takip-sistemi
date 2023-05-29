@@ -21,6 +21,7 @@ ChartJS.register(
   Tooltip,
   Legend
 );
+import moment from "moment";
 
 const GRAPHIC_TITLE = "Sıvı Tuz Tesisi Yoğunluk Grafiği";
 
@@ -39,11 +40,11 @@ export default function GRF_TuzTesisiKontrolYogunluk() {
   }, []);
 
   const data = {
-    labels: values.map((_, index) => `${index + 1}`),
+    labels: values.map((item) => moment(item.dateAndTime).format("DD/MM/YY")),
     datasets: [
       {
         label: "Yoğunluk",
-        data: values,
+        data: values.map((item) => item.yogunluk) || [],
         fill: false,
         borderColor: 'rgb(255, 99, 132)',
         tension: 0.1,
