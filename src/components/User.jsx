@@ -30,7 +30,7 @@ export default function User({ session }) {
 
   useEffect(() => {
     categorizingMessages();
-    getAllEmailOutcomesHandler();
+    /* getAllEmailOutcomesHandler(); */
   }, [messages]);
 
 
@@ -48,7 +48,7 @@ export default function User({ session }) {
 
   /* EmaiL Service  */
 
-  const userService = new UserService();
+  /* const userService = new UserService();
   const emailService = new EmailService();
   const getToday = moment().startOf("day").format();
 
@@ -178,7 +178,7 @@ export default function User({ session }) {
       // Hata oluştu, uygun hata işleme yapılabilir.
     }
   }
-
+ */
   if (messages === null) {
     return <div className="text-center">Yükleniyor...</div>;
   }
