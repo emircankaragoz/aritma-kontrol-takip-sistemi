@@ -42,6 +42,12 @@ export default function TuzGunlukTuketimMiktari({ session }) {
     return <div className="text-center">Yükleniyor...</div>;
   }
 
+  const sortedData = getAllGunlukTuketimMiktari.sort((a, b) => {
+    const dateA = new Date(a.dateAndTime);
+    const dateB = new Date(b.dateAndTime);
+    return dateA - dateB;
+  });
+
   return (
     <div className="container p-3">
       <div className="d-flex flex-column  mx-auto w-50">
@@ -83,7 +89,7 @@ export default function TuzGunlukTuketimMiktari({ session }) {
                 </tr>
               </thead>
               <tbody className="text-center">
-                {getAllGunlukTuketimMiktari.map((tuz, index) => (
+                {sortedData.map((tuz, index) => (
                   <tr key={index}>
                     <th scope="row">{index + 1}</th>
                     <td>{moment(tuz.dateAndTime).format("DD/MM/YY")}</td>

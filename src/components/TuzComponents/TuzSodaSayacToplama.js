@@ -179,6 +179,12 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
     return <div className="text-center">Yükleniyor...</div>;
   }
 
+  const sortedData = allTuzSodaSayacToplama.sort((a, b) => {
+    const dateA = new Date(a.dateAndTime);
+    const dateB = new Date(b.dateAndTime);
+    return dateA - dateB;
+  });
+
   return (
     <div className="container p-2">
       <div className="d-flex  flex-column mx-auto w-50">
@@ -351,7 +357,7 @@ export default function TuzSodaSayacToplamaComponent({ session }) {
                 </tr>
               </thead>
               <tbody className="text-center">
-                {allTuzSodaSayacToplama.map((tuz, index) => (
+                {sortedData.map((tuz, index) => (
                   <tr key={index}>
                     <th scope="row">{index + 1}</th>
                     <td>{moment(tuz.dateAndTime).format("DD/MM/YY")}</td>

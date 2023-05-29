@@ -30,7 +30,7 @@ export default function TuzSodaSayacToplamaInsertForm({ session, date }) {
       employeeId: `${employee_id}`,
     };
     const dateTime = {
-      dateTime: moment.utc(date).startOf("day").toISOString(),
+      dateTime: moment(date).startOf("day").format()
     };
     values = Object.assign(values, employeeId, dateTime);
 
