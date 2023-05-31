@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { AritmaService } from "@/services"
 import { useRouter } from "next/navigation";
 import moment from "moment/moment";
-export default function ModalForm({ dataId }) {
+export default function ModalForm({ dataId,session }) {
 
     const [allDataById, setAllDataById] = useState({});
     const atiksuAritmaGirisCikis = new AritmaService();
@@ -20,6 +20,7 @@ export default function ModalForm({ dataId }) {
         }
 
     }
+    const employee_id = session.user.employeeId;
     useEffect(() => {
         getAllAtiksuAritmaGirisCikisDataHandler();
     }, [allDataById]);
@@ -81,12 +82,6 @@ export default function ModalForm({ dataId }) {
             .then((res) => res.json())
             .then((data) => {
                 if (data) {
-                    toast.success(
-                        "Hesaplamalar başarıyla yapıldı.",
-                        {
-                            position: toast.POSITION.BOTTOM_RIGHT,
-                        }
-                    );
                 }
             });
             transferDataToCamurYogunlastirmaForm();
@@ -103,6 +98,9 @@ export default function ModalForm({ dataId }) {
     }
        //camur yogunlastirma data handler
        async function sendDataHandlerSecond(result) {
+        const employeeId = {
+            employeeId: `${employee_id}`,
+        };
         const today = {
             today :`${getToday}`,
         }
@@ -115,7 +113,7 @@ export default function ModalForm({ dataId }) {
         };
        
         
-        await fetch("/api/controller/post/addCamurYogunlastirma", options)
+        await fetch("/api/controller/post/updateTransferCamurYogunlastirma", options)
           .then((res) => res.json())
           .then((data) => {
             if (data) {
@@ -155,15 +153,9 @@ export default function ModalForm({ dataId }) {
             .then((res) => res.json())
             .then((data) => {
                 if (data) {
-                    toast.success(
-                        "Veriler başarıyla güncellendi",
-                        {
-                            position: toast.POSITION.BOTTOM_RIGHT,
-                        }
-                    );
                 }
             });
-            //router.refresh();
+            router.refresh();
 
     }
 

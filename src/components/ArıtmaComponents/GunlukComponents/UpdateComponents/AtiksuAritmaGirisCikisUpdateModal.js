@@ -3,7 +3,7 @@ import { RiMore2Fill } from "react-icons/ri";
 import Modal from "react-bootstrap/Modal";
 import { AtiksuAritmaGirisCikisUpdateModalForm} from "@/components";
 
-export default function ModalComponent({dataId}) {
+export default function ModalComponent({dataId,session}) {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -18,7 +18,7 @@ export default function ModalComponent({dataId}) {
           <Modal.Title>Bilgileri Güncelle</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <AtiksuAritmaGirisCikisUpdateModalForm dataId={dataId} />
+          <AtiksuAritmaGirisCikisUpdateModalForm dataId={dataId} session={session} />
         </Modal.Body>
       </Modal>
     </>

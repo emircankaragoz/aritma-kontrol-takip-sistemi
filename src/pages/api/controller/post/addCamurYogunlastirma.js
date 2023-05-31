@@ -5,7 +5,7 @@ export default async function handler(req, res) {
         if (!req.body) return res.status(404).json({ error: "Do not have data" });
         try {
             const { kimyasalCokeltimdenCekilenCamurMiktari_m3gun
-                ,aerobiktenCekilenCamurMiktari,today} = req.body; 
+                ,aerobiktenCekilenCamurMiktari,employeeId,today} = req.body; 
             const data = await prisma.camurYogunlastirma.create({
                 data: {
                     createdBy: {

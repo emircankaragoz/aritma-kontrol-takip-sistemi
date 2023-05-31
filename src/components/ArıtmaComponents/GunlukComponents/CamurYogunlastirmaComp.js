@@ -15,6 +15,7 @@ export default function CamurYogunlastirmaComponent({ session }) {
     async function getAllCamurYogunlastirmaMiktariHandler() {
         await aritmaService.getAllCamurMiktari().then((result) => {
             setGetAllCamurYogunlastirmaMiktari(result.data);
+            console.log(result.data);
         });
     }
 

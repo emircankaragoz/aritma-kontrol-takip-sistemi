@@ -99,9 +99,7 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
             .then((res) => res.json())
             .then((data) => {
                 if (data) {
-                    toast.success("Form başarıyla oluşturuldu", {
-                        position: toast.POSITION.BOTTOM_RIGHT,
-                    });
+
                 }
             });
         transferDataToSameForm();
@@ -126,7 +124,7 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                 }
             });
 
-        //router.refresh();
+        router.refresh();
 
        
             
@@ -197,7 +195,7 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
             today :`${getToday}`,
         }
         result = Object.assign(result, employeeId,today);
-        console.log(result);
+
         const options = {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -209,6 +207,12 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
           .then((res) => res.json())
           .then((data) => {
             if (data) {
+                toast.success(
+                    "Hesaplamalar başarıyla  Çamur Yoğunlaştırma formuna gönderildi.",
+                    {
+                        position: toast.POSITION.BOTTOM_RIGHT,
+                    }
+                );
 
             }
           });  
@@ -365,7 +369,7 @@ export default function AtiksuAritmaGirisCikisComponent({ session }) {
                                                     </span>
                                                 </span>
                                                 <span>
-                                                    <AtiksuAritmaGirisCikisUpdateModal dataId={data.id}/>
+                                                    <AtiksuAritmaGirisCikisUpdateModal dataId={data.id} session={session}/>
                                                 </span>
 
                                             </td>
