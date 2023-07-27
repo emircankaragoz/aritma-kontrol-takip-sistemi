@@ -1,6 +1,10 @@
 **DIGITIALISE THE NEXT ANOMALI TESPITINE DUYARLI ARITMA KONTROL KAYIT TAKIP SİSTEMİ**
 
+**You can access and review the videos of the project from this link.**
+https://drive.google.com/drive/folders/1X3YPcu39-E8b5ruZRfOpcEcLPFdZHKMD?usp=share_link
 
+
+**TECHNOLOGIES --> NEXT.JS PRISMA MYSQL TYPESCRIPT HTML CSS JAVASCRIPT BOOTSTRAP**
 
 
 
@@ -54,6 +58,8 @@
 <img width="1440" alt="Ekran Resmi 2023-07-27 ÖS 2 50 16" src="https://github.com/emircankaragoz/aritma-kontrol-takip-sistemi/assets/111710264/3435016a-1b3a-4526-a8fd-a8e068bdeaea">
 <img width="1440" alt="Ekran Resmi 2023-07-27 ÖS 2 50 17" src="https://github.com/emircankaragoz/aritma-kontrol-takip-sistemi/assets/111710264/86ac2aeb-1903-4d5c-9701-040475ac5a97">
 <img width="1440" alt="Ekran Resmi 2023-07-27 ÖS 2 50 19" src="https://github.com/emircankaragoz/aritma-kontrol-takip-sistemi/assets/111710264/8174275d-ac22-4a9e-a887-605725053a36">
+
+
 
 
 
