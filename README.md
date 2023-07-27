@@ -1,6 +1,6 @@
 **DIGITIALISE THE NEXT ANOMALI TESPITINE DUYARLI ARITMA KONTROL KAYIT TAKIP SİSTEMİ**
 
-**You can access and review the videos of the project from this link.**
+You can access and review the videos of the project from this link.
 https://drive.google.com/drive/folders/1X3YPcu39-E8b5ruZRfOpcEcLPFdZHKMD?usp=share_link
 
 
